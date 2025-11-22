@@ -23,9 +23,9 @@
   <link href="<?php echo APP_URL; ?>app/views/assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
   <link href="<?php echo APP_URL; ?>app/views/assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
   <link href="<?php echo APP_URL; ?>app/views/assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
-
   <!-- Main CSS File -->
   <link href="<?php echo APP_URL; ?>app/views/assets/css/main.css" rel="stylesheet">
+ 
 
   <!-- =======================================================
   * Template Name: Medicio
@@ -37,6 +37,8 @@
 </head>
 
 <body class="index-page">
+<?php include 'app/views/content/paciente.php'; ?>
+<?php include 'app/views/content/ver_paciente.php'; ?>
 
   <header id="header" class="header sticky-top">
 
@@ -68,12 +70,20 @@
             <li><a href="#departments">Departamentos</a></li>
             <li><a href="#doctors">Doctores</a></li>
             <li class="dropdown"><a href="#"><span>Dropdown</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
-              <ul>
-                <li><a href="#">Dropdown 1</a></li>
-                <li class="dropdown"><a href="#"><span>Deep Dropdown</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+              <ul>          
+                <li class="dropdown"><a href="#"><span>Pacientes</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
                   <ul>
-                    <li><a href="#">Deep Dropdown 1</a></li>
-                    <li><a href="#">Deep Dropdown 2</a></li>
+                  <li><a href="#"
+                id="btnNuevoPaciente"
+                data-bs-toggle="modal"
+                data-bs-target="#modalPaciente"
+                title="Nuevo">Agregar Paciente</a></li>
+                   
+                <li><a href="#"
+                id="btnVerPaciente"
+                data-bs-toggle="modal"
+                data-bs-target="#modalPacienteVer"
+                title="Tabla Paciente">Ver Pacientes</a></li>
                     <li><a href="#">Deep Dropdown 3</a></li>
                     <li><a href="#">Deep Dropdown 4</a></li>
                     <li><a href="#">Deep Dropdown 5</a></li>
@@ -1019,8 +1029,22 @@
   <script src="<?php echo APP_URL; ?>app/views/assets/vendor/purecounter/purecounter_vanilla.js"></script>
   <script src="<?php echo APP_URL; ?>app/views/assets/vendor/swiper/swiper-bundle.min.js"></script>
 
-  <!-- Main JS File -->
-  <script src="<?php echo APP_URL; ?>app/views/assets/js/main.js"></script>
+
+  <!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<!-- DataTables -->
+<script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
+
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- Tu JS principal de la plantilla -->
+<script src="<?php echo APP_URL; ?>app/views/assets/js/main.js"></script>
+
+<!-- Tu JS de paciente (el que usa Swal y DataTable) -->
+<script src="<?php echo APP_URL; ?>app/ajax/paciente.js"></script>
 
 </body>
 
