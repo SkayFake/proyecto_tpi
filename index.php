@@ -9,7 +9,7 @@
         $url = explode("/", $_GET['views']);
     } else {
         // Vista por defecto: "menu"
-        $url = ["menu"];
+        $url = ["login"];
     }
 
     $viewsController = new viewsController();
