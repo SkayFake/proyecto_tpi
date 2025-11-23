@@ -23,6 +23,9 @@ $(document).ready(function () {
       error: e => console.error(e.responseText)
     },
     language: { url: 'app/ajax/idioma.json' },
+    dom: "<'row mb-3'<'col-md-6'l><'col-md-6 text-end'f>>" +
+       "<'row'<'col-12'tr>>" +
+       "<'row mt-3'<'col-md-5'i><'col-md-7'p>>",
     aaSorting: [],
     lengthMenu: [[5, 12, 18, -1], [5, 12, 18, 'Todos']],
     pageLength: 5,
@@ -42,25 +45,29 @@ $(document).ready(function () {
         }
       },
       { 
-        data: 'estado',
-        className: 'text-center',
-        render: function (data, type, row) {
-          const isActive = data == 1;
-          const badgeClass = isActive ? 'bg-success' : 'bg-danger';
-          const badgeText  = isActive ? 'Activo' : 'Inactivo';
-          const nextState  = isActive ? 0 : 1;
-          
-          return `
-            <span class="badge ${badgeClass}">${badgeText}</span>
-            <button type="button" class="btn btn-sm btn-outline-secondary ms-1 btn-estado" 
-                    data-id="${row.id_odontologo}" 
-                    data-next="${nextState}"
-                    title="Cambiar estado">
-              <i class="bx bx-transfer"></i>
-            </button>
-          `;
-        }
-      },
+  data: 'estado',
+  className: 'text-center',
+  render: function (data, type, row) {
+    const isActive   = data == 1;
+    const badgeClass = isActive ? 'bg-success' : 'bg-danger';
+    const badgeText  = isActive ? 'Activo' : 'Inactivo';
+    const checked    = isActive ? 'checked' : '';
+
+    return `
+      <div class="d-inline-flex align-items-center gap-2">
+        <span class="badge ${badgeClass} mb-0">${badgeText}</span>
+
+        <div class="form-check form-switch m-0">
+          <input class="form-check-input switch-estado"
+                 type="checkbox"
+                 data-id="${row.id_odontologo}"
+                 ${checked}>
+        </div>
+      </div>
+    `;
+  }
+},
+
       {
         data: null,
         orderable: false,
@@ -68,11 +75,11 @@ $(document).ready(function () {
         className: 'text-center',
         render: function (row) {
           return `
-            <button type="button" class="btn btn-sm btn-warning me-1 btn-editar" data-id="${row.id_odontologo}">
-              <i class="bx bx-edit"></i>
+            <button type="button" class="btn btn-sm btn-warning mb-2 btn-editar" data-id="${row.id_odontologo}">
+              <i class="bx bx-edit"></i>Editar
             </button>
             <button type="button" class="btn btn-sm btn-danger btn-eliminar" data-id="${row.id_odontologo}">
-              <i class="bx bx-trash"></i>
+              <i class="bx bx-trash"></i>Eliminar
             </button>`;
         }
       }

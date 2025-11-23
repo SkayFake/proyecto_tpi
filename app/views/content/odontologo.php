@@ -86,8 +86,8 @@
         </div>
 
         <div class="modal-footer">
-          <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cancelar</button>
-          <button type="submit" id="btnGuardarOdontologo" class="btn btn-primary">Guardar</button>
+          <button class="btn btn-danger" type="button" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" id="btnGuardarOdontologo" class="btn btn-success">Guardar</button>
         </div>
 
       </form>

@@ -22,6 +22,9 @@ $(document).ready(function () {
       error: e => console.error(e.responseText)
     },
     language: { url: 'app/ajax/idioma.json' },
+    dom: "<'row mb-3'<'col-md-6'l><'col-md-6 text-end'f>>" +
+       "<'row'<'col-12'tr>>" +
+       "<'row mt-3'<'col-md-5'i><'col-md-7'p>>",
     aaSorting: [],
     lengthMenu: [[5, 12, 18, -1], [5, 12, 18, 'Todos']],
     pageLength: 5,
@@ -41,11 +44,11 @@ $(document).ready(function () {
         className: 'text-center',
         render: function (row) {
           return `
-            <button type="button" class="btn btn-sm btn-warning me-1 btn-editar" data-id="${row.id_paciente}">
-              <i class="bx bx-edit"></i>
+            <button type="button" class="btn btn-sm btn-warning mb-2 btn-editar" data-id="${row.id_paciente}">
+              <i class="bx bx-edit"></i>Editar
             </button>
             <button type="button" class="btn btn-sm btn-danger btn-eliminar" data-id="${row.id_paciente}">
-              <i class="bx bx-trash"></i>
+              <i class="bx bx-trash"></i>Eliminar
             </button>`;
         }
       }
@@ -276,5 +279,7 @@ $(document).ready(function () {
       );
     });
   });
+
+  
 
 });
