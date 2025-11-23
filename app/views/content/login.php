@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?php include 'app/views/inc/head.php'; ?>
     <title>Document</title>
 </head>
 <body>
@@ -18,7 +19,7 @@
                             <div class="d-flex justify-content-center py-4">
                                 <a href="#" class="logo d-flex align-items-center w-auto">
                                     <img src="<?php echo APP_URL; ?>app/views/assets/img/logo.png" alt="">
-                                    <span class="d-none d-lg-block">INICIO</span>
+                                   
                                 </a>
                             </div>
 
