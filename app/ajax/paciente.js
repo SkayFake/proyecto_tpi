@@ -8,6 +8,7 @@ $(document).ready(function () {
   const modalEditar = new bootstrap.Modal(modalEditarEl);
   const modalVer    = new bootstrap.Modal(modalVerEl);
 
+  // ================== DataTable ==================
   const tabla = $('#tablaPacientes').DataTable({
     ajax: {
       url: `${CTRL_PACIENTE}?opcion=listar`,
@@ -54,8 +55,103 @@ $(document).ready(function () {
   const $modal  = $('#modalPaciente');
   const $titulo = $('#tituloPaciente');
   const $form   = $('#formPaciente');
-  const $id     = $('#id_paciente'); 
+  const $id     = $('#id_paciente');
 
+  // ================== Helpers de validación ==================
+
+  function calcularEdad(fechaStr) {
+    const hoy = new Date();
+    const fechaNac = new Date(fechaStr);
+
+    let edad = hoy.getFullYear() - fechaNac.getFullYear();
+    const m = hoy.getMonth() - fechaNac.getMonth();
+    if (m < 0 || (m === 0 && hoy.getDate() < fechaNac.getDate())) {
+      edad--;
+    }
+    return edad;
+  }
+
+  function validarFormularioPaciente() {
+    const nombre           = $('#nombre').val().trim();
+    const fecha_nacimiento = $('#fecha_nacimiento').val();
+    const sexo             = $('#sexo').val();
+    const telefono         = $('#telefono').val().trim();
+    const dui              = $('#dui').val().trim();
+    const notas            = $('#notas').val().trim();
+
+    if (nombre.length < 5) {
+      Swal.fire('Error', 'El nombre debe tener al menos 5 caracteres.', 'error');
+      return false;
+    }
+
+    if (!fecha_nacimiento) {
+      Swal.fire('Error', 'Debe seleccionar la fecha de nacimiento.', 'error');
+      return false;
+    }
+
+    const edad = calcularEdad(fecha_nacimiento);
+    if (edad < 0 || edad > 120) {
+      Swal.fire('Error', 'Verifique la fecha de nacimiento (edad inválida).', 'error');
+      return false;
+    }
+
+    // Regla: si es mayor o igual a 18, DUI OBLIGATORIO
+    if (edad >= 18) {
+      if (!dui) {
+        Swal.fire('Error', 'El DUI es obligatorio para pacientes mayores de 18 años.', 'error');
+        return false;
+      }
+    }
+    // Si es menor de 18 se permite DUI vacío
+
+    // Si hay DUI, validar formato
+    if (dui && !/^[0-9]{8}-[0-9]{1}$/.test(dui)) {
+      Swal.fire('Error', 'Formato de DUI inválido. Use 00000000-0.', 'error');
+      return false;
+    }
+
+    // Teléfono obligatorio + formato válido
+    if (!telefono) {
+      Swal.fire('Error', 'Debe ingresar un número de teléfono.', 'error');
+      return false;
+    }
+
+    if (!/^[0-9]{4}-[0-9]{4}$/.test(telefono)) {
+      Swal.fire('Error', 'Formato de teléfono inválido. Use 0000-0000.', 'error');
+      return false;
+    }
+
+    if (notas.length > 255) {
+      Swal.fire('Error', 'Las notas no deben superar los 255 caracteres.', 'error');
+      return false;
+    }
+
+    return true;
+  }
+
+  // Autoformato de teléfono 0000-0000
+  $('#telefono').on('input', function () {
+    let val = this.value.replace(/[^0-9]/g, '');
+    if (val.length > 8) val = val.slice(0, 8);
+    if (val.length > 4) {
+      this.value = val.slice(0, 4) + '-' + val.slice(4);
+    } else {
+      this.value = val;
+    }
+  });
+
+  // Autoformato DUI 00000000-0
+  $('#dui').on('input', function () {
+    let val = this.value.replace(/[^0-9]/g, '');
+    if (val.length > 9) val = val.slice(0, 9);
+    if (val.length > 8) {
+      this.value = val.slice(0, 8) + '-' + val.slice(8);
+    } else {
+      this.value = val;
+    }
+  });
+
+  // ================== Nuevo paciente ==================
   $('#btnNuevoPaciente').on('click', () => {
     $titulo.text('Nuevo paciente');
     $form[0].reset();
@@ -63,8 +159,11 @@ $(document).ready(function () {
     modalEditar.show();   
   });
 
+  // ================== Guardar / Actualizar ==================
   $form.on('submit', function (e) {
     e.preventDefault();
+
+    if (!validarFormularioPaciente()) return;
 
     const id = $id.val();
     const isEdit = !!id;
@@ -80,21 +179,42 @@ $(document).ready(function () {
       processData: false,
       dataType: 'json',
       success: function (r) {
-        // console.log(r); 
         if (r.status === 'success') {
-          Swal.fire({ icon: 'success', title: r.message, timer: 1200, showConfirmButton: false });
+          Swal.fire({
+            icon: 'success',
+            title: r.message,
+            timer: 1200,
+            showConfirmButton: false
+          });
           modalEditar.hide();
           tabla.ajax.reload(null, false);
         } else {
-          Swal.fire({ icon: 'error', title: 'Error', text: r.message || 'Operación fallida' });
+          if (r.errors && Array.isArray(r.errors)) {
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              html: r.errors.join('<br>')
+            });
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: r.message || 'Operación fallida'
+            });
+          }
         }
       },
       error: function (xhr) {
-        Swal.fire({ icon: 'error', title: 'Error', text: xhr.responseText || 'Error AJAX' });
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: xhr.responseText || 'Error AJAX'
+        });
       }
     });
   });
 
+  // ================== Editar paciente ==================
   $('#tablaPacientes').on('click', '.btn-editar', function (e) {
     e.preventDefault();
 
@@ -120,6 +240,7 @@ $(document).ready(function () {
     });
   });
 
+  // ================== Eliminar paciente ==================
   $('#tablaPacientes').on('click', '.btn-eliminar', function () {
     const id = $(this).data('id');
     Swal.fire({
@@ -131,14 +252,28 @@ $(document).ready(function () {
       cancelButtonText: 'Cancelar'
     }).then(res => {
       if (!res.isConfirmed) return;
-      $.post(`${CTRL_PACIENTE}?opcion=eliminar`, { id }, function (r) {
-        if (r.status === 'success') {
-          Swal.fire({ icon: 'success', title: r.message, timer: 1200, showConfirmButton: false });
-          tabla.ajax.reload(null, false);
-        } else {
-          Swal.fire({ icon: 'error', title: 'Error', text: r.message || 'No se pudo eliminar' });
-        }
-      }, 'json');
+      $.post(
+        `${CTRL_PACIENTE}?opcion=eliminar`,
+        { id },
+        function (r) {
+          if (r.status === 'success') {
+            Swal.fire({
+              icon: 'success',
+              title: r.message,
+              timer: 1200,
+              showConfirmButton: false
+            });
+            tabla.ajax.reload(null, false);
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: r.message || 'No se pudo eliminar'
+            });
+          }
+        },
+        'json'
+      );
     });
   });
 
