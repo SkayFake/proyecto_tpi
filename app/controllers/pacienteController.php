@@ -14,31 +14,42 @@ $response = ['status' => 'error', 'message' => 'Opción inválida'];
 try {
     switch ($opcion) {
 
-        /* ===================== LISTAR ===================== */
+        
         case 'listar':
             $rows = $pacienteModel->getPacientes();
             $response = ['status' => 'success', 'data' => $rows];
             break;
 
-        /* ===================== AGREGAR ===================== */
         case 'agregar':
+
             $nombre          = trim($_POST['nombre'] ?? '');
-            $fechaNacimiento = trim($_POST['fecha_nacimiento'] ?? ''); // YYYY-MM-DD
+            $fechaNacimiento = trim($_POST['fecha_nacimiento'] ?? '');
             $sexo            = trim($_POST['sexo'] ?? '');
             $telefono        = trim($_POST['telefono'] ?? '');
+            $correo          = trim($_POST['correo'] ?? '');
             $direccion       = trim($_POST['direccion'] ?? '');
             $dui             = trim($_POST['dui'] ?? '');
             $notas           = trim($_POST['notas'] ?? '');
 
-            // Validaciones básicas: DUI no se exige aquí (lo decide la BD según la edad)
-            if (!$nombre || !$fechaNacimiento || !$sexo || !$telefono) {
+            
+            if (!$nombre || !$fechaNacimiento || !$sexo || !$telefono || !$correo) {
                 $response = [
                     'status'  => 'error',
-                    'message' => 'Nombre, fecha de nacimiento, sexo y teléfono son obligatorios'
+                    'message' => 'Nombre, fecha de nacimiento, sexo, teléfono y correo son obligatorios'
                 ];
                 break;
             }
 
+            // Validar formato correo
+            if (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
+                $response = [
+                    'status'  => 'error',
+                    'message' => 'Formato de correo inválido.'
+                ];
+                break;
+            }
+
+            // Teléfono
             if (!preg_match('/^[0-9]{4}-[0-9]{4}$/', $telefono)) {
                 $response = [
                     'status'  => 'error',
@@ -47,6 +58,7 @@ try {
                 break;
             }
 
+            
             if ($dui !== '' && !preg_match('/^[0-9]{8}-[0-9]{1}$/', $dui)) {
                 $response = [
                     'status'  => 'error',
@@ -56,13 +68,14 @@ try {
             }
 
             $duiParam = ($dui === '') ? null : $dui;
-            $fechaFormateada = $fechaNacimiento; // ya viene en Y-m-d
+            $fechaFormateada = $fechaNacimiento;
 
             $ok = $pacienteModel->agregar(
                 $nombre,
                 $fechaFormateada,
                 $sexo,
                 $telefono,
+                $correo,       
                 $direccion,
                 $duiParam,
                 $notas
@@ -71,30 +84,39 @@ try {
             $response = $ok
                 ? ['status' => 'success', 'message' => 'Paciente creado exitosamente']
                 : ['status' => 'error', 'message' => 'No se pudo crear el paciente'];
+
             break;
 
-        /* ===================== OBTENER ===================== */
+        
         case 'obtener':
             $id = (int)($_GET['id'] ?? 0);
             $row = $pacienteModel->getPacienteById($id);
+
             $response = $row
                 ? ['status' => 'success', 'data' => $row]
                 : ['status' => 'error', 'message' => 'Paciente no encontrado'];
             break;
 
-        /* ===================== ACTUALIZAR ===================== */
+        
         case 'actualizar':
+
             $id              = (int)($_POST['id_paciente'] ?? 0);
             $nombre          = trim($_POST['nombre'] ?? '');
             $fechaNacimiento = trim($_POST['fecha_nacimiento'] ?? '');
             $sexo            = trim($_POST['sexo'] ?? '');
             $telefono        = trim($_POST['telefono'] ?? '');
+            $correo          = trim($_POST['correo'] ?? '');
             $direccion       = trim($_POST['direccion'] ?? '');
             $dui             = trim($_POST['dui'] ?? '');
             $notas           = trim($_POST['notas'] ?? '');
 
-            if (!$id || !$nombre || !$fechaNacimiento || !$sexo || !$telefono) {
+            if (!$id || !$nombre || !$fechaNacimiento || !$sexo || !$telefono || !$correo) {
                 $response = ['status' => 'error', 'message' => 'Datos incompletos'];
+                break;
+            }
+
+            if (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
+                $response = ['status' => 'error', 'message' => 'Formato de correo inválido.'];
                 break;
             }
 
@@ -116,12 +138,13 @@ try {
 
             $duiParam = ($dui === '') ? null : $dui;
 
-            $dateTime = DateTime::createFromFormat('Y-m-d', $fechaNacimiento);
-            if ($dateTime === false) {
+            $fechaObj = DateTime::createFromFormat('Y-m-d', $fechaNacimiento);
+            if (!$fechaObj) {
                 $response = ['status' => 'error', 'message' => 'Fecha de nacimiento inválida'];
                 break;
             }
-            $fechaFormateada = $dateTime->format('Y-m-d');
+
+            $fechaFormateada = $fechaObj->format('Y-m-d');
 
             $ok = $pacienteModel->actualizar(
                 $id,
@@ -129,6 +152,7 @@ try {
                 $fechaFormateada,
                 $sexo,
                 $telefono,
+                $correo,      
                 $direccion,
                 $duiParam,
                 $notas
@@ -139,49 +163,55 @@ try {
                 : ['status' => 'error', 'message' => 'No se pudo actualizar el paciente'];
             break;
 
-        /* ===================== ELIMINAR ===================== */
+        
         case 'eliminar':
             $id = (int)($_POST['id'] ?? 0);
             $ok = $pacienteModel->eliminar($id);
+
             $response = $ok
                 ? ['status' => 'success', 'message' => 'Paciente eliminado']
                 : ['status' => 'error', 'message' => 'No se pudo eliminar el paciente'];
             break;
 
         default:
-            // Opción inválida por defecto
             break;
     }
 
 } catch (PDOException $e) {
+
     $msg    = $e->getMessage();
     $codigo = $e->getCode();
-    $userMsg = 'Error al procesar la operación.';
+    $userMsg = $msg;
 
-    // Violación de UNIQUE u otra restricción
     if ($codigo === '23000') {
+
         if (stripos($msg, 'uq_paciente_dui') !== false) {
             $userMsg = 'El DUI ya está registrado para otro paciente.';
-        } elseif (stripos($msg, 'uq_paciente_telefono') !== false) {
+        }
+        elseif (stripos($msg, 'uq_paciente_telefono') !== false) {
             $userMsg = 'El teléfono ya está registrado para otro paciente.';
-        } else {
-            $userMsg = 'Datos duplicados o restricción violada en la base de datos.';
+        }
+        elseif (stripos($msg, 'uq_paciente_correo') !== false) {
+            $userMsg = 'El correo ya está registrado para otro paciente.';
+        }
+        else {
+            $userMsg = 'Restricción UNIQUE violada en la base de datos.';
         }
     }
-    // Mensajes de SIGNAL en triggers (SQLSTATE '45000')
+
+    
     elseif ($codigo === '45000') {
-        $userMsg = $msg;
-    } else {
-        // En desarrollo puedes mostrar $msg; en producción algo más genérico
         $userMsg = $msg;
     }
 
     $response = ['status' => 'error', 'message' => $userMsg];
 
 } catch (Throwable $e) {
-    $response = ['status' => 'error', 'message' => $e->getMessage()];
+    $response = [
+        'status'  => 'error',
+        'message' => $e->getMessage()
+    ];
 }
 
 echo json_encode($response);
-
 ?>
