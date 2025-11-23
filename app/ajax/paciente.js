@@ -54,9 +54,8 @@ $(document).ready(function () {
   const $modal  = $('#modalPaciente');
   const $titulo = $('#tituloPaciente');
   const $form   = $('#formPaciente');
-  const $id     = $('#id_paciente');   // <-- AQUÍ ESTABA MAL
+  const $id     = $('#id_paciente'); 
 
-  // Nuevo paciente
   $('#btnNuevoPaciente').on('click', () => {
     $titulo.text('Nuevo paciente');
     $form[0].reset();
@@ -64,7 +63,6 @@ $(document).ready(function () {
     modalEditar.show();   
   });
 
-  // Guardar o actualizar paciente
   $form.on('submit', function (e) {
     e.preventDefault();
 
@@ -72,9 +70,7 @@ $(document).ready(function () {
     const isEdit = !!id;
     const opcion = isEdit ? 'actualizar' : 'agregar';
 
-    const fd = new FormData(this);   // id_paciente ya va en el form
-    // Si quisieras forzar:
-    // if (isEdit) fd.set('id_paciente', id);
+    const fd = new FormData(this);
 
     $.ajax({
       url: `${CTRL_PACIENTE}?opcion=${opcion}`,
@@ -84,7 +80,7 @@ $(document).ready(function () {
       processData: false,
       dataType: 'json',
       success: function (r) {
-        // console.log(r); // si quieres ver qué responde
+        // console.log(r); 
         if (r.status === 'success') {
           Swal.fire({ icon: 'success', title: r.message, timer: 1200, showConfirmButton: false });
           modalEditar.hide();
@@ -99,7 +95,6 @@ $(document).ready(function () {
     });
   });
 
-  // Editar paciente (SOLO UNA VEZ, quitamos el duplicado)
   $('#tablaPacientes').on('click', '.btn-editar', function (e) {
     e.preventDefault();
 
@@ -125,7 +120,6 @@ $(document).ready(function () {
     });
   });
 
-  // Eliminar paciente
   $('#tablaPacientes').on('click', '.btn-eliminar', function () {
     const id = $(this).data('id');
     Swal.fire({

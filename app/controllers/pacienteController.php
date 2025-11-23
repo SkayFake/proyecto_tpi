@@ -14,14 +14,13 @@ $response = ['status' => 'error', 'message' => 'Opción inválida'];
 try {
     switch ($opcion) {
         case 'listar':
-            // Obtener la lista de pacientes
             $rows = $pacienteModel->getPacientes();
             $response = ['status' => 'success', 'data' => $rows];
             break;
 
             case 'agregar':
                 $nombre          = trim($_POST['nombre'] ?? '');
-                $fechaNacimiento = trim($_POST['fecha_nacimiento'] ?? ''); // viene como YYYY-MM-DD
+                $fechaNacimiento = trim($_POST['fecha_nacimiento'] ?? ''); 
                 $sexo            = trim($_POST['sexo'] ?? '');
                 $telefono        = trim($_POST['telefono'] ?? '');
                 $direccion       = trim($_POST['direccion'] ?? '');
@@ -32,8 +31,6 @@ try {
                     $response = ['status'=>'error','message'=>'Todos los campos son obligatorios'];
                     break;
                 }
-            
-                // aquí NO hace falta DateTime::createFromFormat si ya es YYYY-MM-DD
                 $fechaFormateada = $fechaNacimiento;
             
                 $ok = $pacienteModel->agregar($nombre, $fechaFormateada, $sexo, $telefono, $direccion, $dui, $notas);
@@ -52,7 +49,6 @@ try {
             break;
 
             case 'actualizar':
-                // OJO: el JS envía id_paciente, no id
                 $id              = (int)($_POST['id_paciente'] ?? 0);
                 $nombre          = trim($_POST['nombre'] ?? '');
                 $fechaNacimiento = trim($_POST['fecha_nacimiento'] ?? '');
@@ -66,9 +62,6 @@ try {
                     $response = ['status' => 'error', 'message' => 'Datos incompletos'];
                     break;
                 }
-            
-                // La fecha viene de un <input type="date"> en formato YYYY-MM-DD,
-                // así que podemos usarla directamente o validar con Y-m-d.
                 $dateTime = DateTime::createFromFormat('Y-m-d', $fechaNacimiento);
                 if ($dateTime === false) {
                     $response = ['status' => 'error', 'message' => 'Fecha de nacimiento inválida'];
