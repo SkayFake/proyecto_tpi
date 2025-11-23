@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
   <meta charset="utf-8">
@@ -41,6 +41,7 @@
 <?php include 'app/views/content/ver_paciente.php'; ?>
 <?php include 'app/views/content/odontologo.php'; ?>
 <?php include 'app/views/content/ver_odontologo.php'; ?>
+<?php include 'app/views/content/cita.php'; ?>
 
   <header id="header" class="header sticky-top">
 
@@ -111,7 +112,27 @@
                     <li><a href="#">Deep Dropdown 5</a></li>
                   </ul>
                 </li>
-                <li><a href="#">Dropdown 3</a></li>
+               
+
+                <li class="dropdown"><a href="#"><span>Citas</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+                  <ul>
+                  <li><a href="#"
+                id="btnNuevaCita"
+                data-bs-toggle="modal"
+                data-bs-target="#modalCita"
+                title="Nuevo">Agregar Cita</a></li>
+
+                <li><a href="#"
+                id="btnVerCitas"
+                data-bs-toggle="modal"
+                data-bs-target="#modalCitaVer"
+                title="Tabla Odontologo">Ver Citas</a></li>
+                   
+                    <li><a href="#">Deep Dropdown 3</a></li>
+                    <li><a href="#">Deep Dropdown 4</a></li>
+                    <li><a href="#">Deep Dropdown 5</a></li>
+                  </ul>
+                </li>
                 <li><a href="#">Dropdown 4</a></li>
               </ul>
             </li>
@@ -1067,6 +1088,7 @@
 <!-- Tu JS de paciente (el que usa Swal y DataTable) -->
 <script src="<?php echo APP_URL; ?>app/ajax/paciente.js"></script>
 <script src="<?php echo APP_URL; ?>app/ajax/odontologo.js"></script>
+<script src="<?php echo APP_URL; ?>app/ajax/cita.js"></script>
 
 </body>
 
