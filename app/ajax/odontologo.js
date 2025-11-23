@@ -2,7 +2,82 @@ const CTRL_ODONTOLOGO = 'app/controllers/odontologoController.php';
 
 $(document).ready(function () {
 
-  // abrrir y cerrar modal para editar
+  // =========================
+  //  Helpers de validación
+  // =========================
+
+  function limpiarErroresFormulario() { // NUEVO
+    $('#nombreOdontologo, #correo, #telefonoOdontologo, #password')
+      .removeClass('is-invalid');
+  }
+
+  function validarFormularioOdontologo(isEdit) { // NUEVO
+    limpiarErroresFormulario();
+
+    const nombre    = $('#nombreOdontologo').val().trim();
+    const correo    = $('#correo').val().trim();
+    const telefono  = $('#telefonoOdontologo').val().trim();
+    const password  = $('#password').val();
+
+    // Nombre
+    if (nombre === '') {
+      $('#nombreOdontologo').addClass('is-invalid');
+      Swal.fire({
+        icon: 'warning',
+        title: 'Dato requerido',
+        text: 'El nombre del odontólogo es obligatorio'
+      });
+      return false;
+    }
+
+    // Correo: formato básico
+    const correoRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (correo === '' || !correoRegex.test(correo)) {
+      $('#correo').addClass('is-invalid');
+      Swal.fire({
+        icon: 'warning',
+        title: 'Correo no válido',
+        text: 'Ingrese un correo electrónico con formato válido (ej: usuario@dominio.com)'
+      });
+      return false;
+    }
+
+    // Teléfono: opcional, pero si se envía, deben ser 8 dígitos
+    // Teléfono: opcional, pero si se envía, formato 7777-8888
+if (telefono !== '') {
+  const telRegex = /^[0-9]{4}-[0-9]{4}$/;
+  if (!telRegex.test(telefono)) {
+    $('#telefonoOdontologo').addClass('is-invalid');
+    Swal.fire({
+      icon: 'warning',
+      title: 'Teléfono no válido',
+      text: 'El teléfono debe tener el formato 7777-8888'
+    });
+    return false;
+  }
+}
+
+
+    // Password:
+    // - Crear: obligatorio
+    // - Editar: opcional (si se deja vacío, no se cambia)
+    if (!isEdit && (password.trim() === '')) {
+      $('#password').addClass('is-invalid');
+      Swal.fire({
+        icon: 'warning',
+        title: 'Contraseña requerida',
+        text: 'Debe ingresar una contraseña para el nuevo odontólogo'
+      });
+      return false;
+    }
+
+    return true;
+  }
+
+  // =========================
+  //  Modales
+  // =========================
+
   const modalEditarEl = document.getElementById('modalOdontologo');
   const modalVerEl    = document.getElementById('modalOdontologoVer');
 
@@ -45,28 +120,28 @@ $(document).ready(function () {
         }
       },
       { 
-  data: 'estado',
-  className: 'text-center',
-  render: function (data, type, row) {
-    const isActive   = data == 1;
-    const badgeClass = isActive ? 'bg-success' : 'bg-danger';
-    const badgeText  = isActive ? 'Activo' : 'Inactivo';
-    const checked    = isActive ? 'checked' : '';
+        data: 'estado',
+        className: 'text-center',
+        render: function (data, type, row) {
+          const isActive   = data == 1;
+          const badgeClass = isActive ? 'bg-success' : 'bg-danger';
+          const badgeText  = isActive ? 'Activo' : 'Inactivo';
+          const checked    = isActive ? 'checked' : '';
 
-    return `
-      <div class="d-inline-flex align-items-center gap-2">
-        <span class="badge ${badgeClass} mb-0">${badgeText}</span>
+          return `
+            <div class="d-inline-flex align-items-center gap-2">
+              <span class="badge ${badgeClass} mb-0">${badgeText}</span>
 
-        <div class="form-check form-switch m-0">
-          <input class="form-check-input switch-estado"
-                 type="checkbox"
-                 data-id="${row.id_odontologo}"
-                 ${checked}>
-        </div>
-      </div>
-    `;
-  }
-},
+              <div class="form-check form-switch m-0">
+                <input class="form-check-input switch-estado"
+                       type="checkbox"
+                       data-id="${row.id_odontologo}"
+                       ${checked}>
+              </div>
+            </div>
+          `;
+        }
+      },
 
       {
         data: null,
@@ -100,6 +175,7 @@ $(document).ready(function () {
     $titulo.text('Nuevo odontólogo');
     $form[0].reset();
     $id.val('');
+    limpiarErroresFormulario(); // NUEVO
 
     $('#password').closest('.col-lg-6').show();
     $('#password').prop('required', true).val('');
@@ -113,6 +189,11 @@ $(document).ready(function () {
     const id     = $id.val();
     const isEdit = !!id;
     const opcion = isEdit ? 'actualizar' : 'agregar';
+
+    // Validaciones de frontend ANTES de armar el FormData // NUEVO
+    if (!validarFormularioOdontologo(isEdit)) {
+      return;
+    }
 
     const fd = new FormData(this);
 
@@ -158,10 +239,19 @@ $(document).ready(function () {
         }
       },
       error: function (xhr) {
+        // Intentar leer mensaje de error si viene en JSON // OPCIONAL
+        let msg = 'Error AJAX';
+        try {
+          const res = xhr.responseJSON || JSON.parse(xhr.responseText);
+          if (res && res.message) msg = res.message;
+        } catch (e) {
+          if (xhr.responseText) msg = xhr.responseText;
+        }
+
         Swal.fire({
           icon: 'error',
           title: 'Error',
-          text: xhr.responseText || 'Error AJAX'
+          text: msg
         });
       }
     });
@@ -190,6 +280,7 @@ $(document).ready(function () {
       $('#estado').val(c.estado);
       $('#password').closest('.col-lg-6').hide();
       $('#password').prop('required', false).val('');
+      limpiarErroresFormulario(); // NUEVO
 
       modalVer.hide();
       modalEditar.show();

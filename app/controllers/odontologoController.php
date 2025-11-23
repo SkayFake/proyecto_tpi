@@ -27,14 +27,29 @@ try {
             $es_admin     = isset($_POST['es_admin']) ? (int)$_POST['es_admin'] : 0;
             $estado       = isset($_POST['estado']) ? (int)$_POST['estado'] : 1;
 
+            // *** Validaciones básicas
             if (!$nombre || !$correo || !$contrasenia) {
                 $response = ['status' => 'error', 'message' => 'Nombre, correo y contraseña son obligatorios'];
                 break;
             }
+
+            // *** Validar formato de correo (coincide con lo que hace la BD)
             if (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
                 $response = ['status' => 'error', 'message' => 'Formato de correo inválido'];
                 break;
             }
+
+            // *** Validar teléfono: opcional, pero si se envía, debe ser de 8 dígitos
+            if ($telefono !== '' && !preg_match('/^[0-9]{4}-[0-9]{4}$/', $telefono)) {
+    $response = [
+        'status'  => 'error',
+        'message' => 'El teléfono debe tener el formato 7777-8888'
+    ];
+    break;
+}
+
+            // *** Esta validación es opcional (la BD ya valida correo único).
+            //     Puedes dejarla para evitar lanzar excepción desde el SP.
             if ($odontologoModel->existeCorreo($correo)) {
                 $response = ['status' => 'error', 'message' => 'El correo ya está registrado'];
                 break;
@@ -43,7 +58,7 @@ try {
             $ok = $odontologoModel->agregar(
                 $nombre,
                 $correo,
-                $contrasenia,
+                $contrasenia,           // aquí asumo que el Model se encarga de cifrar/hashear si hace falta
                 $telefono ?: null,
                 $especialidad ?: null,
                 $es_admin,
@@ -57,7 +72,7 @@ try {
 
 
         case 'obtener':
-            $id = (int)($_GET['id'] ?? 0);
+            $id  = (int)($_GET['id'] ?? 0);
             $row = $odontologoModel->getOdontologoById($id);
             $response = $row
                 ? ['status' => 'success', 'data' => $row]
@@ -75,17 +90,30 @@ try {
             $contrasenia  = isset($_POST['contrasenia']) ? trim($_POST['contrasenia']) : null;
 
             if ($contrasenia === '') {
-                $contrasenia = null; 
+                $contrasenia = null; // respetar la lógica del SP: si es NULL, no cambia
             }
 
+            // *** Validaciones básicas
             if (!$id || !$nombre || !$correo) {
                 $response = ['status' => 'error', 'message' => 'Datos incompletos'];
                 break;
             }
+
+            // *** Validar formato de correo
             if (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
                 $response = ['status' => 'error', 'message' => 'Formato de correo inválido'];
                 break;
             }
+
+           if ($telefono !== '' && !preg_match('/^[0-9]{4}-[0-9]{4}$/', $telefono)) {
+    $response = [
+        'status'  => 'error',
+        'message' => 'El teléfono debe tener el formato 7777-8888'
+    ];
+    break;
+}
+            // *** NO verificamos aquí "correo repetido en otro odontólogo"
+            //     Eso ya lo hace el SP con SIGNAL y también el índice UNIQUE.
 
             $ok = $odontologoModel->actualizar(
                 $id,
@@ -95,7 +123,7 @@ try {
                 $especialidad ?: null,
                 $es_admin,
                 $estado,
-                $contrasenia 
+                $contrasenia
             );
 
             $response = $ok
@@ -105,7 +133,7 @@ try {
 
 
         case 'actualizar_contrasenia':
-            $id = (int)($_POST['id_odontologo'] ?? 0);
+            $id               = (int)($_POST['id_odontologo'] ?? 0);
             $nueva_contrasenia = trim($_POST['nueva_contrasenia'] ?? '');
 
             if (!$id || !$nueva_contrasenia) {
@@ -113,7 +141,8 @@ try {
                 break;
             }
 
-            if (strlen($nueva_contrasenia) < 6) {
+            // *** Ajuste: mensaje dice 8, validamos 8
+            if (strlen($nueva_contrasenia) < 8) {
                 $response = ['status' => 'error', 'message' => 'La contraseña debe tener al menos 8 caracteres'];
                 break;
             }
@@ -154,7 +183,19 @@ try {
             break;
     }
 } catch (Throwable $e) {
-    $response = ['status' => 'error', 'message' => $e->getMessage()];
+    $msg = $e->getMessage();
+
+    if (stripos($msg, 'El correo no tiene un formato válido') !== false) {
+        $msg = 'El correo no tiene un formato válido';
+    } elseif (stripos($msg, 'El correo ya está registrado') !== false) {
+        $msg = 'El correo ya está registrado';
+    } elseif (stripos($msg, 'El teléfono debe tener el formato 7777-8888') !== false) {
+        $msg = 'El teléfono debe tener el formato 7777-8888';
+    } elseif (stripos($msg, 'El teléfono ya está registrado') !== false) {
+        $msg = 'El teléfono ya está registrado';
+    }
+
+    $response = ['status' => 'error', 'message' => $msg];
 }
 
 echo json_encode($response);

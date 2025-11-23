@@ -6,7 +6,6 @@ require_once __DIR__ . "/encriptarModel.php";
 
 class Odontologo
 {
-
     private PDO $conexion;
 
     public function __construct()
@@ -26,6 +25,7 @@ class Odontologo
         try {
             $this->conexion->beginTransaction();
 
+            // ciframos antes de llamar al SP
             $correoEncriptado      = Encriptar::openCypher('encrypt', $correo);
             $contraseniaEncriptada = Encriptar::openCypher('encrypt', $contrasenia);
 
@@ -41,13 +41,26 @@ class Odontologo
 
             $stmt = $this->conexion->prepare($sql);
 
-            $stmt->bindValue(":nombre",       $nombre,          PDO::PARAM_STR);
-            $stmt->bindValue(":correo",       $correoEncriptado, PDO::PARAM_STR);
-            $stmt->bindValue(":contrasenia",  $contraseniaEncriptada, PDO::PARAM_STR);
-            $stmt->bindValue(":telefono",     $telefono,        $telefono ? PDO::PARAM_STR : PDO::PARAM_NULL);
-            $stmt->bindValue(":especialidad", $especialidad,    $especialidad ? PDO::PARAM_STR : PDO::PARAM_NULL);
-            $stmt->bindValue(":es_admin",     $es_admin,        PDO::PARAM_INT);
-            $stmt->bindValue(":estado",       $estado,          PDO::PARAM_INT);
+            $stmt->bindValue(":nombre",      $nombre,             PDO::PARAM_STR);
+            $stmt->bindValue(":correo",      $correoEncriptado,   PDO::PARAM_STR);
+            $stmt->bindValue(":contrasenia", $contraseniaEncriptada, PDO::PARAM_STR);
+
+            // teléfono puede ser NULL
+            if ($telefono !== null) { // ***
+                $stmt->bindValue(":telefono", $telefono, PDO::PARAM_STR);
+            } else {
+                $stmt->bindValue(":telefono", null, PDO::PARAM_NULL);
+            }
+
+            // especialidad puede ser NULL
+            if ($especialidad !== null) { // ***
+                $stmt->bindValue(":especialidad", $especialidad, PDO::PARAM_STR);
+            } else {
+                $stmt->bindValue(":especialidad", null, PDO::PARAM_NULL);
+            }
+
+            $stmt->bindValue(":es_admin", $es_admin, PDO::PARAM_INT);
+            $stmt->bindValue(":estado",   $estado,   PDO::PARAM_INT);
 
             $stmt->execute();
 
@@ -56,10 +69,10 @@ class Odontologo
         } catch (Throwable $e) {
             $this->conexion->rollBack();
             error_log("Error registrar odontólogo: " . $e->getMessage());
-            return false;
+            // *** Re-lanzamos para que el controller capture el mensaje del SIGNAL/BD
+            throw $e;
         }
     }
-
 
     public function getOdontologos(): array
     {
@@ -137,9 +150,9 @@ class Odontologo
 
             $stmt = $this->conexion->prepare($sql);
 
-            $stmt->bindValue(":id_odontologo", $id_odontologo, PDO::PARAM_INT);
-            $stmt->bindValue(":nombre",        $nombre,            PDO::PARAM_STR);
-            $stmt->bindValue(":correo",        $correoEncriptado,  PDO::PARAM_STR);
+            $stmt->bindValue(":id_odontologo", $id_odontologo,   PDO::PARAM_INT);
+            $stmt->bindValue(":nombre",        $nombre,          PDO::PARAM_STR);
+            $stmt->bindValue(":correo",        $correoEncriptado, PDO::PARAM_STR);
 
             if ($contraseniaEncriptada !== null) {
                 $stmt->bindValue(":contrasenia", $contraseniaEncriptada, PDO::PARAM_STR);
@@ -147,10 +160,24 @@ class Odontologo
                 $stmt->bindValue(":contrasenia", null, PDO::PARAM_NULL);
             }
 
-            $stmt->bindValue(":telefono",     $telefono,     $telefono ? PDO::PARAM_STR : PDO::PARAM_NULL);
-            $stmt->bindValue(":especialidad", $especialidad, $especialidad ? PDO::PARAM_STR : PDO::PARAM_NULL);
-            $stmt->bindValue(":es_admin",     $es_admin,     $es_admin !== null ? PDO::PARAM_INT : PDO::PARAM_NULL);
-            $stmt->bindValue(":estado",       $estado,       $estado !== null ? PDO::PARAM_INT : PDO::PARAM_NULL);
+            // teléfono (puede ser NULL)
+            if ($telefono !== null) { // ***
+                $stmt->bindValue(":telefono", $telefono, PDO::PARAM_STR);
+            } else {
+                $stmt->bindValue(":telefono", null, PDO::PARAM_NULL);
+            }
+
+            // especialidad (puede ser NULL)
+            if ($especialidad !== null) { // ***
+                $stmt->bindValue(":especialidad", $especialidad, PDO::PARAM_STR);
+            } else {
+                $stmt->bindValue(":especialidad", null, PDO::PARAM_NULL);
+            }
+
+            // es_admin y estado no deberían ser NULL en la BD, 
+            // asumimos que el controller siempre manda un valor válido.
+            $stmt->bindValue(":es_admin", $es_admin, PDO::PARAM_INT);
+            $stmt->bindValue(":estado",   $estado,   PDO::PARAM_INT);
 
             $stmt->execute();
             $this->conexion->commit();
@@ -158,22 +185,25 @@ class Odontologo
         } catch (Throwable $e) {
             $this->conexion->rollBack();
             error_log("Error actualizar odontólogo: " . $e->getMessage());
-            return false;
+            // *** Re-lanzamos
+            throw $e;
         }
     }
-
 
     public function actualizarContrasenia(int $id_odontologo, string $nueva_contrasenia): bool
     {
         try {
             $this->conexion->beginTransaction();
+
             $contraseniaEncriptada = Encriptar::openCypher('encrypt', $nueva_contrasenia);
 
-            $sql = "UPDATE odontologo SET contrasenia = :contrasenia WHERE id_odontologo = :id";
+            $sql = "UPDATE odontologo 
+                    SET contrasenia = :contrasenia 
+                    WHERE id_odontologo = :id";
             $stmt = $this->conexion->prepare($sql);
 
             $stmt->bindValue(":contrasenia", $contraseniaEncriptada, PDO::PARAM_STR);
-            $stmt->bindValue(":id", $id_odontologo, PDO::PARAM_INT);
+            $stmt->bindValue(":id",          $id_odontologo,        PDO::PARAM_INT);
 
             $stmt->execute();
             $this->conexion->commit();
@@ -181,7 +211,8 @@ class Odontologo
         } catch (Throwable $e) {
             $this->conexion->rollBack();
             error_log("Error actualizar contraseña: " . $e->getMessage());
-            return false;
+            // *** Re-lanzamos por si quieres capturar mensajes específicos
+            throw $e;
         }
     }
 
@@ -200,21 +231,23 @@ class Odontologo
         } catch (Throwable $e) {
             $this->conexion->rollBack();
             error_log("Error eliminar odontólogo: " . $e->getMessage());
-            return false;
+            // *** Re-lanzamos para que el controller pueda mostrar algo tipo:
+            // "No se puede eliminar porque tiene citas asociadas"
+            throw $e;
         }
     }
 
     public function validarCredenciales(string $correo, string $contrasenia): ?array
     {
         try {
-            $correoEncriptado = Encriptar::openCypher('encrypt', $correo);
+            $correoEncriptado      = Encriptar::openCypher('encrypt', $correo);
             $contraseniaEncriptada = Encriptar::openCypher('encrypt', $contrasenia);
 
             $sql = "SELECT id_odontologo, nombre, correo, contrasenia, telefono, especialidad, es_admin, estado 
                     FROM odontologo 
                     WHERE correo = :correo AND contrasenia = :contrasenia";
             $stmt = $this->conexion->prepare($sql);
-            $stmt->bindValue(":correo", $correoEncriptado, PDO::PARAM_STR);
+            $stmt->bindValue(":correo",      $correoEncriptado,      PDO::PARAM_STR);
             $stmt->bindValue(":contrasenia", $contraseniaEncriptada, PDO::PARAM_STR);
             $stmt->execute();
 
@@ -244,7 +277,7 @@ class Odontologo
             $stmt->execute();
 
             $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
-            return $resultado['total'] > 0;
+            return (int)$resultado['total'] > 0;
         } catch (Throwable $e) {
             error_log("Error verificar correo: " . $e->getMessage());
             return false;
@@ -255,11 +288,11 @@ class Odontologo
     {
         try {
             $sql = "UPDATE odontologo
-                SET estado = :estado
-                WHERE id_odontologo = :id";
+                    SET estado = :estado
+                    WHERE id_odontologo = :id";
 
             $stmt = $this->conexion->prepare($sql);
-            $stmt->bindValue(':estado', $estado, PDO::PARAM_INT);
+            $stmt->bindValue(':estado', $estado,        PDO::PARAM_INT);
             $stmt->bindValue(':id',     $id_odontologo, PDO::PARAM_INT);
 
             return $stmt->execute();
