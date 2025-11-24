@@ -5,11 +5,11 @@ $(document).ready(function () {
   console.log('== cita.js cargado ==');
 
   // =========================
-  //  Helpers de validación
+  // VALIDACIÓN
   // =========================
 
   function limpiarErroresFormularioCita() {
-    $('#dui, #id_odontologo, #fecha_cita, #hora_cita, #estado')
+    $('#dui, #cita_id_odontologo, #fecha_cita, #hora_cita, #estado')
       .removeClass('is-invalid');
   }
 
@@ -17,7 +17,7 @@ $(document).ready(function () {
     limpiarErroresFormularioCita();
 
     const dui          = $('#dui').val().trim();
-    const idOdontologo = $('#id_odontologo').val();
+    const idOdontologo = $("#cita_id_odontologo").val();
     const fechaCita    = $('#fecha_cita').val();
     const horaCita     = $('#hora_cita').val();
     const estado       = $('#estado').val();
@@ -26,23 +26,22 @@ $(document).ready(function () {
 
     // DUI
     const duiRegex = /^[0-9]{8}-[0-9]{1}$/;
-    if (dui === '' || !duiRegex.test(dui)) {
+    if (!duiRegex.test(dui)) {
       $('#dui').addClass('is-invalid');
       Swal.fire({
         icon: 'warning',
         title: 'DUI no válido',
-        text: 'El DUI debe tener el formato 00000000-0'
+        text: 'Debe tener el formato 00000000-0'
       });
       return false;
     }
 
     // Odontólogo
     if (!idOdontologo) {
-      $('#id_odontologo').addClass('is-invalid');
+      $('#cita_id_odontologo').addClass('is-invalid');
       Swal.fire({
         icon: 'warning',
-        title: 'Dato requerido',
-        text: 'Debe seleccionar un odontólogo'
+        title: 'Seleccione un odontólogo',
       });
       return false;
     }
@@ -52,8 +51,7 @@ $(document).ready(function () {
       $('#fecha_cita').addClass('is-invalid');
       Swal.fire({
         icon: 'warning',
-        title: 'Dato requerido',
-        text: 'Debe seleccionar la fecha de la cita'
+        text: 'Debe seleccionar la fecha'
       });
       return false;
     }
@@ -63,8 +61,7 @@ $(document).ready(function () {
       $('#hora_cita').addClass('is-invalid');
       Swal.fire({
         icon: 'warning',
-        title: 'Dato requerido',
-        text: 'Debe seleccionar la hora de la cita'
+        text: 'Debe seleccionar la hora'
       });
       return false;
     }
@@ -74,8 +71,7 @@ $(document).ready(function () {
       $('#estado').addClass('is-invalid');
       Swal.fire({
         icon: 'warning',
-        title: 'Dato requerido',
-        text: 'Debe seleccionar el estado de la cita'
+        text: 'Debe seleccionar el estado'
       });
       return false;
     }
@@ -83,44 +79,41 @@ $(document).ready(function () {
     return true;
   }
 
+
   // =========================
-  //  Cargar odontólogos en el select
+  // CARGAR ODONTÓLOGOS
   // =========================
 
   function cargarOdontologosSelect(selectedId = null) {
-    const $sel = $('#id_odontologo');
+    const $sel = $('#cita_id_odontologo'); // <- CORRECTO
 
     if ($sel.length === 0) {
-      console.warn('Select #id_odontologo no encontrado en el DOM');
+      console.error("ERROR: No existe el select #cita_id_odontologo en el DOM");
       return;
     }
 
-    console.log('Cargando odontólogos... selectedId =', selectedId);
+    console.log("Cargando odontólogos...");
 
-    // Placeholder mientras carga
-    $sel.empty().append('<option value="" disabled selected>Cargando odontólogos...</option>');
+    $sel.empty().append('<option value="" disabled selected>Cargando...</option>');
 
     $.ajax({
       url: `${CTRL_CITA}?opcion=listar_odontologos`,
       type: 'get',
       dataType: 'json',
       success: function (r) {
-        console.log('Respuesta listar_odontologos:', r);
+        console.log("Respuesta listar odontólogos:", r);
+
+        $sel.empty();
 
         if (!r || r.status !== 'success') {
-          console.warn(r && r.message ? r.message : 'No se pudieron cargar los odontólogos');
-          $sel.empty().append('<option value="" disabled selected>Sin odontólogos disponibles</option>');
+          $sel.append('<option value="" disabled selected>Sin odontólogos</option>');
           return;
         }
 
-        $sel.empty();
         $sel.append('<option value="" disabled selected>-- Selecciona un odontólogo --</option>');
 
         r.data.forEach(o => {
-          // Se asume que el JSON trae id_odontologo y nombre
-          $sel.append(
-            `<option value="${o.id_odontologo}">${o.nombre}</option>`
-          );
+          $sel.append(`<option value="${o.id_odontologo}">${o.nombre}</option>`);
         });
 
         if (selectedId) {
@@ -128,192 +121,87 @@ $(document).ready(function () {
         }
       },
       error: function (xhr) {
-        console.error('Error cargando odontólogos (AJAX error):', xhr.status, xhr.responseText);
+        console.error('ERROR AJAX odontólogos:', xhr.responseText);
         $sel.empty().append('<option value="" disabled selected>Error al cargar</option>');
       }
     });
   }
 
+
   // =========================
-  //  Modales
+  // MODALES
   // =========================
 
   const modalEditarEl = document.getElementById('modalCita');
   const modalVerEl    = document.getElementById('modalCitaVer');
 
-  let modalEditar = null;
-  let modalVer    = null;
+  let modalEditar = modalEditarEl ? new bootstrap.Modal(modalEditarEl) : null;
+  let modalVer    = modalVerEl    ? new bootstrap.Modal(modalVerEl)    : null;
 
-  if (modalEditarEl) {
-    modalEditar = new bootstrap.Modal(modalEditarEl);
-    console.log('Modal modalCita inicializado');
-  } else {
-    console.warn('Elemento #modalCita no encontrado');
-  }
-
-  if (modalVerEl) {
-    modalVer = new bootstrap.Modal(modalVerEl);
-    console.log('Modal modalCitaVer inicializado');
-  } else {
-    console.warn('Elemento #modalCitaVer no encontrado');
-  }
-
-  // Cuando se muestre el modal de Cita (ya sea por botón o por data-bs-target)
   $('#modalCita').on('shown.bs.modal', function () {
-    const idCita = $('#id_cita').val();
-    console.log('modalCita mostrado; id_cita =', idCita);
-
-    // Si es NUEVA cita (sin id), cargamos lista de odontólogos
-    if (!idCita) {
-      cargarOdontologosSelect();
-    }
+    cargarOdontologosSelect();
   });
 
-  // =========================
-  //  DataTable Citas
-  // =========================
-
-  let tabla = null;
-
-  if ($('#tablaCitas').length) {
-    tabla = $('#tablaCitas').DataTable({
-      ajax: {
-        url: `${CTRL_CITA}?opcion=listar`,
-        type: 'get',
-        dataType: 'json',
-        dataSrc: function (json) {
-          console.log('Respuesta listar citas:', json);
-          if (json && json.status === 'success') return json.data;
-          console.warn(json && json.message ? json.message : 'Sin datos');
-          return [];
-        },
-        error: e => console.error('Error cargando citas (DataTable AJAX):', e.responseText)
-      },
-      language: { url: 'app/ajax/idioma.json' },
-      dom:
-        "<'row mb-3'<'col-md-6'l><'col-md-6 text-end'f>>" +
-        "<'row'<'col-12'tr>>" +
-        "<'row mt-3'<'col-md-5'i><'col-md-7'p>>",
-      aaSorting: [],
-      lengthMenu: [[5, 12, 18, -1], [5, 12, 18, 'Todos']],
-      pageLength: 5,
-      responsive: true,
-      columns: [
-        { data: 'nombre_paciente' },
-        { data: 'dui_paciente' },
-        { data: 'nombre_odontologo' },
-        { data: 'fecha_cita' },
-        { data: 'hora_cita' },
-        { data: 'motivo' },
-        {
-          data: 'estado',
-          className: 'text-center',
-          render: function (estado) {
-            let badgeClass = 'bg-secondary';
-            let texto      = estado;
-
-            switch (estado) {
-              case 'programada':
-                badgeClass = 'bg-primary';
-                texto      = 'Programada';
-                break;
-              case 'confirmada':
-                badgeClass = 'bg-info text-dark';
-                texto      = 'Confirmada';
-                break;
-              case 'atendida':
-                badgeClass = 'bg-success';
-                texto      = 'Atendida';
-                break;
-              case 'cancelada':
-                badgeClass = 'bg-danger';
-                texto      = 'Cancelada';
-                break;
-            }
-
-            return `<span class="badge ${badgeClass} mb-0">${texto}</span>`;
-          }
-        },
-        {
-          data: null,
-          orderable: false,
-          searchable: false,
-          className: 'text-center',
-          render: function (row) {
-            return `
-              <button type="button" class="btn btn-sm btn-warning mb-2 btn-editar" data-id="${row.id_cita}">
-                <i class="bx bx-edit"></i> Editar
-              </button>
-              <button type="button" class="btn btn-sm btn-danger btn-eliminar" data-id="${row.id_cita}">
-                <i class="bx bx-trash"></i> Eliminar
-              </button>`;
-          }
-        }
-      ]
-    });
-
-    console.log('DataTable de citas inicializado');
-  } else {
-    console.warn('Tabla #tablaCitas no encontrada. DataTable no inicializado.');
-  }
-
-  const $form   = $('#formCita');
-  const $id     = $('#id_cita');
-  const $titulo = $('#tituloCita');
 
   // =========================
-  //  Botones principales
+  // DATATABLE
   // =========================
 
-  // Botón para ver listado de citas
-  $('#btnVerCitas').on('click', function () {
-    if (!modalVer || !tabla) {
-      console.warn('No se puede mostrar listado: modalVer o tabla no inicializados');
-      return;
-    }
-    $('#tituloCitaVer').text('Listado de citas');
-    console.log('Abriendo modalCitaVer, recargando tablaCitas...');
-    tabla.ajax.reload(null, false);
-    modalVer.show();
+  let tabla = $('#tablaCitas').DataTable({
+    ajax: {
+      url: `${CTRL_CITA}?opcion=listar`,
+      type: 'get',
+      dataType: 'json',
+      dataSrc: json => json.status === 'success' ? json.data : []
+    },
+    language: { url: 'app/ajax/idioma.json' },
+    responsive: true,
+    columns: [
+      { data: 'nombre_paciente' },
+      { data: 'dui_paciente' },
+      { data: 'nombre_odontologo' },
+      { data: 'fecha_cita' },
+      { data: 'hora_cita' },
+      { data: 'motivo' },
+      { data: 'estado' },
+      {
+        data: null,
+        className: 'text-center',
+        render: row => `
+          <button class="btn btn-warning btn-editar" data-id="${row.id_cita}">Editar</button>
+          <button class="btn btn-danger btn-eliminar" data-id="${row.id_cita}">Eliminar</button>`
+      }
+    ]
   });
 
-  // Botón para abrir modal de nueva cita
-  $('#btnNuevaCita').on('click', () => {
-    if (!modalEditar) {
-      console.warn('modalEditar no inicializado');
-      return;
-    }
-    console.log('Preparando modal para NUEVA cita');
 
-    $titulo.text('Nueva cita');
-    if ($form.length) $form[0].reset();
-    $id.val('');
-    $('#nombre_paciente').val('');
+  // =========================
+  // NUEVA CITA
+  // =========================
+
+  $('#btnNuevaCita').on('click', function () {
+    $('#tituloCita').text('Nueva Cita');
+    $('#formCita')[0].reset();
+    $('#id_cita').val('');
     limpiarErroresFormularioCita();
 
-    cargarOdontologosSelect(); // llena el combo de odontólogos
+    cargarOdontologosSelect();
 
     modalEditar.show();
   });
 
+
   // =========================
-  //  Submit: Guardar / Actualizar
+  // SUBMIT GUARDAR / EDITAR
   // =========================
 
-  $form.on('submit', function (e) {
+  $('#formCita').on('submit', function (e) {
     e.preventDefault();
 
-    const id     = $id.val();
-    const isEdit = !!id;
+    const isEdit = $('#id_cita').val() !== "";
     const opcion = isEdit ? 'actualizar' : 'agregar';
 
-    console.log('Submit cita. isEdit =', isEdit, 'opcion =', opcion);
-
-    // Validaciones frontend
-    if (!validarFormularioCita(isEdit)) {
-      console.warn('Validación de formulario de cita falló');
-      return;
-    }
+    if (!validarFormularioCita(isEdit)) return;
 
     const fd = new FormData(this);
 
@@ -325,141 +213,72 @@ $(document).ready(function () {
       processData: false,
       dataType: 'json',
       success: function (r) {
-        console.log('Respuesta guardar/actualizar cita:', r);
-
         if (r.status === 'success') {
-          Swal.fire({
-            icon: 'success',
-            title: r.message,
-            timer: 1200,
-            showConfirmButton: false
-          });
-          if (modalEditar) modalEditar.hide();
-          if (tabla) tabla.ajax.reload(null, false);
+          Swal.fire({ icon: 'success', title: r.message, timer: 1200, showConfirmButton: false });
+          modalEditar.hide();
+          tabla.ajax.reload(null, false);
         } else {
-          Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: r.message || 'Operación fallida'
-          });
+          Swal.fire({ icon: 'error', title: 'Error', text: r.message });
         }
-      },
-      error: function (xhr) {
-        console.error('Error AJAX guardar/actualizar cita:', xhr.status, xhr.responseText);
-
-        let msg = 'Error AJAX';
-        try {
-          const res = xhr.responseJSON || JSON.parse(xhr.responseText);
-          if (res && res.message) msg = res.message;
-        } catch (e) {
-          if (xhr.responseText) msg = xhr.responseText;
-        }
-
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: msg
-        });
       }
     });
   });
 
+
   // =========================
-  //  Editar cita
+  // EDITAR CITA
   // =========================
 
-  $('#tablaCitas').on('click', '.btn-editar', function (e) {
-    e.preventDefault();
-
+  $('#tablaCitas').on('click', '.btn-editar', function () {
     const id = $(this).data('id');
-    console.log('Click editar cita, id =', id);
 
     $.getJSON(`${CTRL_CITA}?opcion=obtener&id=${id}`, function (r) {
-      console.log('Respuesta obtener cita:', r);
-
       if (r.status !== 'success') {
-        Swal.fire({ icon: 'error', title: 'No encontrado' });
+        Swal.fire({ icon: 'error', title: 'Error', text: 'No se encontró la cita' });
         return;
       }
 
       const c = r.data;
 
-      $titulo.text('Editar cita');
-      $id.val(c.id_cita);
-
+      $('#tituloCita').text('Editar Cita');
+      $('#id_cita').val(c.id_cita);
       $('#dui').val(c.dui_paciente);
-      $('#nombre_paciente').val(c.nombre_paciente || '');
+      $('#nombre_paciente').val(c.nombre_paciente);
       $('#fecha_cita').val(c.fecha_cita);
-      if (c.hora_cita) {
-        $('#hora_cita').val(c.hora_cita.substring(0, 5)); // HH:MM
-      } else {
-        $('#hora_cita').val('');
-      }
-      $('#motivo').val(c.motivo || '');
+      $('#hora_cita').val(c.hora_cita.substring(0,5));
+      $('#motivo').val(c.motivo);
       $('#estado').val(c.estado);
 
-      limpiarErroresFormularioCita();
-
-      // cargar odontólogos y seleccionar el correspondiente
       cargarOdontologosSelect(c.id_odontologo);
 
-      if (modalVer) modalVer.hide();
-      if (modalEditar) modalEditar.show();
-    }).fail(function (xhr) {
-      console.error('Error obteniendo cita:', xhr.status, xhr.responseText);
-      Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo obtener la cita' });
+      modalVer.hide();
+      modalEditar.show();
     });
   });
 
+
   // =========================
-  //  Eliminar cita
+  // ELIMINAR CITA
   // =========================
 
   $('#tablaCitas').on('click', '.btn-eliminar', function () {
     const id = $(this).data('id');
-    console.log('Click eliminar cita, id =', id);
 
     Swal.fire({
       title: '¿Eliminar cita?',
       text: 'Esta acción no se puede deshacer.',
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Sí, eliminar',
-      cancelButtonText: 'Cancelar'
+      confirmButtonText: 'Eliminar'
     }).then(res => {
       if (!res.isConfirmed) return;
 
-      $.post(
-        `${CTRL_CITA}?opcion=eliminar`,
-        { id },
-        function (r) {
-          console.log('Respuesta eliminar cita:', r);
-
-          if (r.status === 'success') {
-            Swal.fire({
-              icon: 'success',
-              title: r.message,
-              timer: 1200,
-              showConfirmButton: false
-            });
-            if (tabla) tabla.ajax.reload(null, false);
-          } else {
-            Swal.fire({
-              icon: 'error',
-              title: 'Error',
-              text: r.message || 'No se pudo eliminar la cita'
-            });
-          }
-        },
-        'json'
-      ).fail(function (xhr) {
-        console.error('Error AJAX eliminar cita:', xhr.status, xhr.responseText);
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'No se pudo eliminar la cita (error AJAX)'
-        });
-      });
+      $.post(`${CTRL_CITA}?opcion=eliminar`, { id }, function (r) {
+        if (r.status === 'success') {
+          Swal.fire({ icon: 'success', title: r.message, timer: 1200, showConfirmButton: false });
+          tabla.ajax.reload(null, false);
+        }
+      }, 'json');
     });
   });
 

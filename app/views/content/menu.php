@@ -37,11 +37,6 @@
 </head>
 
 <body class="index-page">
-<?php include 'app/views/content/paciente.php'; ?>
-<?php include 'app/views/content/ver_paciente.php'; ?>
-<?php include 'app/views/content/odontologo.php'; ?>
-<?php include 'app/views/content/ver_odontologo.php'; ?>
-<?php include 'app/views/content/cita.php'; ?>
 
   <header id="header" class="header sticky-top">
 
@@ -1089,6 +1084,13 @@
 <script src="<?php echo APP_URL; ?>app/ajax/paciente.js"></script>
 <script src="<?php echo APP_URL; ?>app/ajax/odontologo.js"></script>
 <script src="<?php echo APP_URL; ?>app/ajax/cita.js"></script>
+
+<?php include 'app/views/content/paciente.php'; ?>
+<?php include 'app/views/content/ver_paciente.php'; ?>
+<?php include 'app/views/content/odontologo.php'; ?>
+<?php include 'app/views/content/ver_odontologo.php'; ?>
+<?php include 'app/views/content/cita.php'; ?>
+
 
 </body>
 

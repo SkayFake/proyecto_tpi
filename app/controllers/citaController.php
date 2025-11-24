@@ -23,7 +23,8 @@ try {
             break;
 
         case 'listar_odontologos':
-            $rows = $odontologoModel->getOdontologos();
+            $rows = $odontologoModel->getOdontologosSelect();
+
             $response = ['status' => 'success', 'data' => $rows];
             break;
 

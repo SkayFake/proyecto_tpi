@@ -93,6 +93,22 @@ class Odontologo
         }
     }
 
+    public function getOdontologosSelect(): array
+{
+    try {
+        $sql = "SELECT id_odontologo, nombre 
+                FROM odontologo
+                WHERE estado = 1";
+        $stmt = $this->conexion->query($sql);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    } catch (Throwable $e) {
+        error_log("Error getOdontologosSelect: " . $e->getMessage());
+        return [];
+    }
+}
+
+
     public function getOdontologoById(int $id_odontologo): ?array
     {
         try {

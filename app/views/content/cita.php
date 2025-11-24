@@ -21,23 +21,22 @@
         <div class="modal-body py-4 px-4">
 
           <input type="hidden" id="id_cita" name="id_cita">
+<input type="hidden" id="id_paciente" name="id_paciente">
 
           <div class="row g-3">
 
-            <!-- DUI del paciente (se usará para resolver el id_paciente en el modelo) -->
             <div class="col-lg-6 col-md-12">
-              <div class="form-floating mb-3">
-                <input class="form-control"
-                       id="dui"
-                       name="dui"
-                       type="text"
-                       placeholder="00000000-0"
-                       maxlength="10"
-                       pattern="^[0-9]{8}-[0-9]{1}$"
-                       required>
-                <label for="dui">DUI del paciente (00000000-0)</label>
-              </div>
-            </div>
+  <div class="form-floating mb-3">
+    <input class="form-control"
+           id="correo_paciente"
+           name="correo_paciente"
+           type="email"
+           placeholder="correo@ejemplo.com"
+           required>
+    <label for="correo_paciente">Correo del paciente</label>
+  </div>
+</div>
+
 
             <!-- Nombre del paciente (solo lectura, opcional para mostrar al usuario) -->
             <div class="col-lg-6 col-md-12">
@@ -52,19 +51,19 @@
               </div>
             </div>
 
-            <!-- Odontólogo (se llena por AJAX desde citaController.php?opcion=listar_odontologos) -->
-            <div class="col-lg-6 col-md-12">
-              <div class="form-floating mb-3">
-                <select id="id_odontologo"
-                        name="id_odontologo"
-                        class="form-select"
-                        required>
-                  <option value="" disabled selected>-- Selecciona un odontólogo --</option>
-                  <!-- opciones generadas por JS -->
-                </select>
-                <label for="id_odontologo">Odontólogo</label>
-              </div>
-            </div>
+            <!-- Odontólogo (corregido para evitar conflicto de IDs) -->
+<div class="col-lg-6 col-md-12">
+  <div class="form-floating mb-3">
+    <select id="cita_id_odontologo"
+            name="id_odontologo"
+            class="form-select"
+            required>
+      <option value="" disabled selected>-- Selecciona un odontólogo --</option>
+    </select>
+    <label for="cita_id_odontologo">Odontólogo</label>
+  </div>
+</div>
+
 
             <!-- Fecha de la cita -->
             <div class="col-lg-3 col-md-6">

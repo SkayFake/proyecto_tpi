@@ -31,6 +31,26 @@ class Cita
         }
     }
 
+    public function buscarPacientePorCorreo($correo)
+{
+    try {
+        $sql = "SELECT id_paciente, nombre 
+                FROM paciente 
+                WHERE correo = :correo";
+
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindValue(":correo", $correo, PDO::PARAM_STR);
+        $stmt->execute();
+
+        return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
+
+    } catch (Throwable $e) {
+        error_log("Error buscarPacientePorCorreo: " . $e->getMessage());
+        return null;
+    }
+}
+
+
     public function getCitas(): array
     {
         try {
