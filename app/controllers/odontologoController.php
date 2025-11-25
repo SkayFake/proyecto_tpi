@@ -33,13 +33,13 @@ try {
                 break;
             }
 
-            // *** Validar formato de correo (coincide con lo que hace la BD)
+          
             if (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
                 $response = ['status' => 'error', 'message' => 'Formato de correo inválido'];
                 break;
             }
 
-            // *** Validar teléfono: opcional, pero si se envía, debe ser de 8 dígitos
+          
             if ($telefono !== '' && !preg_match('/^[0-9]{4}-[0-9]{4}$/', $telefono)) {
     $response = [
         'status'  => 'error',
@@ -48,8 +48,7 @@ try {
     break;
 }
 
-            // *** Esta validación es opcional (la BD ya valida correo único).
-            //     Puedes dejarla para evitar lanzar excepción desde el SP.
+         
             if ($odontologoModel->existeCorreo($correo)) {
                 $response = ['status' => 'error', 'message' => 'El correo ya está registrado'];
                 break;
@@ -58,7 +57,7 @@ try {
             $ok = $odontologoModel->agregar(
                 $nombre,
                 $correo,
-                $contrasenia,           // aquí asumo que el Model se encarga de cifrar/hashear si hace falta
+                $contrasenia,           
                 $telefono ?: null,
                 $especialidad ?: null,
                 $es_admin,
@@ -90,10 +89,10 @@ try {
             $contrasenia  = isset($_POST['contrasenia']) ? trim($_POST['contrasenia']) : null;
 
             if ($contrasenia === '') {
-                $contrasenia = null; // respetar la lógica del SP: si es NULL, no cambia
+                $contrasenia = null; 
             }
 
-            // *** Validaciones básicas
+         
             if (!$id || !$nombre || !$correo) {
                 $response = ['status' => 'error', 'message' => 'Datos incompletos'];
                 break;
@@ -112,8 +111,6 @@ try {
     ];
     break;
 }
-            // *** NO verificamos aquí "correo repetido en otro odontólogo"
-            //     Eso ya lo hace el SP con SIGNAL y también el índice UNIQUE.
 
             $ok = $odontologoModel->actualizar(
                 $id,
@@ -141,7 +138,6 @@ try {
                 break;
             }
 
-            // *** Ajuste: mensaje dice 8, validamos 8
             if (strlen($nueva_contrasenia) < 8) {
                 $response = ['status' => 'error', 'message' => 'La contraseña debe tener al menos 8 caracteres'];
                 break;

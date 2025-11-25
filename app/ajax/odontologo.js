@@ -2,16 +2,14 @@ const CTRL_ODONTOLOGO = 'app/controllers/odontologoController.php';
 
 $(document).ready(function () {
 
-  // =========================
-  //  Helpers de validación
-  // =========================
+ 
 
-  function limpiarErroresFormulario() { // NUEVO
+  function limpiarErroresFormulario() {
     $('#nombreOdontologo, #correo, #telefonoOdontologo, #password')
       .removeClass('is-invalid');
   }
 
-  function validarFormularioOdontologo(isEdit) { // NUEVO
+  function validarFormularioOdontologo(isEdit) {
     limpiarErroresFormulario();
 
     const nombre    = $('#nombreOdontologo').val().trim();
@@ -42,8 +40,7 @@ $(document).ready(function () {
       return false;
     }
 
-    // Teléfono: opcional, pero si se envía, deben ser 8 dígitos
-    // Teléfono: opcional, pero si se envía, formato 7777-8888
+    
 if (telefono !== '') {
   const telRegex = /^[0-9]{4}-[0-9]{4}$/;
   if (!telRegex.test(telefono)) {
@@ -58,9 +55,7 @@ if (telefono !== '') {
 }
 
 
-    // Password:
-    // - Crear: obligatorio
-    // - Editar: opcional (si se deja vacío, no se cambia)
+  
     if (!isEdit && (password.trim() === '')) {
       $('#password').addClass('is-invalid');
       Swal.fire({
@@ -74,9 +69,7 @@ if (telefono !== '') {
     return true;
   }
 
-  // =========================
-  //  Modales
-  // =========================
+
 
   const modalEditarEl = document.getElementById('modalOdontologo');
   const modalVerEl    = document.getElementById('modalOdontologoVer');
@@ -175,7 +168,7 @@ if (telefono !== '') {
     $titulo.text('Nuevo odontólogo');
     $form[0].reset();
     $id.val('');
-    limpiarErroresFormulario(); // NUEVO
+    limpiarErroresFormulario(); 
 
     $('#password').closest('.col-lg-6').show();
     $('#password').prop('required', true).val('');
@@ -190,7 +183,7 @@ if (telefono !== '') {
     const isEdit = !!id;
     const opcion = isEdit ? 'actualizar' : 'agregar';
 
-    // Validaciones de frontend ANTES de armar el FormData // NUEVO
+  
     if (!validarFormularioOdontologo(isEdit)) {
       return;
     }
@@ -239,7 +232,7 @@ if (telefono !== '') {
         }
       },
       error: function (xhr) {
-        // Intentar leer mensaje de error si viene en JSON // OPCIONAL
+        
         let msg = 'Error AJAX';
         try {
           const res = xhr.responseJSON || JSON.parse(xhr.responseText);
@@ -280,7 +273,7 @@ if (telefono !== '') {
       $('#estado').val(c.estado);
       $('#password').closest('.col-lg-6').hide();
       $('#password').prop('required', false).val('');
-      limpiarErroresFormulario(); // NUEVO
+      limpiarErroresFormulario();
 
       modalVer.hide();
       modalEditar.show();

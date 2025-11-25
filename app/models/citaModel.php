@@ -12,9 +12,7 @@ class Cita
         $this->conexion = Conexion::conectar();
     }
 
-    /* ==========================================================
-        BUSCAR PACIENTE POR CORREO
-    ========================================================== */
+
     public function buscarPacientePorCorreo(string $correo): ?array
     {
         try {
@@ -35,9 +33,6 @@ class Cita
         }
     }
 
-    /* ==========================================================
-        LISTAR CITAS
-    ========================================================== */
     public function getCitas(): array
     {
         try {
@@ -65,9 +60,7 @@ class Cita
         }
     }
 
-    /* ==========================================================
-        OBTENER CITA POR ID
-    ========================================================== */
+
     public function getCitaById(int $id_cita): ?array
     {
         try {
@@ -99,9 +92,6 @@ class Cita
         }
     }
 
-    /* ==========================================================
-        VALIDAR SI YA EXISTE UNA CITA
-    ========================================================== */
     public function existeCita(int $id_odontologo, string $fecha_cita, string $hora_cita): bool
     {
         try {
@@ -125,9 +115,6 @@ class Cita
         }
     }
 
-    /* ==========================================================
-        VALIDAR DUPLICADOS AL EDITAR
-    ========================================================== */
     public function existeOtraCita(int $id_cita, int $id_odontologo, string $fecha_cita, string $hora_cita): bool
     {
         try {
@@ -153,14 +140,11 @@ class Cita
         }
     }
 
-    /* ==========================================================
-        VALIDAR DISPONIBILIDAD (EJEMPLO SIMPLE)
-    ========================================================== */
+
     public function hayDisponibilidad(int $id_odontologo, string $fecha_cita, string $hora_cita): bool
     {
         try {
-            // Aquí puedes usar tu tabla disponibilidad si existe
-            // por ahora devolvemos true para permitir agendar siempre
+            
 
             return true;
 
@@ -170,10 +154,6 @@ class Cita
         }
     }
 
-
-    /* ==========================================================
-        AGREGAR CITA
-    ========================================================== */
     public function agregar(
         int $id_paciente,
         int $id_odontologo,
@@ -215,9 +195,6 @@ class Cita
         }
     }
 
-    /* ==========================================================
-        ACTUALIZAR CITA
-    ========================================================== */
     public function actualizar(
         int $id_cita,
         int $id_paciente,
@@ -262,9 +239,6 @@ class Cita
         }
     }
 
-    /* ==========================================================
-        ELIMINAR CITA
-    ========================================================== */
     public function eliminar(int $id_cita): bool
     {
         try {

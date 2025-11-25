@@ -48,7 +48,7 @@ function validarDatosCitaBase($correo, $id_odontologo, $fecha, $hora, $motivo, $
         return "La fecha debe ser mayor a hoy.";
     }
 
-    // Domingo = 0
+    // Domingo 
     if ((int)$fechaObj->format('w') === 0) {
         return "No se permiten citas los domingos.";
     }
@@ -74,27 +74,18 @@ try {
 
     switch ($opcion) {
 
-        /* ==========================================================
-            LISTAR CITAS
-        ========================================================== */
+       
         case 'listar':
             $rows = $citaModel->getCitas();
             $response = ['status' => 'success', 'data' => $rows];
             break;
-
-
-        /* ==========================================================
-            LISTAR ODONTÓLOGOS
-        ========================================================== */
+        /
         case 'listar_odontologos':
             $rows = $odontologoModel->getOdontologosSelect();
             $response = ['status' => 'success', 'data' => $rows];
             break;
 
 
-        /* ==========================================================
-            BUSCAR PACIENTE POR CORREO
-        ========================================================== */
         case 'buscar_paciente_correo':
 
             $correo = trim($_GET['correo'] ?? '');
@@ -112,10 +103,6 @@ try {
             $response = ['status' => 'success', 'data' => $paciente];
             break;
 
-
-        /* ==========================================================
-            OBTENER CITA POR ID
-        ========================================================== */
         case 'obtener':
             $id = intval($_GET['id'] ?? 0);
 
@@ -128,11 +115,6 @@ try {
             $response = ['status' => 'success', 'data' => $row];
             break;
 
-
-
-        /* ==========================================================
-            AGREGAR CITA
-        ========================================================== */
         case 'agregar':
 
             $correo_paciente = trim($_POST['correo_paciente'] ?? '');
@@ -170,11 +152,6 @@ try {
             $response = ['status' => 'success', 'message' => 'Cita creada exitosamente'];
             break;
 
-
-
-        /* ==========================================================
-            ACTUALIZAR CITA
-        ========================================================== */
         case 'actualizar':
 
             $id_cita         = intval($_POST['id_cita'] ?? 0);
@@ -230,10 +207,6 @@ try {
             break;
 
 
-
-        /* ==========================================================
-            ELIMINAR CITA
-        ========================================================== */
         case 'eliminar':
 
             $id = intval($_POST['id'] ?? 0);

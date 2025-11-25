@@ -147,7 +147,7 @@ $(document).ready(function () {
     return true;
   }
 
-  // ================== Autoformato ==================
+ 
   $('#telefono').on('input', function () {
     let v = this.value.replace(/[^0-9]/g, '');
     if (v.length > 8) v = v.substring(0, 8);
@@ -160,7 +160,7 @@ $(document).ready(function () {
     this.value = v.length > 8 ? v.substring(0, 8) + '-' + v.substring(8) : v;
   });
 
-  // ================== Nuevo paciente ==================
+  //  Nuevo paciente =
   $('#btnNuevoPaciente').on('click', () => {
     $titulo.text('Nuevo paciente');
     $form[0].reset();
@@ -168,7 +168,7 @@ $(document).ready(function () {
     modalEditar.show();
   });
 
-  // ================== Guardar / Actualizar ==================
+  //  Guardar / Actualizar 
   $form.on('submit', function (e) {
     e.preventDefault();
 
@@ -209,7 +209,7 @@ $(document).ready(function () {
     });
   });
 
-  // ================== Editar paciente ==================
+  Editar paciente 
   $('#tablaPacientes').on('click', '.btn-editar', function () {
     const id = $(this).data('id');
 
@@ -237,7 +237,7 @@ $(document).ready(function () {
     });
   });
 
-  // ================== Eliminar paciente ==================
+  Eliminar paciente 
   $('#tablaPacientes').on('click', '.btn-eliminar', function () {
     const id = $(this).data('id');
 

@@ -2,18 +2,11 @@ const CTRL_CITA = "app/controllers/citaController.php";
 
 $(document).ready(function () {
 
-  /* ==========================================================
-        LIMPIAR ERRORES DEL FORM
-  ========================================================== */
   function limpiarErroresFormularioCita() {
     $('#correo_paciente, #cita_id_odontologo, #fecha_cita, #hora_cita, #cita_estado, #motivo')
       .removeClass("is-invalid");
   }
 
-
-  /* ==========================================================
-        VALIDACIONES EN FRONTEND
-  ========================================================== */
   async function validarFormularioCita(isEdit) {
 
     limpiarErroresFormularioCita();
@@ -29,10 +22,6 @@ $(document).ready(function () {
     const hoy = new Date();
     hoy.setHours(0, 0, 0, 0);
 
-
-    /* -----------------------------------------------
-        CORREO
-    ----------------------------------------------- */
     if (!emailRegex.test(correo)) {
       $("#correo_paciente").addClass("is-invalid");
       Swal.fire("Correo inválido", "Debe ingresar un correo válido", "warning");
@@ -40,9 +29,7 @@ $(document).ready(function () {
     }
 
 
-    /* -----------------------------------------------
-        ODONTÓLOGO
-    ----------------------------------------------- */
+    
     if (!idOdontologo) {
       $("#cita_id_odontologo").addClass("is-invalid");
       Swal.fire("Dato requerido", "Debe seleccionar un odontólogo", "warning");
@@ -50,19 +37,12 @@ $(document).ready(function () {
     }
 
 
-    /* -----------------------------------------------
-        MOTIVO
-    ----------------------------------------------- */
     if (motivo === "") {
       $("#motivo").addClass("is-invalid");
       Swal.fire("Motivo requerido", "Debe ingresar el motivo de la cita", "warning");
       return false;
     }
 
-
-    /* -----------------------------------------------
-        FECHA
-    ----------------------------------------------- */
     if (!fechaCita) {
       $("#fecha_cita").addClass("is-invalid");
       Swal.fire("Dato requerido", "Debe seleccionar una fecha", "warning");
@@ -84,10 +64,6 @@ $(document).ready(function () {
       return false;
     }
 
-
-    /* -----------------------------------------------
-        HORA
-    ----------------------------------------------- */
     if (!horaCita) {
       $("#hora_cita").addClass("is-invalid");
       Swal.fire("Dato requerido", "Debe seleccionar una hora", "warning");
@@ -102,20 +78,12 @@ $(document).ready(function () {
     }
 
 
-    /* -----------------------------------------------
-        ESTADO
-    ----------------------------------------------- */
     if (!estado || estado.trim() === "") {
       $("#cita_estado").addClass("is-invalid");
       Swal.fire("Dato requerido", "Debe seleccionar el estado", "warning");
       return false;
     }
 
-
-
-    /* ==========================================================
-          VALIDAR DUPLICADO PREVENTIVO EN FRONTEND
-    ========================================================== */
     let esDuplicada = await $.ajax({
       url: `${CTRL_CITA}?opcion=listar`,
       dataType: "json"
@@ -138,11 +106,6 @@ $(document).ready(function () {
     return true;
   }
 
-
-
-  /* ==========================================================
-        CARGAR ODONTÓLOGOS
-  ========================================================== */
   function cargarOdontologosSelect(selectedId = null) {
     const $sel = $("#cita_id_odontologo");
 
@@ -172,11 +135,6 @@ $(document).ready(function () {
     });
   }
 
-
-
-  /* ==========================================================
-        BUSCAR PACIENTE POR CORREO
-  ========================================================== */
   $("#correo_paciente").on("blur", function () {
     const correo = $(this).val().trim();
     if (correo === "") return;
@@ -196,11 +154,6 @@ $(document).ready(function () {
     );
   });
 
-
-
-  /* ==========================================================
-        MODALES
-  ========================================================== */
   const modalEditar = new bootstrap.Modal(document.getElementById("modalCita"));
   const modalVer    = new bootstrap.Modal(document.getElementById("modalCitaVer"));
 
@@ -210,9 +163,6 @@ $(document).ready(function () {
 
 
 
-  /* ==========================================================
-        DATATABLE
-  ========================================================== */
   let tabla = $("#tablaCitas").DataTable({
     ajax: {
       url: `${CTRL_CITA}?opcion=listar`,
@@ -239,10 +189,6 @@ $(document).ready(function () {
   });
 
 
-
-  /* ==========================================================
-        NUEVA CITA
-  ========================================================== */
   $("#btnNuevaCita").on("click", function () {
     $("#tituloCita").text("Nueva Cita");
     $("#formCita")[0].reset();
@@ -258,10 +204,6 @@ $(document).ready(function () {
   });
 
 
-
-  /* ==========================================================
-        GUARDAR / ACTUALIZAR CITA
-  ========================================================== */
   $("#formCita").on("submit", async function (e) {
     e.preventDefault();
 
@@ -292,10 +234,6 @@ $(document).ready(function () {
   });
 
 
-
-  /* ==========================================================
-        EDITAR CITA
-  ========================================================== */
   $("#tablaCitas").on("click", ".btn-editar", function () {
     const id = $(this).data("id");
 
@@ -306,8 +244,6 @@ $(document).ready(function () {
       }
 
       const c = r.data;
-
-      // No permitir editar citas atendidas
       if (c.estado === "atendida") {
         Swal.fire("No permitido", "No se puede editar una cita ya atendida", "error");
         return;
@@ -316,7 +252,7 @@ $(document).ready(function () {
       $("#tituloCita").text("Editar Cita");
       $("#id_cita").val(c.id_cita);
 
-      // Paciente NO editable
+
       $("#correo_paciente").val(c.correo_paciente).prop("readonly", true);
       $("#nombre_paciente").val(c.nombre_paciente).prop("readonly", true);
       $("#id_paciente").val(c.id_paciente);
@@ -334,10 +270,6 @@ $(document).ready(function () {
   });
 
 
-
-  /* ==========================================================
-        ELIMINAR CITA
-  ========================================================== */
   $("#tablaCitas").on("click", ".btn-eliminar", function () {
     const id = $(this).data("id");
 

@@ -69,7 +69,7 @@ class Odontologo
         } catch (Throwable $e) {
             $this->conexion->rollBack();
             error_log("Error registrar odontólogo: " . $e->getMessage());
-            // *** Re-lanzamos para que el controller capture el mensaje del SIGNAL/BD
+            
             throw $e;
         }
     }
@@ -176,22 +176,21 @@ class Odontologo
                 $stmt->bindValue(":contrasenia", null, PDO::PARAM_NULL);
             }
 
-            // teléfono (puede ser NULL)
-            if ($telefono !== null) { // ***
+            
+            if ($telefono !== null) { 
                 $stmt->bindValue(":telefono", $telefono, PDO::PARAM_STR);
             } else {
                 $stmt->bindValue(":telefono", null, PDO::PARAM_NULL);
             }
 
-            // especialidad (puede ser NULL)
-            if ($especialidad !== null) { // ***
+         
+            if ($especialidad !== null) { 
                 $stmt->bindValue(":especialidad", $especialidad, PDO::PARAM_STR);
             } else {
                 $stmt->bindValue(":especialidad", null, PDO::PARAM_NULL);
             }
 
-            // es_admin y estado no deberían ser NULL en la BD, 
-            // asumimos que el controller siempre manda un valor válido.
+          
             $stmt->bindValue(":es_admin", $es_admin, PDO::PARAM_INT);
             $stmt->bindValue(":estado",   $estado,   PDO::PARAM_INT);
 
@@ -201,7 +200,7 @@ class Odontologo
         } catch (Throwable $e) {
             $this->conexion->rollBack();
             error_log("Error actualizar odontólogo: " . $e->getMessage());
-            // *** Re-lanzamos
+            
             throw $e;
         }
     }
@@ -227,7 +226,7 @@ class Odontologo
         } catch (Throwable $e) {
             $this->conexion->rollBack();
             error_log("Error actualizar contraseña: " . $e->getMessage());
-            // *** Re-lanzamos por si quieres capturar mensajes específicos
+           
             throw $e;
         }
     }
@@ -247,8 +246,7 @@ class Odontologo
         } catch (Throwable $e) {
             $this->conexion->rollBack();
             error_log("Error eliminar odontólogo: " . $e->getMessage());
-            // *** Re-lanzamos para que el controller pueda mostrar algo tipo:
-            // "No se puede eliminar porque tiene citas asociadas"
+         
             throw $e;
         }
     }
