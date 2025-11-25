@@ -101,7 +101,7 @@
                             <div class="form-floating mb-3">
                                 <textarea class="form-control" id="notas" name="notas"
                                     placeholder=" " style="height:150px"></textarea>
-                                <label for="notas">Descripción de alergias</label>
+                                <label for="notas">Informacion Adicional (Alergias, Historial Medico, Observaciones, etc)</label>
                             </div>
                         </div>
 
