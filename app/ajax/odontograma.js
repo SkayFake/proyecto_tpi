@@ -348,13 +348,10 @@ $(document).ready(function () {
     function (r) {
 
       if (r.status === 'success' && r.data) {
-        // SOLO ASIGNAR EL ID
         $idPaciente.val(r.data.id_paciente);
-        // NO tocar el campo de texto
+    
       } else {
-        // SI NO EXISTE, solo limpiar el ID, NO el nombre
         $idPaciente.val('');
-        // NO modificar el texto del usuario
       }
 
     }

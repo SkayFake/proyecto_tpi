@@ -82,6 +82,13 @@
                 <li><a href="#" id="btnVerOdontogramas" data-bs-toggle="modal" data-bs-target="#modalOdontogramaVer">Ver Odontogramas</a></li>
               </ul>
             </li>
+
+            <li class="dropdown"><a href="#"><span>Servicios</span><i class="bi bi-chevron-down toggle-dropdown"></i></a>
+              <ul>
+                <li><a href="#" id="btnNuevoServicio" data-bs-toggle="modal" data-bs-target="#modalServicio">Agregar Odontograma</a></li>
+                <li><a href="#" id="btnVerServicios" data-bs-toggle="modal" data-bs-target="#modalServicioVer">Ver Odontogramas</a></li>
+              </ul>
+            </li>
             <li><a href="#contact">Contacto</a></li>
           </ul>
           <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
@@ -1052,6 +1059,7 @@
 <script src="<?php echo APP_URL; ?>app/ajax/odontologo.js"></script>
 <script src="<?php echo APP_URL; ?>app/ajax/cita.js"></script>
 <script src="<?php echo APP_URL; ?>app/ajax/odontograma.js"></script>
+<script src="<?php echo APP_URL; ?>app/ajax/servicio.js"></script>
 
 <?php include 'app/views/content/paciente.php'; ?>
 <?php include 'app/views/content/ver_paciente.php'; ?>
@@ -1059,6 +1067,7 @@
 <?php include 'app/views/content/ver_odontologo.php'; ?>
 <?php include 'app/views/content/cita.php'; ?>
 <?php include 'app/views/content/odontograma.php'; ?>
+<?php include 'app/views/content/servicio.php'; ?>
 
 </body>
 </html>
