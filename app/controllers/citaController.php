@@ -12,7 +12,63 @@ $odontologoModel = new Odontologo();
 
 $opcion = $_GET['opcion'] ?? null;
 
-$response = ['status' => 'error', 'message' => 'Opción inválida'];
+function errorJson(string $msg)
+{
+    echo json_encode(['status' => 'error', 'message' => $msg]);
+    exit;
+}
+
+function validarDatosCitaBase($correo, $id_odontologo, $fecha, $hora, $motivo, $estado)
+{
+    if (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
+        return "El correo del paciente no es válido.";
+    }
+
+    if (!$id_odontologo) {
+        return "Debe seleccionar un odontólogo.";
+    }
+
+    if (trim($motivo) === '') {
+        return "Debe escribir el motivo de la cita.";
+    }
+
+    if (!$fecha) {
+        return "Debe seleccionar una fecha.";
+    }
+
+    // Conversión correcta de fecha
+    $fechaObj = DateTime::createFromFormat('Y-m-d', $fecha);
+    $hoyObj   = new DateTime('today');
+
+    if (!$fechaObj) {
+        return "Formato de fecha inválido.";
+    }
+
+    if ($fechaObj <= $hoyObj) {
+        return "La fecha debe ser mayor a hoy.";
+    }
+
+    // Domingo = 0
+    if ((int)$fechaObj->format('w') === 0) {
+        return "No se permiten citas los domingos.";
+    }
+
+    if (!$hora) {
+        return "Debe seleccionar una hora válida.";
+    }
+
+    $h = intval(substr($hora, 0, 2));
+    if ($h < 7 || $h > 17) {
+        return "La hora debe estar entre 07:00 y 17:00.";
+    }
+
+    if (!$estado) {
+        return "Debe seleccionar el estado de la cita.";
+    }
+
+    return true;
+}
+
 
 try {
 
@@ -44,20 +100,16 @@ try {
             $correo = trim($_GET['correo'] ?? '');
 
             if ($correo === '') {
-                $response = ['status' => 'error', 'message' => 'Debe ingresar un correo'];
-                break;
+                errorJson("Debe ingresar un correo.");
             }
 
             $paciente = $citaModel->buscarPacientePorCorreo($correo);
 
             if (!$paciente) {
-                $response = [
-                    'status' => 'error',
-                    'message' => 'No se encontró un paciente con ese correo'
-                ];
-            } else {
-                $response = ['status' => 'success', 'data' => $paciente];
+                errorJson("No se encontró un paciente con ese correo.");
             }
+
+            $response = ['status' => 'success', 'data' => $paciente];
             break;
 
 
@@ -67,16 +119,13 @@ try {
         case 'obtener':
             $id = intval($_GET['id'] ?? 0);
 
-            if (!$id) {
-                $response = ['status' => 'error', 'message' => 'ID inválido'];
-                break;
-            }
+            if (!$id) errorJson("ID inválido.");
 
             $row = $citaModel->getCitaById($id);
 
-            $response = $row
-                ? ['status' => 'success', 'data' => $row]
-                : ['status' => 'error', 'message' => 'Cita no encontrada'];
+            if (!$row) errorJson("Cita no encontrada.");
+
+            $response = ['status' => 'success', 'data' => $row];
             break;
 
 
@@ -93,42 +142,32 @@ try {
             $motivo          = trim($_POST['motivo'] ?? '');
             $estado          = trim($_POST['estado'] ?? '');
 
-            if (preg_match('/^\d{2}:\d{2}$/', $hora_cita)) {
-                $hora_cita .= ':00';
-            }
+            // Validación general
+            $valid = validarDatosCitaBase($correo_paciente, $id_odontologo, $fecha_cita, $hora_cita, $motivo, $estado);
+            if ($valid !== true) errorJson($valid);
 
-            if (!$correo_paciente || !$id_odontologo || !$fecha_cita || !$hora_cita || !$estado) {
-                $response = [
-                    'status'  => 'error',
-                    'message' => 'Correo, odontólogo, fecha, hora y estado son obligatorios'
-                ];
-                break;
-            }
-
+            // Buscar paciente
             $paciente = $citaModel->buscarPacientePorCorreo($correo_paciente);
-
-            if (!$paciente) {
-                $response = [
-                    'status'  => 'error',
-                    'message' => 'No existe un paciente con ese correo'
-                ];
-                break;
-            }
+            if (!$paciente) errorJson("No existe un paciente con ese correo.");
 
             $id_paciente = $paciente['id_paciente'];
 
-            $ok = $citaModel->agregar(
-                $id_paciente,
-                $id_odontologo,
-                $fecha_cita,
-                $hora_cita,
-                $motivo ?: null,
-                $estado
-            );
+            // Validar duplicado
+            if ($citaModel->existeCita($id_odontologo, $fecha_cita, $hora_cita)) {
+                errorJson("Ya existe una cita con ese odontólogo en ese horario.");
+            }
 
-            $response = $ok
-                ? ['status' => 'success', 'message' => 'Cita creada exitosamente']
-                : ['status' => 'error', 'message' => 'No se pudo crear la cita'];
+            // Validar disponibilidad
+            if (!$citaModel->hayDisponibilidad($id_odontologo, $fecha_cita, $hora_cita)) {
+                errorJson("El odontólogo no tiene disponibilidad en ese horario.");
+            }
+
+            // Crear cita
+            $ok = $citaModel->agregar($id_paciente, $id_odontologo, $fecha_cita, $hora_cita, $motivo, $estado);
+
+            if (!$ok) errorJson("No se pudo crear la cita.");
+
+            $response = ['status' => 'success', 'message' => 'Cita creada exitosamente'];
             break;
 
 
@@ -146,40 +185,48 @@ try {
             $motivo          = trim($_POST['motivo'] ?? '');
             $estado          = trim($_POST['estado'] ?? '');
 
-            if (preg_match('/^\d{2}:\d{2}$/', $hora_cita)) {
-                $hora_cita .= ':00';
+            if (!$id_cita) errorJson("ID inválido.");
+
+            // Obtener cita actual
+            $cita = $citaModel->getCitaById($id_cita);
+            if (!$cita) errorJson("Cita no encontrada.");
+
+            // No permitir editar citas atendidas
+            if ($cita['estado'] === 'atendida') {
+                errorJson("No se puede editar una cita que ya fue atendida.");
             }
 
-            if (!$id_cita || !$correo_paciente || !$id_odontologo || !$fecha_cita || !$hora_cita || !$estado) {
-                $response = ['status' => 'error', 'message' => 'Datos incompletos'];
-                break;
+            // Validación general
+            $valid = validarDatosCitaBase($correo_paciente, $id_odontologo, $fecha_cita, $hora_cita, $motivo, $estado);
+            if ($valid !== true) errorJson($valid);
+
+            // Paciente NO se puede cambiar
+            $id_paciente = $cita['id_paciente'];
+
+            // Duplicado EXCEPTO esta misma cita
+            if ($citaModel->existeOtraCita($id_cita, $id_odontologo, $fecha_cita, $hora_cita)) {
+                errorJson("Ya existe otra cita con ese odontólogo en ese horario.");
             }
 
-            $paciente = $citaModel->buscarPacientePorCorreo($correo_paciente);
-
-            if (!$paciente) {
-                $response = [
-                    'status'  => 'error',
-                    'message' => 'No existe un paciente con ese correo'
-                ];
-                break;
+            // Validar disponibilidad
+            if (!$citaModel->hayDisponibilidad($id_odontologo, $fecha_cita, $hora_cita)) {
+                errorJson("El odontólogo no tiene disponibilidad en ese horario.");
             }
 
-            $id_paciente = $paciente['id_paciente'];
-
+            // Actualizar
             $ok = $citaModel->actualizar(
                 $id_cita,
                 $id_paciente,
                 $id_odontologo,
                 $fecha_cita,
                 $hora_cita,
-                $motivo ?: null,
+                $motivo,
                 $estado
             );
 
-            $response = $ok
-                ? ['status' => 'success', 'message' => 'Cita actualizada']
-                : ['status' => 'error', 'message' => 'No se pudo actualizar'];
+            if (!$ok) errorJson("No se pudo actualizar la cita.");
+
+            $response = ['status' => 'success', 'message' => 'Cita actualizada correctamente'];
             break;
 
 
@@ -190,17 +237,13 @@ try {
         case 'eliminar':
 
             $id = intval($_POST['id'] ?? 0);
-
-            if (!$id) {
-                $response = ['status' => 'error', 'message' => 'ID inválido'];
-                break;
-            }
+            if (!$id) errorJson("ID inválido.");
 
             $ok = $citaModel->eliminar($id);
 
-            $response = $ok
-                ? ['status' => 'success', 'message' => 'Cita eliminada']
-                : ['status' => 'error', 'message' => 'No se pudo eliminar'];
+            if (!$ok) errorJson("No se pudo eliminar.");
+
+            $response = ['status' => 'success', 'message' => 'Cita eliminada'];
             break;
     }
 

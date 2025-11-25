@@ -89,21 +89,22 @@
               </div>
             </div>
 
-<!-- ESTADO DE LA CITA -->
-<div class="col-lg-6 col-md-12">
-  <div class="form-floating mb-3">
-    <select id="estado" name="estado" class="form-select" required>
-      <option value="" disabled selected>-- Selecciona estado --</option>
-      <option value="programada">Programada</option>
-      <option value="confirmada">Confirmada</option>
-      <option value="atendida">Atendida</option>
-      <option value="cancelada">Cancelada</option>
-    </select>
-    <label for="estado">Estado de la cita</label>
-  </div>
-</div>
-
-
+            <!-- ESTADO -->
+            <div class="col-lg-6 col-md-12">
+              <div class="form-floating mb-3">
+                <select id="cita_estado"
+                        name="estado"
+                        class="form-select"
+                        required>
+                  <option value="" disabled hidden selected>-- Selecciona estado --</option>
+                  <option value="programada">Programada</option>
+                  <option value="confirmada">Confirmada</option>
+                  <option value="atendida">Atendida</option>
+                  <option value="cancelada">Cancelada</option>
+                </select>
+                <label for="cita_estado">Estado de la cita</label>
+              </div>
+            </div>
 
             <!-- MOTIVO -->
             <div class="col-lg-12 col-md-12">
