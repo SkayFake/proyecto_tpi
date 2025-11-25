@@ -2,7 +2,6 @@ const CTRL_SERVICIO = 'app/controllers/servicioController.php';
 
 $(document).ready(function () {
 
- 
   function limpiarErroresFormulario() {
     $('#nombre_servicio, #precio_base, #duracion_dias, #fecha_vencimiento')
       .removeClass('is-invalid');
@@ -48,13 +47,11 @@ $(document).ready(function () {
     return true;
   }
 
-
   const modalEditarEl = document.getElementById('modalServicio');
   const modalVerEl    = document.getElementById('modalServiciosVer');
 
   const modalEditar = new bootstrap.Modal(modalEditarEl);
   const modalVer    = new bootstrap.Modal(modalVerEl);
-
 
 
   const tabla = $('#tablaServicios').DataTable({
@@ -85,22 +82,31 @@ $(document).ready(function () {
       const diffHoras = (fechaVenc - ahora) / (1000 * 60 * 60);
 
       if (fechaVenc < ahora) {
-        $(row).addClass('table-danger'); 
+        $(row).addClass('table-danger');
       } else if (diffHoras <= 48) {
         $(row).addClass('table-warning');
       }
     },
 
     columns: [
+      
+      { 
+        data: 'codigo',
+        className: 'text-center'
+      },
+     
       { data: 'nombre_servicio' },
+      
       { 
         data: 'precio_base',
         render: d => `$${parseFloat(d).toFixed(2)}`
       },
+    
       { 
         data: 'descripcion',
         render: d => d ? d : '<em class="text-muted">Sin descripción</em>'
       },
+    
       { 
         data: 'activo',
         className: 'text-center',
@@ -122,8 +128,9 @@ $(document).ready(function () {
           `;
         }
       },
+      
       { data: 'created_at' },
-
+    
       { 
         data: 'fecha_vencimiento',
         render: function (d) {
@@ -145,7 +152,7 @@ $(document).ready(function () {
           return `<span class="badge bg-info text-dark">Vigente</span><br><small>${fecha.toLocaleString()}</small>`;
         }
       },
-
+     
       {
         data: null,
         orderable: false,
@@ -180,7 +187,6 @@ $(document).ready(function () {
     modalEditar.show();
   });
 
- 
   $('#formServicio').on('submit', function (e) {
     e.preventDefault();
 
@@ -220,6 +226,7 @@ $(document).ready(function () {
     });
   });
 
+
   $('#tablaServicios').on('click', '.btn-editar', function () {
     const id = $(this).data('id');
 
@@ -232,9 +239,8 @@ $(document).ready(function () {
       const c = r.data;
 
       $('#tituloServicio').text('Editar Servicio');
-      $('#id_servicio')
-
-        .val(c.id_servicio);
+      $('#id_servicio').val(c.id_servicio);
+      $('#codigo').val(c.codigo);                 
       $('#nombre_servicio').val(c.nombre_servicio);
       $('#precio_base').val(c.precio_base);
       $('#descripcion').val(c.descripcion);
@@ -251,7 +257,6 @@ $(document).ready(function () {
       modalEditar.show();
     });
   });
-
 
   $('#tablaServicios').on('change', '.switch-estado', function () {
     const id = $(this).data('id');

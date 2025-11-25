@@ -23,12 +23,18 @@
                     <div class="row g-3">
                         <div class="col-lg-6 col-md-12">
                             <div class="form-floating mb-3">
+                                <input class="form-control" id="codigo" name="codigo"
+                                       type="text" placeholder=" " maxlength="50">
+                                <label for="codigo">Código del servicio</label>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12">
+                            <div class="form-floating mb-3">
                                 <input class="form-control" id="nombre_servicio" name="nombre_servicio"
                                     type="text" placeholder=" " maxlength="200" required>
                                 <label for="nombre_servicio">Nombre del servicio</label>
                             </div>
                         </div>
-
                         <div class="col-lg-6 col-md-12">
                             <div class="form-floating mb-3">
                                 <input class="form-control" id="precio_base" name="precio_base"
@@ -36,7 +42,6 @@
                                 <label for="precio_base">Precio base ($)</label>
                             </div>
                         </div>
-
                         <div class="col-lg-6 col-md-12">
                             <div class="form-floating mb-3">
                                 <input class="form-control" id="duracion_dias" name="duracion_dias"
@@ -44,7 +49,6 @@
                                 <label for="duracion_dias">Duración (en días, opcional)</label>
                             </div>
                         </div>
-
                         <div class="col-lg-6 col-md-12">
                             <div class="form-floating mb-3">
                                 <input class="form-control" id="fecha_vencimiento" name="fecha_vencimiento"
@@ -52,7 +56,6 @@
                                 <label for="fecha_vencimiento">Fecha y hora de vencimiento</label>
                             </div>
                         </div>
-
                         <div class="col-lg-6 col-md-12">
                             <div class="form-floating mb-3">
                                 <select id="activo" name="activo" class="form-control" required>
@@ -84,6 +87,7 @@
     </div>
 </div>
 
+
 <div id="modalServiciosVer"
     class="modal fade"
     data-bs-keyboard="false"
@@ -112,6 +116,7 @@
 
                             <thead class="table-primary">
                                 <tr class="p-3 mb-2 bg-secondary text-white text-center">
+                                    <th class="text-center">Codigo</th>
                                     <th class="text-center">Servicio</th>
                                     <th class="text-center">Precio</th>
                                     <th class="text-center">Descripción</th>
