@@ -12,6 +12,19 @@ class Cita
         $this->conexion = Conexion::conectar();
     }
 
+   
+    public function autoActualizarCitasAtendidas(): void
+    {
+        try {
+            $sql = "UPDATE cita 
+                    SET estado = 'atendida'
+                    WHERE estado IN ('programada','confirmada')
+                    AND CONCAT(fecha_cita, ' ', hora_cita) <= (NOW() - INTERVAL 1 HOUR)";
+            $this->conexion->query($sql);
+        } catch (Throwable $e) {
+            error_log("Error autoupdate citas: " . $e->getMessage());
+        }
+    }
 
     public function buscarPacientePorCorreo(string $correo): ?array
     {
@@ -26,7 +39,6 @@ class Cita
             $stmt->execute();
 
             return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
-
         } catch (Throwable $e) {
             error_log("Error buscarPacientePorCorreo: " . $e->getMessage());
             return null;
@@ -36,6 +48,8 @@ class Cita
     public function getCitas(): array
     {
         try {
+            $this->autoActualizarCitasAtendidas();
+
             $sql = "SELECT 
                         c.id_cita,
                         c.fecha_cita,
@@ -53,13 +67,11 @@ class Cita
                     ORDER BY c.fecha_cita, c.hora_cita";
 
             return $this->conexion->query($sql)->fetchAll(PDO::FETCH_ASSOC);
-
         } catch (Throwable $e) {
             error_log("Error getCitas: " . $e->getMessage());
             return [];
         }
     }
-
 
     public function getCitaById(int $id_cita): ?array
     {
@@ -85,12 +97,12 @@ class Cita
             $stmt->execute();
 
             return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
-
         } catch (Throwable $e) {
             error_log("Error getCitaById: " . $e->getMessage());
             return null;
         }
     }
+
 
     public function existeCita(int $id_odontologo, string $fecha_cita, string $hora_cita): bool
     {
@@ -108,7 +120,6 @@ class Cita
             $stmt->execute();
 
             return $stmt->fetchColumn() > 0;
-
         } catch (Throwable $e) {
             error_log("Error existeCita: " . $e->getMessage());
             return false;
@@ -133,21 +144,16 @@ class Cita
             $stmt->execute();
 
             return $stmt->fetchColumn() > 0;
-
         } catch (Throwable $e) {
             error_log("Error existeOtraCita: " . $e->getMessage());
             return false;
         }
     }
 
-
     public function hayDisponibilidad(int $id_odontologo, string $fecha_cita, string $hora_cita): bool
     {
         try {
-            
-
             return true;
-
         } catch (Throwable $e) {
             error_log("Error hayDisponibilidad: " . $e->getMessage());
             return false;
@@ -160,9 +166,12 @@ class Cita
         string $fecha_cita,
         string $hora_cita,
         ?string $motivo,
-        string $estado
+        string $estado,
+        string $token   
     ): bool {
         try {
+            $this->autoActualizarCitasAtendidas();
+
             $this->conexion->beginTransaction();
 
             $sql = "CALL sp_cita_insert(
@@ -171,7 +180,8 @@ class Cita
                         :fecha_cita,
                         :hora_cita,
                         :motivo,
-                        :estado
+                        :estado,
+                        :token
                     )";
 
             $stmt = $this->conexion->prepare($sql);
@@ -182,12 +192,12 @@ class Cita
             $stmt->bindValue(':hora_cita', $hora_cita);
             $stmt->bindValue(':motivo', $motivo ?: null);
             $stmt->bindValue(':estado', $estado);
+            $stmt->bindValue(':token', $token);  // <-- BIND CORRECTO
 
             $stmt->execute();
             $this->conexion->commit();
 
             return true;
-
         } catch (Throwable $e) {
             $this->conexion->rollBack();
             error_log("Error agregar cita: " . $e->getMessage());
@@ -205,6 +215,13 @@ class Cita
         string $estado
     ): bool {
         try {
+            $this->autoActualizarCitasAtendidas();
+
+            $fechaHora = "$fecha_cita $hora_cita";
+            if (strtotime($fechaHora) <= strtotime('-1 hour')) {
+                $estado = 'atendida';
+            }
+
             $this->conexion->beginTransaction();
 
             $sql = "CALL sp_cita_update(
@@ -231,7 +248,6 @@ class Cita
             $this->conexion->commit();
 
             return true;
-
         } catch (Throwable $e) {
             $this->conexion->rollBack();
             error_log("Error actualizar cita: " . $e->getMessage());
@@ -248,15 +264,16 @@ class Cita
             $stmt = $this->conexion->prepare($sql);
 
             $stmt->bindValue(':id_cita', $id_cita);
-            $stmt->execute();
+            $stmt
+->execute();
 
             $this->conexion->commit();
             return true;
-
         } catch (Throwable $e) {
             $this->conexion->rollBack();
             error_log("Error eliminar cita: " . $e->getMessage());
             return false;
         }
     }
+
 }

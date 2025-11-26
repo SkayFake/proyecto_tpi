@@ -1,6 +1,4 @@
-<!-- ============================================================
-     MODAL CITA (AGREGAR / EDITAR)
-=============================================================== -->
+
 <div id="modalCita"
      class="modal fade"
      data-bs-keyboard="false"
@@ -77,6 +75,13 @@
               </div>
             </div>
 
+            <div class="col-lg-12 text-end">
+    <button type="button" id="btnVerHorarios" class="btn btn-info mt-2">
+        Ver horarios disponibles
+    </button>
+</div>
+
+
             <!-- HORA -->
             <div class="col-lg-3 col-md-6">
               <div class="form-floating mb-3">
@@ -131,9 +136,7 @@
 </div>
 
 
-<!-- ============================================================
-     MODAL VER CITAS
-=============================================================== -->
+
 <div id="modalCitaVer"
      class="modal fade"
      data-bs-keyboard="false"
@@ -175,3 +178,25 @@
     </div>
   </div>
 </div>
+
+
+<!-- Modal HORARIOS -->
+<div class="modal fade" id="modalHorarios" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title" id="tituloHorarios">Horarios Disponibles</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <ul id="listaHorarios" class="list-group">
+          <!-- Aquí se llenan los horarios -->
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</div>
+

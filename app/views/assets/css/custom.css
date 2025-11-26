@@ -1,0 +1,6 @@
+.badge-rounded {
+    padding: 6px 12px;
+    border-radius: 12px !important;
+    font-weight: 600;
+    font-size: 0.8rem;
+}

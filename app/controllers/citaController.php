@@ -36,7 +36,6 @@ function validarDatosCitaBase($correo, $id_odontologo, $fecha, $hora, $motivo, $
         return "Debe seleccionar una fecha.";
     }
 
-    // Conversión correcta de fecha
     $fechaObj = DateTime::createFromFormat('Y-m-d', $fecha);
     $hoyObj   = new DateTime('today');
 
@@ -48,7 +47,6 @@ function validarDatosCitaBase($correo, $id_odontologo, $fecha, $hora, $motivo, $
         return "La fecha debe ser mayor a hoy.";
     }
 
-    // Domingo 
     if ((int)$fechaObj->format('w') === 0) {
         return "No se permiten citas los domingos.";
     }
@@ -56,6 +54,13 @@ function validarDatosCitaBase($correo, $id_odontologo, $fecha, $hora, $motivo, $
     if (!$hora) {
         return "Debe seleccionar una hora válida.";
     }
+
+   
+$minutos = intval(substr($hora, 3, 2));
+if ($minutos !== 0) {
+    return "Las citas solo pueden crearse en horas exactas (ejemplo: 09:00, 10:00).";
+}
+
 
     $h = intval(substr($hora, 0, 2));
     if ($h < 7 || $h > 17) {
@@ -74,46 +79,41 @@ try {
 
     switch ($opcion) {
 
-       
+        
         case 'listar':
+            $citaModel->autoActualizarCitasAtendidas();
             $rows = $citaModel->getCitas();
-            $response = ['status' => 'success', 'data' => $rows];
-            break;
-        /
-        case 'listar_odontologos':
-            $rows = $odontologoModel->getOdontologosSelect();
-            $response = ['status' => 'success', 'data' => $rows];
-            break;
+            echo json_encode(['status' => 'success', 'data' => $rows]);
+            exit;
 
+        case 'listar_odontologos':
+            echo json_encode([
+                'status' => 'success',
+                'data' => $odontologoModel->getOdontologosSelect()
+            ]);
+            exit;
 
         case 'buscar_paciente_correo':
 
             $correo = trim($_GET['correo'] ?? '');
-
-            if ($correo === '') {
-                errorJson("Debe ingresar un correo.");
-            }
+            if ($correo === '') errorJson("Debe ingresar un correo.");
 
             $paciente = $citaModel->buscarPacientePorCorreo($correo);
+            if (!$paciente) errorJson("No se encontró un paciente con ese correo.");
 
-            if (!$paciente) {
-                errorJson("No se encontró un paciente con ese correo.");
-            }
-
-            $response = ['status' => 'success', 'data' => $paciente];
-            break;
-
+            echo json_encode(['status' => 'success', 'data' => $paciente]);
+            exit;
         case 'obtener':
-            $id = intval($_GET['id'] ?? 0);
 
+            $id = intval($_GET['id'] ?? 0);
             if (!$id) errorJson("ID inválido.");
 
+            $citaModel->autoActualizarCitasAtendidas();
             $row = $citaModel->getCitaById($id);
-
             if (!$row) errorJson("Cita no encontrada.");
 
-            $response = ['status' => 'success', 'data' => $row];
-            break;
+            echo json_encode(['status' => 'success', 'data' => $row]);
+            exit;
 
         case 'agregar':
 
@@ -124,33 +124,39 @@ try {
             $motivo          = trim($_POST['motivo'] ?? '');
             $estado          = trim($_POST['estado'] ?? '');
 
-            // Validación general
             $valid = validarDatosCitaBase($correo_paciente, $id_odontologo, $fecha_cita, $hora_cita, $motivo, $estado);
             if ($valid !== true) errorJson($valid);
 
-            // Buscar paciente
             $paciente = $citaModel->buscarPacientePorCorreo($correo_paciente);
             if (!$paciente) errorJson("No existe un paciente con ese correo.");
 
             $id_paciente = $paciente['id_paciente'];
 
-            // Validar duplicado
             if ($citaModel->existeCita($id_odontologo, $fecha_cita, $hora_cita)) {
                 errorJson("Ya existe una cita con ese odontólogo en ese horario.");
             }
 
-            // Validar disponibilidad
             if (!$citaModel->hayDisponibilidad($id_odontologo, $fecha_cita, $hora_cita)) {
                 errorJson("El odontólogo no tiene disponibilidad en ese horario.");
             }
 
-            // Crear cita
-            $ok = $citaModel->agregar($id_paciente, $id_odontologo, $fecha_cita, $hora_cita, $motivo, $estado);
+            /* GENERAR TOKEN */
+            $token = bin2hex(random_bytes(16));
+
+            $ok = $citaModel->agregar(
+                $id_paciente,
+                $id_odontologo,
+                $fecha_cita,
+                $hora_cita,
+                $motivo,
+                $estado,
+                $token
+            );
 
             if (!$ok) errorJson("No se pudo crear la cita.");
 
-            $response = ['status' => 'success', 'message' => 'Cita creada exitosamente'];
-            break;
+            echo json_encode(['status' => 'success', 'message' => 'Cita creada exitosamente']);
+            exit;
 
         case 'actualizar':
 
@@ -164,33 +170,26 @@ try {
 
             if (!$id_cita) errorJson("ID inválido.");
 
-            // Obtener cita actual
             $cita = $citaModel->getCitaById($id_cita);
             if (!$cita) errorJson("Cita no encontrada.");
 
-            // No permitir editar citas atendidas
             if ($cita['estado'] === 'atendida') {
                 errorJson("No se puede editar una cita que ya fue atendida.");
             }
 
-            // Validación general
             $valid = validarDatosCitaBase($correo_paciente, $id_odontologo, $fecha_cita, $hora_cita, $motivo, $estado);
             if ($valid !== true) errorJson($valid);
 
-            // Paciente NO se puede cambiar
             $id_paciente = $cita['id_paciente'];
 
-            // Duplicado EXCEPTO esta misma cita
             if ($citaModel->existeOtraCita($id_cita, $id_odontologo, $fecha_cita, $hora_cita)) {
                 errorJson("Ya existe otra cita con ese odontólogo en ese horario.");
             }
 
-            // Validar disponibilidad
             if (!$citaModel->hayDisponibilidad($id_odontologo, $fecha_cita, $hora_cita)) {
                 errorJson("El odontólogo no tiene disponibilidad en ese horario.");
             }
 
-            // Actualizar
             $ok = $citaModel->actualizar(
                 $id_cita,
                 $id_paciente,
@@ -203,9 +202,8 @@ try {
 
             if (!$ok) errorJson("No se pudo actualizar la cita.");
 
-            $response = ['status' => 'success', 'message' => 'Cita actualizada correctamente'];
-            break;
-
+            echo json_encode(['status' => 'success', 'message' => 'Cita actualizada correctamente']);
+            exit;
 
         case 'eliminar':
 
@@ -213,15 +211,142 @@ try {
             if (!$id) errorJson("ID inválido.");
 
             $ok = $citaModel->eliminar($id);
-
             if (!$ok) errorJson("No se pudo eliminar.");
 
-            $response = ['status' => 'success', 'message' => 'Cita eliminada'];
-            break;
+            echo json_encode(['status' => 'success', 'message' => 'Cita eliminada']);
+            exit;
+
+
+        case 'validar_disponibilidad':
+
+            $id_odontologo = intval($_GET['id_odontologo'] ?? 0);
+            $fecha         = $_GET['fecha_cita'] ?? '';
+            $hora          = $_GET['hora_cita'] ?? '';
+
+            if (!$id_odontologo || !$fecha || !$hora) {
+                errorJson("Datos incompletos para validar disponibilidad.");
+            }
+
+            $rows = $citaModel->getCitas();
+
+            foreach ($rows as $r) {
+                if ($r['id_odontologo'] != $id_odontologo) continue;
+                if ($r['fecha_cita'] !== $fecha) continue;
+
+                $hNueva = strtotime($hora);
+                $hExistente = strtotime($r['hora_cita']);
+
+                if (abs($hNueva - $hExistente) < 3600) {
+                    errorJson("Debe existir al menos 1 hora entre citas del mismo odontólogo.");
+                }
+            }
+
+            echo json_encode(["status" => "success", "message" => "Disponible"]);
+            exit;
+
+            case 'horarios_disponibles':
+
+    $id_odontologo = intval($_GET['id_odontologo'] ?? 0);
+    $fecha         = $_GET['fecha'] ?? '';
+
+    if (!$id_odontologo || !$fecha) {
+        errorJson("Debe seleccionar odontólogo y fecha.");
+    }
+
+    // 1. Traer disponibilidad del odontólogo
+    require_once __DIR__ . '/../models/disponibilidadModel.php';
+    $dis = new Disponibilidad();
+
+    $rangos = $dis->listar(); // tú ya puedes hacer un método específico si gustas
+
+    $horas = [];
+
+    foreach ($rangos as $r) {
+
+        if ($r['id_odontologo'] != $id_odontologo) continue;
+        if ($fecha < $r['fecha_inicio'] || $fecha > $r['fecha_fin']) continue;
+
+        // Generar horas
+        $inicio = strtotime($r['hora_inicio']);
+        $fin    = strtotime($r['hora_fin']);
+
+        for ($h = $inicio; $h < $fin; $h += 3600) {
+            $horas[] = date("H:i", $h);
+        }
+    }
+
+    // 2. Excluir horas ya reservadas
+    $citas = $citaModel->getCitas();
+
+    foreach ($citas as $c) {
+        if ($c['id_odontologo'] == $id_odontologo && $c['fecha_cita'] == $fecha) {
+            $hora = substr($c['hora_cita'], 0, 5);
+            if (($key = array_search($hora, $horas)) !== false) {
+                unset($horas[$key]);
+            }
+        }
+    }
+
+    echo json_encode([
+        "status" => "success",
+        "data"   => array_values($horas)
+    ]);
+    exit;
+
+
+            case 'horas_disponibles':
+
+    $id_odontologo = intval($_GET['id_odontologo'] ?? 0);
+    $fecha         = $_GET['fecha'] ?? '';
+
+    if (!$id_odontologo || !$fecha) {
+        errorJson("Faltan datos para obtener horas disponibles.");
+    }
+
+    // Obtener disponibilidad del odontólogo
+    require_once __DIR__ . '/../models/disponibilidadModel.php';
+    $disModel = new Disponibilidad();
+    $disp = $disModel->obtenerPorFecha($id_odontologo, $fecha);
+
+    if (!$disp) {
+        errorJson("El odontólogo no tiene disponibilidad registrada para esta fecha.");
+    }
+
+    // Generar horas completas
+    $inicio = strtotime($disp['hora_inicio']);
+    $fin    = strtotime($disp['hora_fin']);
+
+    $horas = [];
+    for ($t = $inicio; $t < $fin; $t += 3600) {
+        $horas[] = date("H:i", $t);
+    }
+
+    // Obtener citas ocupadas
+    $citas = $citaModel->getCitas();
+    $ocupadas = [];
+
+    foreach ($citas as $c) {
+        if ($c['id_odontologo'] == $id_odontologo && $c['fecha_cita'] == $fecha) {
+            $ocupadas[] = substr($c['hora_cita'], 0, 5);
+        }
+    }
+
+    // Filtrar
+    $libres = array_values(array_diff($horas, $ocupadas));
+
+    echo json_encode([
+        "status" => "success",
+        "data"   => $libres
+    ]);
+    exit;
+
+
+
+        default:
+            errorJson("Opción no válida.");
     }
 
 } catch (Throwable $e) {
-    $response = ['status' => 'error', 'message' => $e->getMessage()];
+    echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
 }
 
-echo json_encode($response);

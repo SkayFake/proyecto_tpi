@@ -2,11 +2,17 @@ const CTRL_CITA = "app/controllers/citaController.php";
 
 $(document).ready(function () {
 
+  /* ==========================================================
+        LIMPIAR ERRORES
+  ========================================================== */
   function limpiarErroresFormularioCita() {
     $('#correo_paciente, #cita_id_odontologo, #fecha_cita, #hora_cita, #cita_estado, #motivo')
       .removeClass("is-invalid");
   }
 
+  /* ==========================================================
+        VALIDAR FORMULARIO COMPLETO
+  ========================================================== */
   async function validarFormularioCita(isEdit) {
 
     limpiarErroresFormularioCita();
@@ -22,20 +28,19 @@ $(document).ready(function () {
     const hoy = new Date();
     hoy.setHours(0, 0, 0, 0);
 
+    /* ======= VALIDACIONES LOCALES ======= */
+
     if (!emailRegex.test(correo)) {
       $("#correo_paciente").addClass("is-invalid");
       Swal.fire("Correo inválido", "Debe ingresar un correo válido", "warning");
       return false;
     }
 
-
-    
     if (!idOdontologo) {
       $("#cita_id_odontologo").addClass("is-invalid");
       Swal.fire("Dato requerido", "Debe seleccionar un odontólogo", "warning");
       return false;
     }
-
 
     if (motivo === "") {
       $("#motivo").addClass("is-invalid");
@@ -50,14 +55,12 @@ $(document).ready(function () {
     }
 
     const fechaObj = new Date(fechaCita);
-
     if (fechaObj <= hoy) {
       $("#fecha_cita").addClass("is-invalid");
       Swal.fire("Fecha inválida", "La fecha debe ser mayor a hoy", "warning");
       return false;
     }
 
-    // Domingos = 0
     if (fechaObj.getDay() === 0) {
       $("#fecha_cita").addClass("is-invalid");
       Swal.fire("Fecha inválida", "No se permiten citas los domingos", "warning");
@@ -70,21 +73,33 @@ $(document).ready(function () {
       return false;
     }
 
-    const [hh, mm] = horaCita.split(":").map(Number);
+const [hh, mm] = horaCita.split(":").map(Number);
+
+if (mm !== 0) {
+  $("#hora_cita").addClass("is-invalid");
+  Swal.fire(
+    "Hora inválida",
+    "Las citas solo se permiten en horas exactas (ejemplo: 09:00, 10:00).",
+    "warning"
+  );
+  return false;
+}
+
+
     if (hh < 7 || hh > 17) {
       $("#hora_cita").addClass("is-invalid");
       Swal.fire("Hora inválida", "Debe estar entre 07:00 y 17:00", "warning");
       return false;
     }
 
-
-    if (!estado || estado.trim() === "") {
+    if (!estado) {
       $("#cita_estado").addClass("is-invalid");
-      Swal.fire("Dato requerido", "Debe seleccionar el estado", "warning");
+      Swal.fire("Dato requerido", "Debe seleccionar un estado", "warning");
       return false;
     }
 
-    let esDuplicada = await $.ajax({
+    /* ======= VALIDAR DUPLICADO EN BD ======= */
+    const esDuplicada = await $.ajax({
       url: `${CTRL_CITA}?opcion=listar`,
       dataType: "json"
     }).then(r => {
@@ -100,6 +115,23 @@ $(document).ready(function () {
 
     if (esDuplicada) {
       Swal.fire("Cita duplicada", "Ya existe una cita con ese odontólogo en ese horario.", "error");
+      return false;
+    }
+
+    /* ======= VALIDAR DISPONIBILIDAD BACKEND ======= */
+    const disponible = await $.ajax({
+      url: `${CTRL_CITA}?opcion=validar_disponibilidad`,
+      type: "get",
+      data: {
+        id_odontologo: idOdontologo,
+        fecha_cita: fechaCita,
+        hora_cita: horaCita
+      },
+      dataType: "json"
+    }).catch(() => ({ status: "error", message: "Error al validar disponibilidad" }));
+
+    if (disponible.status !== "success") {
+      Swal.fire("Sin disponibilidad", disponible.message, "error");
       return false;
     }
 
@@ -135,6 +167,72 @@ $(document).ready(function () {
     });
   }
 
+  $("#cita_id_odontologo, #fecha_cita").on("change", function () {
+
+    const id = $("#cita_id_odontologo").val();
+    const fecha = $("#fecha_cita").val();
+
+    if (!id || !fecha) return;
+
+    $.getJSON(
+        `${CTRL_CITA}?opcion=horas_disponibles&id_odontologo=${id}&fecha=${fecha}`,
+        function (r) {
+
+            const $hora = $("#hora_cita");
+            $hora.empty();
+
+            if (r.status !== "success" || r.data.length === 0) {
+                $hora.append(`<option value="">No hay horas disponibles</option>`);
+                return;
+            }
+
+            $hora.append(`<option value="">-- Selecciona una hora --</option>`);
+
+            r.data.forEach(h => {
+                $hora.append(`<option value="${h}">${h}</option>`);
+            });
+        }
+    );
+});
+
+
+const modalHorarios = new bootstrap.Modal(document.getElementById("modalHorarios"));
+
+$("#btnVerHorarios").on("click", function () {
+
+    const idOdont = $("#cita_id_odontologo").val();
+    const fecha   = $("#fecha_cita").val();
+
+    if (!idOdont || !fecha) {
+        Swal.fire("Faltan datos", "Selecciona odontólogo y fecha", "warning");
+        return;
+    }
+
+    $.ajax({
+        url: `${CTRL_CITA}?opcion=horarios_disponibles`,
+        type: "get",
+        data: { id_odontologo: idOdont, fecha },
+        dataType: "json",
+        success: function (r) {
+
+            const $lista = $("#listaHorarios");
+            $lista.empty();
+
+            if (r.status !== "success" || r.data.length === 0) {
+                $lista.append(`<li class="list-group-item text-center">No hay horarios disponibles</li>`);
+            } else {
+                r.data.forEach(hora => {
+                    $lista.append(`<li class="list-group-item">${hora}</li>`);
+                });
+            }
+
+            modalHorarios.show();
+        }
+    });
+
+});
+
+
   $("#correo_paciente").on("blur", function () {
     const correo = $(this).val().trim();
     if (correo === "") return;
@@ -154,13 +252,13 @@ $(document).ready(function () {
     );
   });
 
+
   const modalEditar = new bootstrap.Modal(document.getElementById("modalCita"));
   const modalVer    = new bootstrap.Modal(document.getElementById("modalCitaVer"));
 
   $("#modalCita").on("shown.bs.modal", function () {
     cargarOdontologosSelect();
   });
-
 
 
   let tabla = $("#tablaCitas").DataTable({
@@ -177,12 +275,42 @@ $(document).ready(function () {
       { data: "fecha_cita" },
       { data: "hora_cita" },
       { data: "motivo" },
-      { data: "estado" },
+
+      {  
+        data: "estado",
+        render: function (estado) {
+
+          if (!estado) {
+            return `<span class="badge bg-secondary">Sin estado</span>`;
+          }
+
+          estado = estado.toLowerCase();
+
+          if (estado === "programada") {
+            return `<span class="badge bg-primary">Programada</span>`;
+          }
+
+          if (estado === "confirmada") {
+            return `<span class="badge bg-info text-dark">Confirmada</span>`;
+          }
+
+          if (estado === "atendida") {
+            return `<span class="badge bg-success">Atendida</span>`;
+          }
+
+          if (estado === "cancelada") {
+            return `<span class="badge bg-danger">Cancelada</span>`;
+          }
+
+          return `<span class="badge bg-secondary">${estado}</span>`;
+        }
+      },
+
       {
         data: null,
         className: "text-center",
         render: row => `
-          <button class="btn mb-2 btn-warning  btn-editar"  data-id="${row.id_cita}">Editar</button>
+          <button class="btn mb-2 btn-warning btn-editar" data-id="${row.id_cita}">Editar</button>
           <button class="btn btn-danger btn-eliminar" data-id="${row.id_cita}">Eliminar</button>`
       }
     ]
@@ -194,6 +322,7 @@ $(document).ready(function () {
     $("#formCita")[0].reset();
     $("#id_cita").val("");
     $("#id_paciente").val("");
+
     limpiarErroresFormularioCita();
 
     $("#correo_paciente").prop("readonly", false);
@@ -244,6 +373,7 @@ $(document).ready(function () {
       }
 
       const c = r.data;
+
       if (c.estado === "atendida") {
         Swal.fire("No permitido", "No se puede editar una cita ya atendida", "error");
         return;
@@ -251,7 +381,6 @@ $(document).ready(function () {
 
       $("#tituloCita").text("Editar Cita");
       $("#id_cita").val(c.id_cita);
-
 
       $("#correo_paciente").val(c.correo_paciente).prop("readonly", true);
       $("#nombre_paciente").val(c.nombre_paciente).prop("readonly", true);
@@ -268,7 +397,6 @@ $(document).ready(function () {
       modalEditar.show();
     });
   });
-
 
   $("#tablaCitas").on("click", ".btn-eliminar", function () {
     const id = $(this).data("id");

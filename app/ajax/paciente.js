@@ -209,7 +209,6 @@ $(document).ready(function () {
     });
   });
 
-  Editar paciente 
   $('#tablaPacientes').on('click', '.btn-editar', function () {
     const id = $(this).data('id');
 
@@ -237,7 +236,7 @@ $(document).ready(function () {
     });
   });
 
-  Eliminar paciente 
+
   $('#tablaPacientes').on('click', '.btn-eliminar', function () {
     const id = $(this).data('id');
 

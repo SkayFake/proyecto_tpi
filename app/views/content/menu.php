@@ -25,6 +25,7 @@
   <link href="<?php echo APP_URL; ?>app/views/assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
 
   <link href="<?php echo APP_URL; ?>app/views/assets/css/main.css" rel="stylesheet">
+  
 </head>
 
 <body class="index-page">
@@ -85,8 +86,15 @@
 
             <li class="dropdown"><a href="#"><span>Servicios</span><i class="bi bi-chevron-down toggle-dropdown"></i></a>
               <ul>
-                <li><a href="#" id="btnNuevoServicio" data-bs-toggle="modal" data-bs-target="#modalServicio">Agregar Odontograma</a></li>
-                <li><a href="#" id="btnVerServicios" data-bs-toggle="modal" data-bs-target="#modalServicioVer">Ver Odontogramas</a></li>
+                <li><a href="#" id="btnNuevoServicio" data-bs-toggle="modal" data-bs-target="#modalServicio">Agregar Servicios</a></li>
+                <li><a href="#" id="btnVerServicios" data-bs-toggle="modal" data-bs-target="#modalServicioVer">Ver Servicios</a></li>
+              </ul>
+            </li>
+
+            <li class="dropdown"><a href="#"><span>Disponibilidad</span><i class="bi bi-chevron-down toggle-dropdown"></i></a>
+              <ul>
+                <li><a href="#" id="btnNuevaDisponibilidad" data-bs-toggle="modal" data-bs-target="#modalDisponibilidad">Agregar Disponibilidad</a></li>
+                <li><a href="#" id="btnVerDisponibilidad" data-bs-toggle="modal" data-bs-target="#modalDisponibilidadVer">Ver Disponibilidad</a></li>
               </ul>
             </li>
             <li><a href="#contact">Contacto</a></li>
@@ -1060,6 +1068,7 @@
 <script src="<?php echo APP_URL; ?>app/ajax/cita.js"></script>
 <script src="<?php echo APP_URL; ?>app/ajax/odontograma.js"></script>
 <script src="<?php echo APP_URL; ?>app/ajax/servicio.js"></script>
+<script src="<?php echo APP_URL; ?>app/ajax/disponibilidad.js"></script>
 
 <?php include 'app/views/content/paciente.php'; ?>
 <?php include 'app/views/content/ver_paciente.php'; ?>
@@ -1068,6 +1077,7 @@
 <?php include 'app/views/content/cita.php'; ?>
 <?php include 'app/views/content/odontograma.php'; ?>
 <?php include 'app/views/content/servicio.php'; ?>
+<?php include 'app/views/content/disponibilidad.php'; ?>
 
 </body>
 </html>
