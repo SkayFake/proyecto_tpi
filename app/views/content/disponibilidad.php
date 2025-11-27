@@ -66,6 +66,12 @@
               </div>
             </div>
 
+            <div class="mb-3">
+  <label for="cupo" class="form-label">Cupo</label>
+  <input type="number" class="form-control" id="cupo" name="cupo" required min="1">
+</div>
+
+
             
 
             <!-- NOTAS -->
@@ -122,6 +128,7 @@
               <th>Hora fin</th>
               
               <th>Notas</th>
+              <th>Cupo</th>
               <th class="notexport">Acciones</th>
             </tr>
           </thead>

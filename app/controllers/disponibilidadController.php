@@ -18,9 +18,9 @@ function errorJson(string $msg)
 }
 
 
-function validarDisponibilidad($id_odontologo, $fi, $ff, $hi, $hf)
+function validarDisponibilidad($id_odontologo, $fi, $ff, $hi, $hf, $cupo)
 {
-    if (!$id_odontologo || !$fi || !$ff || !$hi || !$hf)
+    if (!$id_odontologo || !$fi || !$ff || !$hi || !$hf || !$cupo)
         return "Debe completar todos los campos.";
 
     // Horas exactas XX:00
@@ -54,8 +54,13 @@ function validarDisponibilidad($id_odontologo, $fi, $ff, $hi, $hf)
         $inicio->modify("+1 day");
     }
 
+    // Validación de cupo
+    if ($cupo <= 0)
+        return "El cupo debe ser mayor que 0.";
+
     return true;
 }
+
 
 
 
@@ -84,58 +89,61 @@ try {
 
             echo json_encode(["status" => "success", "data" => $row]);
             break;
+case "agregar":
 
-        case "agregar":
+    $id_odontologo = intval($_POST['id_odontologo']);
+    $fi = trim($_POST['fecha_inicio']);
+    $ff = trim($_POST['fecha_fin']);
+    $hi = trim($_POST['hora_inicio']);
+    $hf = trim($_POST['hora_fin']);
+    $notas = trim($_POST['notas'] ?? '');
+    $cupo = intval($_POST['cupo']); 
 
-            $id_odontologo = intval($_POST['id_odontologo']);
-            $fi = trim($_POST['fecha_inicio']);
-            $ff = trim($_POST['fecha_fin']);
-            $hi = trim($_POST['hora_inicio']);
-            $hf = trim($_POST['hora_fin']);
-            $notas = trim($_POST['notas'] ?? '');
+    $valid = validarDisponibilidad($id_odontologo, $fi, $ff, $hi, $hf, $cupo);
+    if ($valid !== true) errorJson($valid);
 
-            $valid = validarDisponibilidad($id_odontologo, $fi, $ff, $hi, $hf);
-            if ($valid !== true) errorJson($valid);
+    if ($disModel->existeTraslapeCompleto($id_odontologo, $fi, $ff, $hi, $hf)) {
+        errorJson("Esta disponibilidad se cruza con otra existente.");
+    }
 
-            if ($disModel->existeTraslapeCompleto($id_odontologo, $fi, $ff, $hi, $hf)) {
-                errorJson("Esta disponibilidad se cruza con otra existente.");
-            }
+    $ok = $disModel->agregar($id_odontologo, $fi, $ff, $hi, $hf, $notas, $cupo); // Pasar el cupo al modelo
 
-            $ok = $disModel->agregar($id_odontologo, $fi, $ff, $hi, $hf, $notas);
+    echo json_encode([
+        "status"  => $ok ? "success" : "error",
+        "message" => $ok ? "Disponibilidad creada" : "No se pudo crear"
+    ]);
+    break;
 
-            echo json_encode([
-                "status"  => $ok ? "success" : "error",
-                "message" => $ok ? "Disponibilidad creada" : "No se pudo crear"
-            ]);
-            break;
 
        
         case "actualizar":
 
-            $id = intval($_POST['id_disponibilidad']);
-            if (!$id) errorJson("ID inválido.");
+    $id = intval($_POST['id_disponibilidad']);
+    if (!$id) errorJson("ID inválido.");
 
-            $id_odontologo = intval($_POST['id_odontologo']);
-            $fi = trim($_POST['fecha_inicio']);
-            $ff = trim($_POST['fecha_fin']);
-            $hi = trim($_POST['hora_inicio']);
-            $hf = trim($_POST['hora_fin']);
-            $notas = trim($_POST['notas'] ?? '');
+    $id_odontologo = intval($_POST['id_odontologo']);
+    $fi = trim($_POST['fecha_inicio']);
+    $ff = trim($_POST['fecha_fin']);
+    $hi = trim($_POST['hora_inicio']);
+    $hf = trim($_POST['hora_fin']);
+    $notas = trim($_POST['notas'] ?? '');
+    $cupo = intval($_POST['cupo']); 
 
-            $valid = validarDisponibilidad($id_odontologo, $fi, $ff, $hi, $hf);
-            if ($valid !== true) errorJson($valid);
+    $valid = validarDisponibilidad($id_odontologo, $fi, $ff, $hi, $hf, $cupo);
+    if ($valid !== true) errorJson($valid);
 
-            if ($disModel->existeTraslapeCompleto($id_odontologo, $fi, $ff, $hi, $hf, $id)) {
-                errorJson("El rango se traslapa con otra disponibilidad.");
-            }
+    if ($disModel->existeTraslapeCompleto($id_odontologo, $fi, $ff, $hi, $hf, $id)) {
+        errorJson("El rango se traslapa con otra disponibilidad.");
+    }
 
-            $ok = $disModel->actualizar($id, $id_odontologo, $fi, $ff, $hi, $hf, $notas);
+    $ok = $disModel->actualizar($id, $id_odontologo, $fi, $ff, $hi, $hf, $notas, $cupo); 
 
-            echo json_encode([
-                "status"  => $ok ? "success" : "error",
-                "message" => $ok ? "Disponibilidad actualizada" : "No se pudo actualizar"
-            ]);
-            break;
+    echo json_encode([
+        "status"  => $ok ? "success" : "error",
+        "message" => $ok ? "Disponibilidad actualizada" : "No se pudo actualizar"
+    ]);
+    break;
+
 
        
         case "eliminar":

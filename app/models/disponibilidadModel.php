@@ -154,14 +154,14 @@ class Disponibilidad
     }
 
 
-    public function agregar(int $id_odontologo, string $fecha_inicio, string $fecha_fin,
-                        string $hora_inicio, string $hora_fin, ?string $notas): bool
+  public function agregar(int $id_odontologo, string $fecha_inicio, string $fecha_fin,
+                        string $hora_inicio, string $hora_fin, ?string $notas, int $cupo): bool
 {
     try {
         $sql = "INSERT INTO disponibilidad
-                (id_odontologo, fecha_inicio, fecha_fin, hora_inicio, hora_fin, notas)
+                (id_odontologo, fecha_inicio, fecha_fin, hora_inicio, hora_fin, notas, cupo)
                 VALUES
-                (:id_odontologo, :fecha_inicio, :fecha_fin, :hora_inicio, :hora_fin, :notas)";
+                (:id_odontologo, :fecha_inicio, :fecha_fin, :hora_inicio, :hora_fin, :notas, :cupo)";
 
         $stmt = $this->conexion->prepare($sql);
 
@@ -171,6 +171,7 @@ class Disponibilidad
         $stmt->bindValue(":hora_inicio", $hora_inicio, PDO::PARAM_STR);
         $stmt->bindValue(":hora_fin", $hora_fin, PDO::PARAM_STR);
         $stmt->bindValue(":notas", $notas, PDO::PARAM_STR);
+        $stmt->bindValue(":cupo", $cupo, PDO::PARAM_INT); 
 
         return $stmt->execute();
 
@@ -181,8 +182,9 @@ class Disponibilidad
 }
 
 
- public function actualizar(int $id, int $id_odontologo, string $fecha_inicio, string $fecha_fin,
-                           string $hora_inicio, string $hora_fin, ?string $notas): bool
+
+public function actualizar(int $id, int $id_odontologo, string $fecha_inicio, string $fecha_fin,
+                           string $hora_inicio, string $hora_fin, ?string $notas, int $cupo): bool
 {
     try {
         $sql = "UPDATE disponibilidad
@@ -191,7 +193,8 @@ class Disponibilidad
                     fecha_fin = :fecha_fin,
                     hora_inicio = :hora_inicio,
                     hora_fin = :hora_fin,
-                    notas = :notas
+                    notas = :notas,
+                    cupo = :cupo
                 WHERE id_disponibilidad = :id_disponibilidad";
 
         $stmt = $this->conexion->prepare($sql);
@@ -203,6 +206,7 @@ class Disponibilidad
         $stmt->bindValue(":hora_inicio", $hora_inicio, PDO::PARAM_STR);
         $stmt->bindValue(":hora_fin", $hora_fin, PDO::PARAM_STR);
         $stmt->bindValue(":notas", $notas, PDO::PARAM_STR);
+        $stmt->bindValue(":cupo", $cupo, PDO::PARAM_INT); // Agregar cupo
 
         return $stmt->execute();
 
@@ -211,6 +215,8 @@ class Disponibilidad
         return false;
     }
 }
+
+
 
 
 
@@ -251,5 +257,75 @@ class Disponibilidad
         return null;
     }
 }
+
+public function hayCupoDisponible(int $id_odontologo, string $fecha_inicio, string $fecha_fin): bool
+{
+    try {
+        // Consultamos la disponibilidad existente para el odontólogo y las fechas especificadas
+        $sql = "SELECT cupo 
+                FROM disponibilidad 
+                WHERE id_odontologo = :id_odontologo
+                  AND fecha_inicio <= :fecha_fin
+                  AND fecha_fin >= :fecha_inicio
+                  AND cupo > 0";
+
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindValue(":id_odontologo", $id_odontologo, PDO::PARAM_INT);
+        $stmt->bindValue(":fecha_inicio", $fecha_inicio, PDO::PARAM_STR);
+        $stmt->bindValue(":fecha_fin", $fecha_fin, PDO::PARAM_STR);
+        $stmt->execute();
+
+        $cupo = $stmt->fetchColumn();
+
+        // Si el resultado es mayor a 0, significa que hay cupos disponibles
+        return $cupo > 0;
+
+    } catch (Throwable $e) {
+        error_log("Error verificar disponibilidad de cupo: " . $e->getMessage());
+        return false;
+    }
+}
+
+public function reservarCupo(int $id_disponibilidad): bool
+{
+    try {
+        // Decrementar el cupo disponible en la tabla de disponibilidad
+        $sql = "UPDATE disponibilidad
+                SET cupo = cupo - 1
+                WHERE id_disponibilidad = :id_disponibilidad
+                  AND cupo > 0"; // Solo decrementa si hay cupos disponibles
+
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindValue(":id_disponibilidad", $id_disponibilidad, PDO::PARAM_INT);
+
+        return $stmt->execute();
+
+    } catch (Throwable $e) {
+        error_log("Error reservar cupo: " . $e->getMessage());
+        return false;
+    }
+}
+
+
+public function liberarCupo(int $id_disponibilidad): bool
+{
+    try {
+        // Incrementar el cupo disponible en la tabla de disponibilidad
+        $sql = "UPDATE disponibilidad
+                SET cupo = cupo + 1
+                WHERE id_disponibilidad = :id_disponibilidad";
+
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindValue(":id_disponibilidad", $id_disponibilidad, PDO::PARAM_INT);
+
+        return $stmt->execute();
+
+    } catch (Throwable $e) {
+        error_log("Error liberar cupo: " . $e->getMessage());
+        return false;
+    }
+}
+
+
 
 }
