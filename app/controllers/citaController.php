@@ -20,6 +20,12 @@ function errorJson(string $msg)
 
 function validarDatosCitaBase($correo, $id_odontologo, $fecha, $hora, $motivo, $estado)
 {
+     error_log("Correo: " . $correo);
+    error_log("Odontólogo: " . $id_odontologo);
+    error_log("Fecha Cita: " . $fecha);
+    error_log("Hora Cita: " . $hora);
+    error_log("Motivo: " . $motivo);
+    error_log("Estado: " . $estado);
     if (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
         return "El correo del paciente no es válido.";
     }
