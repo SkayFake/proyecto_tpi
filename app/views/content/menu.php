@@ -97,6 +97,21 @@
                 <li><a href="#" id="btnVerDisponibilidad" data-bs-toggle="modal" data-bs-target="#modalDisponibilidadVer">Ver Disponibilidad</a></li>
               </ul>
             </li>
+
+            <li class="dropdown"><a href="#"><span>Pagos</span><i class="bi bi-chevron-down toggle-dropdown"></i></a>
+              <ul>
+                <li><a href="#" id="btnNuevoPago" data-bs-toggle="modal" data-bs-target="#modalPago">Agregar</a></li>
+                <li><a href="#" id="btnVerPago" data-bs-toggle="modal" data-bs-target="#modalPagoVer">Ver</a></li>
+              </ul>
+            </li>
+
+            <li class="dropdown"><a href="#"><span>Tratamientos</span><i class="bi bi-chevron-down toggle-dropdown"></i></a>
+              <ul>
+                <li><a href="#" id="btnNuevoTratamiento" data-bs-toggle="modal" data-bs-target="#modalTratamiento">Agregar</a></li>
+                <li><a href="#" id="btnVerTratamiento" data-bs-toggle="modal" data-bs-target="#modalTratamientoVer">Ver</a></li>
+              </ul>
+            </li>
+
             <li><a href="#contact">Contacto</a></li>
           </ul>
           <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
@@ -1069,6 +1084,10 @@
 <script src="<?php echo APP_URL; ?>app/ajax/odontograma.js"></script>
 <script src="<?php echo APP_URL; ?>app/ajax/servicio.js"></script>
 <script src="<?php echo APP_URL; ?>app/ajax/disponibilidad.js"></script>
+<script src="<?php echo APP_URL; ?>app/ajax/tratamiento.js"></script>
+<!--<script src="<?php echo APP_URL; ?>app/ajax/pago.js"></script>-->
+
+
 
 <?php include 'app/views/content/paciente.php'; ?>
 <?php include 'app/views/content/ver_paciente.php'; ?>
@@ -1078,6 +1097,8 @@
 <?php include 'app/views/content/odontograma.php'; ?>
 <?php include 'app/views/content/servicio.php'; ?>
 <?php include 'app/views/content/disponibilidad.php'; ?>
+<?php include 'app/views/content/tratamiento.php'; ?>
+<?php include 'app/views/content/pago.php'; ?>
 
 </body>
 </html>

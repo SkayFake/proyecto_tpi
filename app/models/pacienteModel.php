@@ -112,6 +112,8 @@ class Paciente {
     }
 
     
+
+    
     public function actualizar(
         int $id_paciente,
         string $nombre,
