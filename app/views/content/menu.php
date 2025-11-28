@@ -124,9 +124,7 @@
           <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
         </nav>
 
-        <a class="cta-btn" href="#appointment">Agendar Cita</a>
-      </div>
-    </div>
+       
   </header>
 
   <main class="main">
