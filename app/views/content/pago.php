@@ -20,50 +20,50 @@
           <!-- Hidden IDs -->
           <input type="hidden" id="id_pago" name="id_pago">
           <input type="hidden" id="id_paciente" name="id_paciente">
-          <input type="hidden" id="id_tratamiento" name="id_tratamiento">
 
           <div class="row g-3">
 
-            <!-- CORREO DEL PACIENTE - SIN READONLY INICIAL -->
+            <!-- CORREO DEL PACIENTE -->
             <div class="col-lg-6 col-md-12">
               <div class="form-floating mb-3">
                 <input class="form-control"
-                       id="correo_paciente"
-                       name="correo_paciente"
+                       id="correo_pacientepa"
+                       name="correo_pacientepa"
                        type="email"
                        placeholder="correo@ejemplo.com"
                        required>
-                <label for="correo_paciente">Correo del paciente</label>
+                <label for="correo_pacientepa">Correo del paciente</label>
               </div>
             </div>
 
-            <!-- NOMBRE DEL PACIENTE (READONLY) -->
+            <!-- NOMBRE DEL PACIENTE -->
             <div class="col-lg-6 col-md-12">
               <div class="form-floating mb-3">
                 <input class="form-control"
-                       id="nombre_paciente"
-                       name="nombre_paciente"
+                       id="nombre_pacientepa"
+                       name="nombre_pacientepa"
                        type="text"
-                       placeholder=""
+                       placeholder="Nombre del paciente"
                        readonly>
-                <label for="nombre_paciente">Nombre del paciente</label>
+                <label for="nombre_pacientepa">Nombre del paciente</label>
               </div>
             </div>
 
-            <!-- NOMBRE DEL TRATAMIENTO (SELECT) -->
+            <!-- TRATAMIENTO -->
             <div class="col-lg-6 col-md-12">
-              <div class="form-floating mb-3">
-                <select class="form-select"
-                        id="nombre_tratamiento"
-                        name="nombre_tratamiento"
-                        required>
-                  <option value="" disabled hidden selected>-- Selecciona un tratamiento --</option>
-                </select>
-                <label for="nombre_tratamiento">Nombre del tratamiento</label>
-              </div>
-            </div>
+  <div class="form-floating mb-3">
+    <select class="form-select"
+            id="nombre_tratamientota"
+            name="id_tratamiento"
+            required>
+      <option value="" disabled hidden selected>-- Selecciona un tratamiento --</option>
+    </select>
+    <label for="nombre_tratamientota">Nombre del tratamiento</label>
+  </div>
+</div>
 
-            <!-- METODO DE PAGO -->
+
+            <!-- MÉTODO DE PAGO -->
             <div class="col-lg-6 col-md-12">
               <div class="form-floating mb-3">
                 <select id="metodo_pago"
@@ -121,7 +121,6 @@
               </div>
             </div>
 
-
           </div><!-- /.row -->
         </div><!-- /.modal-body -->
 
@@ -134,6 +133,7 @@
     </div>
   </div>
 </div>
+
 
 
 
@@ -167,7 +167,6 @@
               <th>Estado</th>
               <th>Referencia</th>
               <th>Fecha</th>
-              <th class="notexport">Acciones</th>
             </tr>
           </thead>
           <tbody>

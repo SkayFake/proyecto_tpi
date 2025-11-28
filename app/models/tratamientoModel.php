@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 require_once __DIR__ . "/../../config/conexion.php";
@@ -38,8 +39,8 @@ class Tratamiento
                     ORDER BY t.created_at DESC";
 
             return $this->conexion
-                        ->query($sql)
-                        ->fetchAll(PDO::FETCH_ASSOC);
+                ->query($sql)
+                ->fetchAll(PDO::FETCH_ASSOC);
         } catch (Throwable $e) {
             error_log("Error getTratamientos: " . $e->getMessage());
             return [];
@@ -284,18 +285,20 @@ class Tratamiento
     }
 
     public function getTratamientosSelect(): array
-{
-    try {
-        $sql = "SELECT id_servicio,nombre  AS nombre_tratamiento
-                FROM servicio
-                ORDER BY nombre ASC";
-        
-        return $this->conexion
-                    ->query($sql)
-                    ->fetchAll(PDO::FETCH_ASSOC);
-    } catch (Throwable $e) {
-        error_log("Error getTratamientos: " . $e->getMessage());
-        return [];
+    {
+        try {
+            $sql = "SELECT s.id_servicio,t.id_tratamiento, s.nombre  AS nombre_tratamiento
+FROM tratamiento t
+INNER JOIN servicio s
+ON s.id_servicio = t.id_servicio
+ORDER BY nombre ASC";
+
+            return $this->conexion
+                ->query($sql)
+                ->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Throwable $e) {
+            error_log("Error getTratamientos: " . $e->getMessage());
+            return [];
+        }
     }
-}
 }

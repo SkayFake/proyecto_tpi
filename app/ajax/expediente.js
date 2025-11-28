@@ -1,259 +1,222 @@
-const CTRL_EXPEDIENTE = "app/controllers/expedienteController.php";;
+const CTRL_EXPEDIENTE = "app/controllers/expedienteController.php";
+
 
 $(document).ready(function () {
 
-  /* ==========================================================
-        VARIABLES GLOBALES
-  ========================================================== */
-  let pacienteActual = null;
-  const modalBuscar = new bootstrap.Modal(document.getElementById("modalBuscarPaciente"));
+    let pacienteActual = null;
+    const modalBuscar = new bootstrap.Modal(document.getElementById("modalBuscarPaciente"));
 
-  /* ==========================================================
+    /* ==========================================================
         LIMPIAR ERRORES
-  ========================================================== */
-  function limpiarErroresFormulario() {
-    $('#nombre_paciente1').removeClass("is-invalid");
-  }
+    ========================================================== */
+    function limpiarErrores() {
+        $("#nombre_paciente1").removeClass("is-invalid");
+    }
 
-  /* ==========================================================
+    /* ==========================================================
         VALIDAR FORMULARIO
-  ========================================================== */
-  function validarFormulario() {
-    limpiarErroresFormulario();
+    ========================================================== */
+    function validarFormulario() {
+        limpiarErrores();
 
-    const nombrePaciente = $("#nombre_paciente1").val().trim();
-
-    if (nombrePaciente === "") {
-      $("#nombre_paciente1").addClass("is-invalid");
-      Swal.fire("Campo requerido", "Debe ingresar el nombre del paciente", "warning");
-      return false;
-    }
-
-    return true;
-  }
-
-  /* ==========================================================
-        BUSCAR EXPEDIENTE
-  ========================================================== */
-  $("#formBuscarPaciente").on("submit", async function (e) {
-    e.preventDefault();
-
-    if (!validarFormulario()) return;
-
-    const nombrePaciente = $("#nombre_paciente1").val().trim();
-
-    // Mostrar loading
-    Swal.fire({
-      title: 'Buscando...',
-      text: 'Consultando expediente del paciente',
-      allowOutsideClick: false,
-      didOpen: () => {
-        Swal.showLoading();
-      }
-    });
-
-    $.ajax({
-      url: `${CTRL_EXPEDIENTE}?action=buscar`,
-      type: "post",
-      data: JSON.stringify({ nombre_paciente: nombrePaciente }),
-      contentType: "application/json",
-      dataType: "json",
-      success: function (r) {
-        if (r.success) {
-          pacienteActual = r.paciente;
-          mostrarResultados(r);
-          
-          modalBuscar.hide();
-          $("#formBuscarPaciente")[0].reset();
-          limpiarErroresFormulario();
-          
-          Swal.close();
-        } else {
-          Swal.fire({
-            icon: 'error',
-            title: 'No encontrado',
-            text: r.message || 'No se encontró el expediente del paciente',
-            confirmButtonColor: '#667eea'
-          });
+        const nombre = $("#nombre_paciente1").val().trim();
+        if (nombre === "") {
+            $("#nombre_paciente1").addClass("is-invalid");
+            Swal.fire("Campo requerido", "Debe ingresar un nombre de paciente", "warning");
+            return false;
         }
-      },
-      error: function () {
+        return true;
+    }
+
+    /* ==========================================================
+        BUSCAR EXPEDIENTE (AJAX)
+    ========================================================== */
+    $("#formBuscarPaciente").on("submit", function (e) {
+        e.preventDefault();
+
+        if (!validarFormulario()) return;
+
+        const nombre = $("#nombre_paciente1").val().trim();
+        console.log("Buscando expediente para:", nombre);
+
         Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'Ocurrió un error al buscar el expediente',
-          confirmButtonColor: '#667eea'
+            title: "Buscando...",
+            text: "Consultando expediente del paciente",
+            allowOutsideClick: false,
+            didOpen: () => Swal.showLoading()
         });
-      }
-    });
-  });
 
-  /* ==========================================================
+        $.ajax({
+            url: `${CTRL_EXPEDIENTE}?action=buscar`,
+            method: "POST",
+            data: JSON.stringify({ nombre_paciente: nombre }),
+            contentType: "application/json",
+            dataType: "json",
+
+            success: function (r) {
+                if (!r.success) {
+                    Swal.fire("No encontrado", r.message, "error");
+                    return;
+                }
+
+                pacienteActual = r.paciente;
+                mostrarResultados(r);
+
+                modalBuscar.hide();
+                $("#formBuscarPaciente")[0].reset();
+                limpiarErrores();
+
+                Swal.close();
+            },
+
+            error: function (xhr) {
+    console.log("ERROR AJAX => ", xhr.responseText);
+    Swal.fire("Error", xhr.responseText, "error");
+}
+
+        });
+    });
+
+    /* ==========================================================
         MOSTRAR RESULTADOS
-  ========================================================== */
-  function mostrarResultados(data) {
-    if (!data || !data.paciente) {
-      console.error('Datos del paciente no disponibles');
-      return;
+    ========================================================== */
+    function mostrarResultados({ paciente, odontogramas, tratamientos }) {
+
+        $("#resultadosSection").slideDown();
+
+        $("#nombrePacienteHeader").text(paciente.nombre);
+
+        mostrarDatosPaciente(paciente);
+        mostrarOdontogramas(odontogramas);
+        mostrarTratamientos(tratamientos);
+
+        $('html, body').animate({
+            scrollTop: $("#resultadosSection").offset().top - 15
+        }, 400);
     }
 
-    // Mostrar sección de resultados
-    $("#resultadosSection").show();
+    /* ==========================================================
+        MOSTRAR DATOS PERSONALES
+    ========================================================== */
+    function mostrarDatosPaciente(p) {
 
-    // Actualizar nombre en header
-    $("#nombrePacienteHeader").text(data.paciente.nombre || 'Sin nombre');
+        const campos = [
+            { label: "DUI", value: p.dui },
+            { label: "Fecha de Nacimiento", value: p.fecha_nacimiento },
+            { label: "Sexo", value: p.sexo },
+            { label: "Teléfono", value: p.telefono },
+            { label: "Correo", value: p.correo },
+            { label: "Dirección", value: p.direccion }
+        ];
 
-    // Mostrar datos del paciente
-    mostrarDatosPaciente(data.paciente);
+        let html = "";
+        campos.forEach(c => {
+            html += `
+                <div class="col-lg-4 col-md-6 mb-3">
+                    <div class="info-item">
+                        <strong>${c.label}:</strong><br>
+                        ${c.value || "N/A"}
+                    </div>
+                </div>`;
+        });
 
-    // Mostrar odontogramas
-    mostrarOdontogramas(data.odontogramas || []);
+        if (p.notas) {
+            html += `
+                <div class="col-12">
+                    <div class="info-item">
+                        <strong>Notas:</strong><br>
+                        ${p.notas.replace(/\n/g, "<br>")}
+                    </div>
+                </div>`;
+        }
 
-    // Mostrar tratamientos
-    mostrarTratamientos(data.tratamientos || []);
-
-    // Scroll suave a resultados
-    $('html, body').animate({
-      scrollTop: $("#resultadosSection").offset().top - 20
-    }, 500);
-  }
-
-  /* ==========================================================
-        MOSTRAR DATOS DEL PACIENTE
-  ========================================================== */
-  function mostrarDatosPaciente(paciente) {
-    const campos = [
-      { label: 'DUI', value: paciente.dui },
-      { label: 'Fecha de Nacimiento', value: paciente.fecha_nacimiento },
-      { label: 'Sexo', value: paciente.sexo },
-      { label: 'Teléfono', value: paciente.telefono },
-      { label: 'Correo', value: paciente.correo },
-      { label: 'Dirección', value: paciente.direccion }
-    ];
-
-    let html = '';
-    campos.forEach(campo => {
-      html += `
-        <div class="col-lg-4 col-md-6 mb-3">
-          <div class="info-item">
-            <strong>${campo.label}:</strong><br>
-            ${campo.value || 'N/A'}
-          </div>
-        </div>
-      `;
-    });
-
-    if (paciente.notas) {
-      html += `
-        <div class="col-12">
-          <div class="info-item">
-            <strong>Notas del Paciente:</strong><br>
-            ${paciente.notas.replace(/\n/g, '<br>')}
-          </div>
-        </div>
-      `;
+        $("#datosPaciente").html(html);
     }
 
-    $("#datosPaciente").html(html);
-  }
-
-  /* ==========================================================
+    /* ==========================================================
         MOSTRAR ODONTOGRAMAS
-  ========================================================== */
-  function mostrarOdontogramas(odontogramas) {
-    const $tbody = $("#tablaOdontogramas tbody");
+    ========================================================== */
+    function mostrarOdontogramas(lista) {
+        const $tbody = $("#tablaOdontogramas tbody");
 
-    if (!odontogramas || odontogramas.length === 0) {
-      $tbody.html(`
-        <tr>
-          <td colspan="2" class="text-center text-muted py-4">
-            <i class="fas fa-inbox fa-2x mb-2"></i><br>
-            No hay odontogramas registrados
-          </td>
-        </tr>
-      `);
-      return;
+        if (lista.length === 0) {
+            $tbody.html(`
+                <tr>
+                    <td colspan="2" class="text-center text-muted py-3">
+                        <i class="fas fa-inbox fa-2x"></i><br>
+                        No hay odontogramas registrados
+                    </td>
+                </tr>`);
+            return;
+        }
+
+        let html = "";
+        lista.forEach(o => {
+            html += `
+                <tr>
+                    <td>${o.odontograma_fecha}</td>
+                    <td>${o.odontograma_observaciones || "Sin observaciones"}</td>
+                </tr>`;
+        });
+
+        $tbody.html(html);
     }
 
-    let html = '';
-    odontogramas.forEach(odon => {
-      html += `
-        <tr>
-          <td>${odon.odontograma_fecha || 'N/A'}</td>
-          <td>${odon.odontograma_observaciones || 'Sin observaciones'}</td>
-        </tr>
-      `;
-    });
-
-    $tbody.html(html);
-  }
-
-  /* ==========================================================
+    /* ==========================================================
         MOSTRAR TRATAMIENTOS
-  ========================================================== */
-  function mostrarTratamientos(tratamientos) {
-    const $tbody = $("#tablaTratamientos tbody");
+    ========================================================== */
+    function mostrarTratamientos(lista) {
+        const $tbody = $("#tablaTratamientos tbody");
 
-    if (!tratamientos || tratamientos.length === 0) {
-      $tbody.html(`
-        <tr>
-          <td colspan="3" class="text-center text-muted py-4">
-            <i class="fas fa-inbox fa-2x mb-2"></i><br>
-            No hay tratamientos registrados
-          </td>
-        </tr>
-      `);
-      return;
+        if (lista.length === 0) {
+            $tbody.html(`
+                <tr>
+                    <td colspan="3" class="text-center text-muted py-3">
+                        <i class="fas fa-inbox fa-2x"></i><br>
+                        No hay tratamientos registrados
+                    </td>
+                </tr>`);
+            return;
+        }
+
+        let html = "";
+        lista.forEach(t => {
+            html += `
+                <tr>
+                    <td>${t.tratamiento_nombre}</td>
+                    <td>
+                        <span class="badge bg-${t.tratamiento_estado === "completado" ? "success" : "warning"}">
+                            ${t.tratamiento_estado}
+                        </span>
+                    </td>
+                    <td>${t.tratamiento_notas || "Sin notas"}</td>
+                </tr>`;
+        });
+
+        $tbody.html(html);
     }
 
-    let html = '';
-    tratamientos.forEach(trat => {
-      const estadoClass = trat.tratamiento_estado === 'completado' ? 'success' : 'warning';
-      html += `
-        <tr>
-          <td>${trat.tratamiento_nombre || 'N/A'}</td>
-          <td>
-            <span class="badge bg-${estadoClass} badge-estado">
-              ${trat.tratamiento_estado || 'Pendiente'}
-            </span>
-          </td>
-          <td>${trat.tratamiento_notas || 'Sin notas'}</td>
-        </tr>
-      `;
+    /* ==========================================================
+        EXPORTAR PDF
+    ========================================================== */
+    $("#btnExportarPDF").on("click", function () {
+
+        if (!pacienteActual) {
+            Swal.fire("Advertencia", "Primero busque un expediente", "warning");
+            return;
+        }
+
+        location.href = `${CTRL_EXPEDIENTE}?action=exportar&nombre=${encodeURIComponent(pacienteActual.nombre)}`;
     });
 
-    $tbody.html(html);
-  }
-
-  /* ==========================================================
-        EXPORTAR PDF
-  ========================================================== */
-  $("#btnExportarPDF").on("click", function () {
-    if (!pacienteActual) {
-      Swal.fire({
-        icon: 'warning',
-        title: 'Advertencia',
-        text: 'No hay un expediente cargado para exportar',
-        confirmButtonColor: '#667eea'
-      });
-      return;
-    }
-
-    window.location.href = `${CTRL_EXPEDIENTE}?action=exportar&nombre=${encodeURIComponent(pacienteActual.nombre)}`;
-  });
-
-  /* ==========================================================
+    /* ==========================================================
         NUEVA BÚSQUEDA
-  ========================================================== */
-  $("#btnNuevaBusqueda").on("click", function () {
-    $("#resultadosSection").hide();
-    pacienteActual = null;
-    $('html, body').animate({ scrollTop: 0 }, 500);
-  });
-
-  /* ==========================================================
-        OCULTAR SECCIÓN DE RESULTADOS AL INICIO
-  ========================================================== */
-  $("#resultadosSection").hide();
+    ========================================================== */
+    $("#btnNuevaBusqueda").on("click", function () {
+        $("#resultadosSection").slideUp();
+        pacienteActual = null;
+        $('html, body').animate({ scrollTop: 0 }, 300);
+    });
 
 });
+

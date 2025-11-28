@@ -112,13 +112,6 @@
               </ul>
             </li>
 
-            <li>
-              <a href="#" data-bs-toggle="modal" data-bs-target="#modalBuscarPaciente">
-                <i class="fas fa-file-medical me-2"></i>
-                <span>Expediente</span>
-              </a>
-            </li>
-
             <li><a href="#contact">Contacto</a></li>
           </ul>
           <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>

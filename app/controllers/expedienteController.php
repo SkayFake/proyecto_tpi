@@ -1,166 +1,151 @@
 <?php
-class ExpedienteController {
-    private $model;
-    
-    public function __construct($db) {
-        $this->model = new ExpedienteModel($db);
-    }
-    
-    public function index() {
-        include 'views/expediente_view.php';
-    }
-    
-    public function obtenerPacientes() {
-        header('Content-Type: application/json');
-        $pacientes = $this->model->listarPacientes();
-        echo json_encode($pacientes);
-        exit;
-    }
-    
-    public function buscarExpediente() {
-        header('Content-Type: application/json');
-        
-        try {
-            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                $json = file_get_contents('php://input');
-                $data = json_decode($json, true);
-                $nombrePaciente = $data['nombre_paciente'] ?? '';
-                
-                if (empty($nombrePaciente)) {
-                    echo json_encode(['success' => false, 'message' => 'Nombre de paciente requerido']);
-                    exit;
-                }
-                
-                $resultados = $this->model->obtenerExpedientePorNombre($nombrePaciente);
-                
-                if (empty($resultados)) {
-                    echo json_encode(['success' => false, 'message' => 'No se encontraron resultados para el paciente: ' . $nombrePaciente]);
-                    exit;
-                }
-                
-                // Organizar datos
-                $paciente = [
-                    'nombre' => $resultados[0]['paciente_nombre'],
-                    'fecha_nacimiento' => $resultados[0]['fecha_nacimiento'],
-                    'sexo' => $resultados[0]['sexo'],
-                    'telefono' => $resultados[0]['telefono'],
-                    'correo' => $resultados[0]['correo'],
-                    'direccion' => $resultados[0]['direccion'],
-                    'dui' => $resultados[0]['dui'],
-                    'notas' => $resultados[0]['paciente_notas']
-                ];
-                
-                $odontogramas = array_values(array_filter($resultados, function($r) {
-                    return !empty($r['odontograma_fecha']);
-                }));
-                
-                $tratamientos = array_values(array_filter($resultados, function($r) {
-                    return !empty($r['tratamiento_nombre']);
-                }));
-                
-                echo json_encode([
-                    'success' => true,
-                    'paciente' => $paciente,
-                    'odontogramas' => $odontogramas,
-                    'tratamientos' => $tratamientos
-                ]);
-            }
-        } catch (Exception $e) {
-            error_log("Error en buscarExpediente: " . $e->getMessage());
-            echo json_encode([
-                'success' => false, 
-                'message' => 'Ocurrió un error al buscar el expediente: ' . $e->getMessage()
-            ]);
-        }
-        exit;
-    }
-    
-    public function exportarPDF() {
-        if (isset($_GET['nombre'])) {
-            $nombrePaciente = $_GET['nombre'];
-            $resultados = $this->model->obtenerExpedientePorNombre($nombrePaciente);
-            
-            if (!empty($resultados)) {
-                $this->generarPDF($resultados);
-            }
-        }
-    }
-    
-    private function generarPDF($datos) {
-        require_once('libs/tcpdf/tcpdf.php');
-        
-        $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-        
-        $pdf->SetCreator(PDF_CREATOR);
-        $pdf->SetAuthor('Sistema Médico');
-        $pdf->SetTitle('Expediente Médico');
-        $pdf->SetSubject('Expediente del Paciente');
-        
-        $pdf->setPrintHeader(false);
-        $pdf->setPrintFooter(false);
-        $pdf->AddPage();
-        
-        $paciente = $datos[0];
-        
-        $html = '<h1 style="text-align:center; color:#2c3e50;">EXPEDIENTE MÉDICO</h1>';
-        $html .= '<hr>';
-        
-        // Información del paciente
-        $html .= '<h2 style="color:#34495e;">Datos del Paciente</h2>';
-        $html .= '<table border="1" cellpadding="5" style="width:100%;">';
-        $html .= '<tr><td><strong>Nombre:</strong></td><td>' . htmlspecialchars($paciente['paciente_nombre']) . '</td></tr>';
-        $html .= '<tr><td><strong>Fecha de Nacimiento:</strong></td><td>' . htmlspecialchars($paciente['fecha_nacimiento']) . '</td></tr>';
-        $html .= '<tr><td><strong>Sexo:</strong></td><td>' . htmlspecialchars($paciente['sexo']) . '</td></tr>';
-        $html .= '<tr><td><strong>Teléfono:</strong></td><td>' . htmlspecialchars($paciente['telefono']) . '</td></tr>';
-        $html .= '<tr><td><strong>Correo:</strong></td><td>' . htmlspecialchars($paciente['correo']) . '</td></tr>';
-        $html .= '<tr><td><strong>Dirección:</strong></td><td>' . htmlspecialchars($paciente['direccion']) . '</td></tr>';
-        $html .= '<tr><td><strong>DUI:</strong></td><td>' . htmlspecialchars($paciente['dui']) . '</td></tr>';
-        $html .= '<tr><td><strong>Notas:</strong></td><td>' . htmlspecialchars($paciente['paciente_notas']) . '</td></tr>';
-        $html .= '</table>';
-        
-        // Odontogramas
-        $html .= '<h2 style="color:#34495e; margin-top:20px;">Historial de Odontogramas</h2>';
-        $html .= '<table border="1" cellpadding="5" style="width:100%;">';
-        $html .= '<tr style="background-color:#3498db; color:white;">
-                    <th>Fecha</th>
-                    <th>Observaciones</th>
-                  </tr>';
-        
-        foreach ($datos as $registro) {
-            if (!empty($registro['odontograma_fecha'])) {
-                $html .= '<tr>';
-                $html .= '<td>' . htmlspecialchars($registro['odontograma_fecha']) . '</td>';
-                $html .= '<td>' . htmlspecialchars($registro['odontograma_observaciones']) . '</td>';
-                $html .= '</tr>';
-            }
-        }
-        $html .= '</table>';
-        
-        // Tratamientos
-        $html .= '<h2 style="color:#34495e; margin-top:20px;">Tratamientos</h2>';
-        $html .= '<table border="1" cellpadding="5" style="width:100%;">';
-        $html .= '<tr style="background-color:#3498db; color:white;">
-                    <th>Tratamiento</th>
-                    <th>Estado</th>
-                    <th>Notas</th>
-                  </tr>';
-        
-        foreach ($datos as $registro) {
-            if (!empty($registro['tratamiento_nombre'])) {
-                $html .= '<tr>';
-                $html .= '<td>' . htmlspecialchars($registro['tratamiento_nombre']) . '</td>';
-                $html .= '<td>' . htmlspecialchars($registro['tratamiento_estado']) . '</td>';
-                $html .= '<td>' . htmlspecialchars($registro['tratamiento_notas']) . '</td>';
-                $html .= '</tr>';
-            }
-        }
-        $html .= '</table>';
-        
-        $pdf->writeHTML($html, true, false, true, false, '');
-        
-        $pdf->Output('expediente_' . preg_replace('/[^a-zA-Z0-9]/', '_', $paciente['paciente_nombre']) . '.pdf', 'D');
-        exit;
-    }
+
+header('Content-Type: application/json; charset=utf-8');
+
+require_once __DIR__ . '/../../vendor/autoload.php';
+
+require_once __DIR__ . '/../models/ExpedienteModel.php';
+
+$exp = new ExpedienteModel();
+
+$action = $_GET['action'] ?? null;
+
+function respond($arr) {
+    echo json_encode($arr);
+    exit;
 }
 
-?>
+if ($action === "buscar") {
+
+    $json = json_decode(file_get_contents("php://input"), true);
+    $nombre = trim($json['nombre_paciente'] ?? '');
+
+    if ($nombre === '') {
+        respond(['success' => false, 'message' => 'Debe ingresar un nombre de paciente']);
+    }
+
+    $rows = $exp->obtenerExpedientePorNombre($nombre);
+
+    if (!$rows) {
+        respond(['success' => false, 'message' => 'No se encontró expediente del paciente']);
+    }
+
+    // Separar paciente / odontogramas / tratamientos
+    $paciente = [
+        'nombre' => $rows[0]['nombre_paciente1'],
+        'fecha_nacimiento' => $rows[0]['fecha_nacimiento'],
+        'sexo' => $rows[0]['sexo'],
+        'telefono' => $rows[0]['telefono'],
+        'correo' => $rows[0]['correo'],
+        'direccion' => $rows[0]['direccion'],
+        'dui' => $rows[0]['dui'],
+        'notas' => $rows[0]['paciente_notas'],
+    ];
+
+    $odontogramas = [];
+    $tratamientos = [];
+
+    foreach ($rows as $r) {
+
+        if ($r['odontograma_fecha'] !== null) {
+            $odontogramas[] = [
+                'odontograma_fecha' => $r['odontograma_fecha'],
+                'odontograma_observaciones' => $r['odontograma_observaciones'],
+                'odontograma_imagen' => $r['odontograma_imagen']
+            ];
+        }
+
+        if ($r['tratamiento_nombre'] !== null) {
+            $tratamientos[] = [
+                'tratamiento_nombre' => $r['tratamiento_nombre'],
+                'tratamiento_estado' => $r['tratamiento_estado'],
+                'tratamiento_notas' => $r['tratamiento_notas'],
+            ];
+        }
+    }
+
+    respond([
+        'success' => true,
+        'paciente' => $paciente,
+        'odontogramas' => $odontogramas,
+        'tratamientos' => $tratamientos
+    ]);
+
+}
+
+/* ============================================
+   PDF
+============================================ */
+
+if ($action === "exportar") {
+
+    $nombre = $_GET['nombre'] ?? '';
+
+    if (!$nombre) {
+        die("Nombre inválido");
+    }
+
+    $rows = $exp->obtenerExpedientePorNombre($nombre);
+
+    if (!$rows) {
+        die("No se encontró expediente para exportar");
+    }
+
+    $pdf = new \FPDF();
+    $pdf->AddPage();
+    $pdf->SetFont('Arial', 'B', 16);
+    $pdf->Cell(0, 10, 'Expediente Medico - '.$nombre, 0, 1, 'C');
+    $pdf->Ln(10);
+
+    $pdf->SetFont('Arial', '', 12);
+
+    $p = $rows[0];
+
+    $pdf->Cell(0, 10, 'Fecha de nacimiento: ' . $p['fecha_nacimiento']);
+    $pdf->Ln(6);
+    $pdf->Cell(0, 10, 'Sexo: ' . $p['sexo']);
+    $pdf->Ln(6);
+    $pdf->Cell(0, 10, 'Telefono: ' . $p['telefono']);
+    $pdf->Ln(6);
+    $pdf->Cell(0, 10, 'Correo: ' . $p['correo']);
+    $pdf->Ln(6);
+    $pdf->Cell(0, 10, 'Direccion: ' . $p['direccion']);
+    $pdf->Ln(6);
+    $pdf->Cell(0, 10, 'DUI: ' . $p['dui']);
+    $pdf->Ln(10);
+
+    // Odontogramas
+    $pdf->SetFont('Arial', 'B', 13);
+    $pdf->Cell(0, 10, 'Odontogramas:', 0, 1);
+    $pdf->SetFont('Arial', '', 12);
+
+    foreach ($rows as $r) {
+        if ($r['odontograma_fecha']) {
+            $pdf->Cell(0, 10, 'Fecha: '.$r['odontograma_fecha']);
+            $pdf->Ln(6);
+            $pdf->MultiCell(0, 8, 'Observaciones: '.$r['odontograma_observaciones']);
+            $pdf->Ln(4);
+        }
+    }
+
+    // Tratamientos
+    $pdf->SetFont('Arial', 'B', 13);
+    $pdf->Cell(0, 10, 'Tratamientos:', 0, 1);
+    $pdf->SetFont('Arial', '', 12);
+
+    foreach ($rows as $r) {
+        if ($r['tratamiento_nombre']) {
+            $pdf->Cell(0, 10, 'Tratamiento: '.$r['tratamiento_nombre']);
+            $pdf->Ln(6);
+            $pdf->Cell(0, 10, 'Estado: '.$r['tratamiento_estado']);
+            $pdf->Ln(6);
+            $pdf->MultiCell(0, 8, 'Notas: '.$r['tratamiento_notas']);
+            $pdf->Ln(4);
+        }
+    }
+
+    $pdf->Output();
+    exit;
+}
+
+respond(['success' => false, 'message' => 'Acción inválida']);
