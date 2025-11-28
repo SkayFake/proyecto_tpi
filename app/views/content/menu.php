@@ -25,7 +25,7 @@
   <link href="<?php echo APP_URL; ?>app/views/assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
 
   <link href="<?php echo APP_URL; ?>app/views/assets/css/main.css" rel="stylesheet">
-  
+
 </head>
 
 <body class="index-page">
@@ -110,6 +110,13 @@
                 <li><a href="#" id="btnNuevoTratamiento" data-bs-toggle="modal" data-bs-target="#modalTratamiento">Agregar</a></li>
                 <li><a href="#" id="btnVerTratamiento" data-bs-toggle="modal" data-bs-target="#modalTratamientoVer">Ver</a></li>
               </ul>
+            </li>
+
+            <li>
+              <a href="#" data-bs-toggle="modal" data-bs-target="#modalBuscarPaciente">
+                <i class="fas fa-file-medical me-2"></i>
+                <span>Expediente</span>
+              </a>
             </li>
 
             <li><a href="#contact">Contacto</a></li>
@@ -312,793 +319,811 @@
         </div>
       </div>
     </section>
-<!-- Features Section -->
-<section id="features" class="features section">
+    <!-- Features Section -->
+    <section id="features" class="features section">
 
-  <div class="container">
+      <div class="container">
 
-    <div class="row justify-content-around gy-4">
-      <div class="features-image col-lg-6" data-aos="fade-up" data-aos-delay="100">
-        <img src="<?php echo APP_URL; ?>app/views/assets/img/features.jpg" alt="">
-      </div>
-
-      <div class="col-lg-5 d-flex flex-column justify-content-center" data-aos="fade-up" data-aos-delay="200">
-        <h3>Tratamientos confiables y de alta calidad para tu bienestar</h3>
-        <p>Ofrecemos atención moderna, segura y profesional mediante procedimientos diseñados para mejorar tu salud bucal.</p>
-
-        <div class="icon-box d-flex position-relative" data-aos="fade-up" data-aos-delay="300">
-          <i class="fa-solid fa-hand-holding-medical flex-shrink-0"></i>
-          <div>
-            <h4><a href="" class="stretched-link">Atención Personalizada</a></h4>
-            <p>Brindamos una experiencia cómoda y enfocada en tus necesidades.</p>
+        <div class="row justify-content-around gy-4">
+          <div class="features-image col-lg-6" data-aos="fade-up" data-aos-delay="100">
+            <img src="<?php echo APP_URL; ?>app/views/assets/img/features.jpg" alt="">
           </div>
-        </div>
 
-        <div class="icon-box d-flex position-relative" data-aos="fade-up" data-aos-delay="400">
-          <i class="fa-solid fa-suitcase-medical flex-shrink-0"></i>
-          <div>
-            <h4><a href="" class="stretched-link">Diagnóstico Preciso</a></h4>
-            <p>Utilizamos herramientas digitales para asegurar resultados confiables.</p>
-          </div>
-        </div>
+          <div class="col-lg-5 d-flex flex-column justify-content-center" data-aos="fade-up" data-aos-delay="200">
+            <h3>Tratamientos confiables y de alta calidad para tu bienestar</h3>
+            <p>Ofrecemos atención moderna, segura y profesional mediante procedimientos diseñados para mejorar tu salud bucal.</p>
 
-        <div class="icon-box d-flex position-relative" data-aos="fade-up" data-aos-delay="500">
-          <i class="fa-solid fa-staff-snake flex-shrink-0"></i>
-          <div>
-            <h4><a href="" class="stretched-link">Tratamientos Especializados</a></h4>
-            <p>Expertos en ortodoncia, endodoncia, estética y más.</p>
-          </div>
-        </div>
-
-        <div class="icon-box d-flex position-relative" data-aos="fade-up" data-aos-delay="600">
-          <i class="fa-solid fa-lungs flex-shrink-0"></i>
-          <div>
-            <h4><a href="" class="stretched-link">Cuidados Integrales</a></h4>
-            <p>Cubrimos todas las áreas para mantener tu sonrisa saludable.</p>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-  </div>
-
-</section>
-
-
-<!-- Services Section -->
-<section id="services" class="services section">
-
-  <div class="container section-title" data-aos="fade-up">
-    <h2>Servicios</h2>
-    <p>Soluciones profesionales diseñadas para el cuidado completo de tu salud bucal.</p>
-  </div>
-
-  <div class="container">
-    <div class="row gy-4">
-
-      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
-        <div class="service-item position-relative">
-          <div class="icon"><i class="fas fa-heartbeat"></i></div>
-          <a href="#" class="stretched-link">
-            <h3>Evaluación Dental</h3>
-          </a>
-          <p>Revisión completa para detectar problemas y planificar tu tratamiento.</p>
-        </div>
-      </div>
-
-      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
-        <div class="service-item position-relative">
-          <div class="icon"><i class="fas fa-pills"></i></div>
-          <a href="#" class="stretched-link">
-            <h3>Procedimientos Dentales</h3>
-          </a>
-          <p>Resinas, endodoncias, extracciones y más realizados por especialistas.</p>
-        </div>
-      </div>
-
-      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
-        <div class="service-item position-relative">
-          <div class="icon"><i class="fas fa-hospital-user"></i></div>
-          <a href="#" class="stretched-link">
-            <h3>Cuidados Preventivos</h3>
-          </a>
-          <p>Evita problemas futuros con limpiezas y mantenimiento profesional.</p>
-        </div>
-      </div>
-
-      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="400">
-        <div class="service-item position-relative">
-          <div class="icon"><i class="fas fa-dna"></i></div>
-          <a href="#" class="stretched-link">
-            <h3>Ortodoncia</h3>
-          </a>
-          <p>Corrección de alineación dental y mejora estética de la sonrisa.</p>
-        </div>
-      </div>
-
-      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="500">
-        <div class="service-item position-relative">
-          <div class="icon"><i class="fas fa-wheelchair"></i></div>
-          <a href="#" class="stretched-link">
-            <h3>Rehabilitación Oral</h3>
-          </a>
-          <p>Restauración completa mediante prótesis, coronas y puentes.</p>
-        </div>
-      </div>
-
-      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="600">
-        <div class="service-item position-relative">
-          <div class="icon"><i class="fas fa-notes-medical"></i></div>
-          <a href="#" class="stretched-link">
-            <h3>Estética Dental</h3>
-          </a>
-          <p>Blanqueamientos, carillas y mejoras estéticas personalizadas.</p>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-</section>
-
-
-<!-- Appointment Section -->
-<section id="appointment" class="appointment section light-background">
-
-  <div class="container section-title" data-aos="fade-up">
-    <h2>AGENDAR UNA CITA</h2>
-    <p>Completa el formulario y pronto nos pondremos en contacto contigo.</p>
-  </div>
-
-  <div class="container" data-aos="fade-up" data-aos-delay="100">
-
-    <form action="forms/appointment.php" method="post" role="form" class="php-email-form">
-      <div class="row">
-        <div class="col-md-4 form-group">
-          <input type="text" name="name" class="form-control" placeholder="Tu Nombre" required>
-        </div>
-        <div class="col-md-4 form-group mt-3 mt-md-0">
-          <input type="email" name="email" class="form-control" placeholder="Tu Correo" required>
-        </div>
-        <div class="col-md-4 form-group mt-3 mt-md-0">
-          <input type="tel" name="phone" class="form-control" placeholder="Tu Teléfono" required>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-md-4 form-group mt-3">
-          <input type="datetime-local" name="date" class="form-control" required>
-        </div>
-
-        <div class="col-md-4 form-group mt-3">
-          <select name="department" class="form-select" required>
-            <option value="">Seleccionar Departamento</option>
-            <option value="Departamento 1">Departamento 1</option>
-            <option value="Departamento 2">Departamento 2</option>
-            <option value="Departamento 3">Departamento 3</option>
-          </select>
-        </div>
-
-        <div class="col-md-4 form-group mt-3">
-          <select name="doctor" class="form-select" required>
-            <option value="">Seleccionar Doctor</option>
-            <option value="Doctor 1">Doctor 1</option>
-            <option value="Doctor 2">Doctor 2</option>
-            <option value="Doctor 3">Doctor 3</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="form-group mt-3">
-        <textarea class="form-control" name="message" rows="5" placeholder="Mensaje (Opcional)"></textarea>
-      </div>
-
-      <div class="mt-3">
-        <div class="loading">Cargando</div>
-        <div class="error-message"></div>
-        <div class="sent-message">Tu solicitud ha sido enviada exitosamente. ¡Gracias!</div>
-        <div class="text-center"><button type="submit">Agendar Cita</button></div>
-      </div>
-    </form>
-
-  </div>
-
-</section>
-
-
-<!-- Tabs Section (Departments) -->
-<section id="tabs" class="tabs section">
-
-  <div class="container section-title" data-aos="fade-up">
-    <h2>Departamentos</h2>
-    <p>Descubre las áreas especializadas con las que contamos.</p>
-  </div>
-
-  <div class="container" data-aos="fade-up" data-aos-delay="100">
-
-    <div class="row">
-      <div class="col-lg-3">
-        <ul class="nav nav-tabs flex-column">
-
-          <li class="nav-item">
-            <a class="nav-link active show" data-bs-toggle="tab" href="#tabs-tab-1">Cardiología</a>
-          </li>
-
-          <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="tab" href="#tabs-tab-2">Neurología</a>
-          </li>
-
-          <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="tab" href="#tabs-tab-3">Hepatología</a>
-          </li>
-
-          <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="tab" href="#tabs-tab-4">Pediatría</a>
-          </li>
-
-          <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="tab" href="#tabs-tab-5">Oftalmología</a>
-          </li>
-
-        </ul>
-      </div>
-
-      <div class="col-lg-9 mt-4 mt-lg-0">
-        <div class="tab-content">
-
-          <!-- Tab 1 -->
-          <div class="tab-pane active show" id="tabs-tab-1">
-            <div class="row">
-              <div class="col-lg-8 details order-2 order-lg-1">
-                <h3>Cardiología</h3>
-                <p class="fst-italic">Atención especializada en el cuidado del corazón y sistema circulatorio.</p>
-                <p>Realizamos estudios y diagnósticos completos para detectar cualquier anomalía cardiovascular de forma temprana.</p>
-              </div>
-              <div class="col-lg-4 text-center order-1 order-lg-2">
-                <img src="<?php echo APP_URL; ?>app/views/assets/img/departments-1.jpg" alt="" class="img-fluid">
+            <div class="icon-box d-flex position-relative" data-aos="fade-up" data-aos-delay="300">
+              <i class="fa-solid fa-hand-holding-medical flex-shrink-0"></i>
+              <div>
+                <h4><a href="" class="stretched-link">Atención Personalizada</a></h4>
+                <p>Brindamos una experiencia cómoda y enfocada en tus necesidades.</p>
               </div>
             </div>
-          </div>
 
-          <!-- Tab 2 -->
-          <div class="tab-pane" id="tabs-tab-2">
-            <div class="row">
-              <div class="col-lg-8 details order-2 order-lg-1">
-                <h3>Neurología</h3>
-                <p class="fst-italic">Diagnóstico y tratamiento de trastornos del sistema nervioso.</p>
-                <p>Atendemos migrañas, epilepsia, neuropatías y más, con estudios especializados y alta precisión médica.</p>
-              </div>
-              <div class="col-lg-4 text-center order-1 order-lg-2">
-                <img src="<?php echo APP_URL; ?>app/views/assets/img/departments-2.jpg" alt="" class="img-fluid">
+            <div class="icon-box d-flex position-relative" data-aos="fade-up" data-aos-delay="400">
+              <i class="fa-solid fa-suitcase-medical flex-shrink-0"></i>
+              <div>
+                <h4><a href="" class="stretched-link">Diagnóstico Preciso</a></h4>
+                <p>Utilizamos herramientas digitales para asegurar resultados confiables.</p>
               </div>
             </div>
-          </div>
 
-          <!-- Tab 3 -->
-          <div class="tab-pane" id="tabs-tab-3">
-            <div class="row">
-              <div class="col-lg-8 details order-2 order-lg-1">
-                <h3>Hepatología</h3>
-                <p class="fst-italic">Cuidado especializado del hígado y sistema digestivo.</p>
-                <p>Evaluamos enfermedades hepáticas, digestivas y metabólicas con métodos modernos y efectivos.</p>
-              </div>
-              <div class="col-lg-4 text-center order-1 order-lg-2">
-                <img src="<?php echo APP_URL; ?>app/views/assets/img/departments-3.jpg" alt="" class="img-fluid">
+            <div class="icon-box d-flex position-relative" data-aos="fade-up" data-aos-delay="500">
+              <i class="fa-solid fa-staff-snake flex-shrink-0"></i>
+              <div>
+                <h4><a href="" class="stretched-link">Tratamientos Especializados</a></h4>
+                <p>Expertos en ortodoncia, endodoncia, estética y más.</p>
               </div>
             </div>
-          </div>
 
-          <!-- Tab 4 -->
-          <div class="tab-pane" id="tabs-tab-4">
-            <div class="row">
-              <div class="col-lg-8 details order-2 order-lg-1">
-                <h3>Pediatría</h3>
-                <p class="fst-italic">Atención especializada para niños de todas las edades.</p>
-                <p>Brindamos cuidados preventivos y tratamientos para garantizar un desarrollo saludable.</p>
-              </div>
-              <div class="col-lg-4 text-center order-1 order-lg-2">
-                <img src="<?php echo APP_URL; ?>app/views/assets/img/departments-4.jpg" alt="" class="img-fluid">
+            <div class="icon-box d-flex position-relative" data-aos="fade-up" data-aos-delay="600">
+              <i class="fa-solid fa-lungs flex-shrink-0"></i>
+              <div>
+                <h4><a href="" class="stretched-link">Cuidados Integrales</a></h4>
+                <p>Cubrimos todas las áreas para mantener tu sonrisa saludable.</p>
               </div>
             </div>
+
           </div>
-
-          <!-- Tab 5 -->
-          <div class="tab-pane" id="tabs-tab-5">
-            <div class="row">
-              <div class="col-lg-8 details order-2 order-lg-1">
-                <h3>Oftalmología</h3>
-                <p class="fst-italic">Cuidado de la visión y salud ocular.</p>
-                <p>Realizamos diagnósticos, evaluaciones visuales y tratamientos completos para diversas condiciones oculares.</p>
-              </div>
-              <div class="col-lg-4 text-center order-1 order-lg-2">
-                <img src="<?php echo APP_URL; ?>app/views/assets/img/departments-5.jpg" alt="" class="img-fluid">
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-    </div>
-
-  </div>
-
-</section>
-
-
-<!-- Doctors Section -->
-<section id="doctors" class="doctors section light-background">
-
-  <div class="container section-title" data-aos="fade-up">
-    <h2>Doctores</h2>
-    <p>Conoce a nuestros profesionales altamente calificados.</p>
-  </div>
-
-  <div class="container">
-
-    <div class="row gy-4">
-
-      <div class="col-lg-3 col-md-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="100">
-        <div class="team-member">
-          <div class="member-img">
-            <img src="<?php echo APP_URL; ?>app/views/assets/img/doctors/doctors-1.jpg" class="img-fluid" alt="">
-            <div class="social">
-              <a href=""><i class="bi bi-twitter-x"></i></a>
-              <a href=""><i class="bi bi-facebook"></i></a>
-              <a href=""><i class="bi bi-instagram"></i></a>
-              <a href=""><i class="bi bi-linkedin"></i></a>
-            </div>
-          </div>
-          <div class="member-info">
-            <h4>Walter White</h4>
-            <span>Director Médico</span>
-          </div>
-        </div>
-      </div>
-
-
-      <div class="col-lg-3 col-md-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="200">
-        <div class="team-member">
-          <div class="member-img">
-            <img src="<?php echo APP_URL; ?>app/views/assets/img/doctors/doctors-2.jpg" class="img-fluid" alt="">
-            <div class="social">
-              <a href=""><i class="bi bi-twitter-x"></i></a>
-              <a href=""><i class="bi bi-facebook"></i></a>
-              <a href=""><i class="bi bi-instagram"></i></a>
-              <a href=""><i class="bi bi-linkedin"></i></a>
-            </div>
-          </div>
-          <div class="member-info">
-            <h4>Sarah Jhonson</h4>
-            <span>Anestesióloga</span>
-          </div>
-        </div>
-      </div>
-
-
-      <div class="col-lg-3 col-md-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="300">
-        <div class="team-member">
-          <div class="member-img">
-            <img src="<?php echo APP_URL; ?>app/views/assets/img/doctors/doctors-3.jpg" class="img-fluid" alt="">
-            <div class="social">
-              <a href=""><i class="bi bi-twitter-x"></i></a>
-              <a href=""><i class="bi bi-facebook"></i></a>
-              <a href=""><i class="bi bi-instagram"></i></a>
-              <a href=""><i class="bi bi-linkedin"></i></a>
-            </div>
-          </div>
-          <div class="member-info">
-            <h4>William Anderson</h4>
-            <span>Cardiólogo</span>
-          </div>
-        </div>
-      </div>
-
-
-      <div class="col-lg-3 col-md-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="400">
-        <div class="team-member">
-          <div class="member-img">
-            <img src="<?php echo APP_URL; ?>app/views/assets/img/doctors/doctors-4.jpg" class="img-fluid" alt="">
-            <div class="social">
-              <a href=""><i class="bi bi-twitter-x"></i></a>
-              <a href=""><i class="bi bi-facebook"></i></a>
-              <a href=""><i class="bi bi-instagram"></i></a>
-              <a href=""><i class="bi bi-linkedin"></i></a>
-            </div>
-          </div>
-          <div class="member-info">
-            <h4>Amanda Jepson</h4>
-            <span>Neurocirujana</span>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-  </div>
-
-</section>
-
-
-<!-- Gallery Section -->
-<section id="gallery" class="gallery section">
-
-  <div class="container section-title" data-aos="fade-up">
-    <h2>Galería</h2>
-    <p>Conoce más de nuestras instalaciones y equipo de trabajo.</p>
-  </div>
-
-  <div class="container" data-aos="fade-up" data-aos-delay="100">
-
-    <div class="swiper init-swiper">
-
-      <script type="application/json" class="swiper-config">
-        {
-          "loop": true,
-          "speed": 600,
-          "autoplay": { "delay": 5000 },
-          "slidesPerView": "auto",
-          "centeredSlides": true,
-          "pagination": { "el": ".swiper-pagination", "type": "bullets", "clickable": true },
-          "breakpoints": {
-            "320": { "slidesPerView": 1, "spaceBetween": 0 },
-            "768": { "slidesPerView": 3, "spaceBetween": 20 },
-            "1200": { "slidesPerView": 5, "spaceBetween": 20 }
-          }
-        }
-      </script>
-
-      <div class="swiper-wrapper align-items-center">
-        <div class="swiper-slide">
-          <a class="glightbox" data-gallery="images-gallery" href="<?php echo APP_URL; ?>app/views/assets/img/gallery/gallery-1.jpg">
-            <img src="<?php echo APP_URL; ?>app/views/assets/img/gallery/gallery-1.jpg" class="img-fluid" alt="">
-          </a>
-        </div>
-
-        <div class="swiper-slide">
-          <a class="glightbox" data-gallery="images-gallery" href="<?php echo APP_URL; ?>app/views/assets/img/gallery/gallery-2.jpg">
-            <img src="<?php echo APP_URL; ?>app/views/assets/img/gallery/gallery-2.jpg" class="img-fluid" alt="">
-          </a>
-        </div>
-
-        <div class="swiper-slide">
-          <a class="glightbox" data-gallery="images-gallery" href="<?php echo APP_URL; ?>app/views/assets/img/gallery/gallery-3.jpg">
-            <img src="<?php echo APP_URL; ?>app/views/assets/img/gallery/gallery-3.jpg" class="img-fluid" alt="">
-          </a>
-        </div>
-
-        <div class="swiper-slide">
-          <a class="glightbox" data-gallery="images-gallery" href="<?php echo APP_URL; ?>app/views/assets/img/gallery/gallery-4.jpg">
-            <img src="<?php echo APP_URL; ?>app/views/assets/img/gallery/gallery-4.jpg" class="img-fluid" alt="">
-          </a>
-        </div>
-
-        <div class="swiper-slide">
-          <a class="glightbox" data-gallery="images-gallery" href="<?php echo APP_URL; ?>app/views/assets/img/gallery/gallery-5.jpg">
-            <img src="<?php echo APP_URL; ?>app/views/assets/img/gallery/gallery-5.jpg" class="img-fluid" alt="">
-          </a>
-        </div>
-
-        <div class="swiper-slide">
-          <a class="glightbox" data-gallery="images-gallery" href="<?php echo APP_URL; ?>app/views/assets/img/gallery/gallery-6.jpg">
-            <img src="<?php echo APP_URL; ?>app/views/assets/img/gallery/gallery-6.jpg" class="img-fluid" alt="">
-          </a>
-        </div>
-
-        <div class="swiper-slide">
-          <a class="glightbox" data-gallery="images-gallery" href="<?php echo APP_URL; ?>app/views/assets/img/gallery/gallery-7.jpg">
-            <img src="<?php echo APP_URL; ?>app/views/assets/img/gallery/gallery-7.jpg" class="img-fluid" alt="">
-          </a>
-        </div>
-
-        <div class="swiper-slide">
-          <a class="glightbox" data-gallery="images-gallery" href="<?php echo APP_URL; ?>app/views/assets/img/gallery/gallery-8.jpg">
-            <img src="<?php echo APP_URL; ?>app/views/assets/img/gallery/gallery-8.jpg" class="img-fluid" alt="">
-          </a>
         </div>
 
       </div>
 
-      <div class="swiper-pagination"></div>
-
-    </div>
-
-  </div>
-
-</section>
+    </section>
 
 
-<!-- FAQ Section -->
-<section id="faq" class="faq section light-background">
+    <!-- Services Section -->
+    <section id="services" class="services section">
 
-  <div class="container section-title" data-aos="fade-up">
-    <h2>Preguntas Frecuentes</h2>
-    <p>Encuentra respuestas a las dudas más comunes.</p>
-  </div>
-
-  <div class="container">
-
-    <div class="row justify-content-center">
-      <div class="col-lg-10" data-aos="fade-up" data-aos-delay="100">
-
-        <div class="faq-container">
-
-          <div class="faq-item">
-            <h3>¿Cómo puedo agendar una cita?</h3>
-            <div class="faq-content">
-              <p>Puedes hacerlo desde nuestro formulario en línea o llamándonos directamente.</p>
-            </div>
-            <i class="faq-toggle bi bi-chevron-right"></i>
-          </div>
-
-          <div class="faq-item">
-            <h3>¿Aceptan emergencias?</h3>
-            <div class="faq-content">
-              <p>Sí, contamos con atención inmediata para emergencias dentales.</p>
-            </div>
-            <i class="faq-toggle bi bi-chevron-right"></i>
-          </div>
-
-          <div class="faq-item">
-            <h3>¿Realizan tratamientos para niños?</h3>
-            <div class="faq-content">
-              <p>Sí, nuestros especialistas en odontopediatría brindan atención segura y amigable para los más pequeños.</p>
-            </div>
-            <i class="faq-toggle bi bi-chevron-right"></i>
-          </div>
-
-          <div class="faq-item">
-            <h3>¿Trabajan con seguros médicos?</h3>
-            <div class="faq-content">
-              <p>Contáctanos para verificar la disponibilidad con tu proveedor de seguros.</p>
-            </div>
-            <i class="faq-toggle bi bi-chevron-right"></i>
-          </div>
-
-          <div class="faq-item">
-            <h3>¿Puedo financiar mis tratamientos?</h3>
-            <div class="faq-content">
-              <p>Ofrecemos planes de pago accesibles según el tratamiento requerido.</p>
-            </div>
-            <i class="faq-toggle bi bi-chevron-right"></i>
-          </div>
-
-          <div class="faq-item">
-            <h3>¿Cómo sé qué tratamiento necesito?</h3>
-            <div class="faq-content">
-              <p>Nuestros especialistas realizan un diagnóstico completo para definir el tratamiento adecuado.</p>
-            </div>
-            <i class="faq-toggle bi bi-chevron-right"></i>
-          </div>
-
-        </div>
-
+      <div class="container section-title" data-aos="fade-up">
+        <h2>Servicios</h2>
+        <p>Soluciones profesionales diseñadas para el cuidado completo de tu salud bucal.</p>
       </div>
-    </div>
 
-  </div>
-
-</section>
-<!-- Contact Section -->
-<section id="contact" class="contact section">
-
-  <div class="container section-title" data-aos="fade-up">
-    <h2>Contacto</h2>
-    <p>Ponte en contacto con nosotros para consultas, citas o información adicional.</p>
-  </div>
-
-  <div class="mb-5" data-aos="fade-up" data-aos-delay="200">
-    <iframe style="border:0; width: 100%; height: 370px;"
-      src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d48389.78314118045!2d-74.006138!3d40.710059!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c25a22a3bda30d%3A0xb89d1fe6bc499443!2sDowntown%20Conference%20Center!5e0!3m2!1sen!2sus!4v1676961268712!5m2!1sen!2sus"
-      frameborder="0" allowfullscreen="" loading="lazy"
-      referrerpolicy="no-referrer-when-downgrade">
-    </iframe>
-  </div>
-
-  <div class="container" data-aos="fade-up" data-aos-delay="100">
-
-    <div class="row gy-4">
-      <div class="col-lg-6 ">
+      <div class="container">
         <div class="row gy-4">
 
-          <div class="col-lg-12">
-            <div class="info-item d-flex flex-column justify-content-center align-items-center" data-aos="fade-up" data-aos-delay="200">
-              <i class="bi bi-geo-alt"></i>
-              <h3>Dirección</h3>
-              <p>A108 Adam Street, New York, NY 535022</p>
+          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+            <div class="service-item position-relative">
+              <div class="icon"><i class="fas fa-heartbeat"></i></div>
+              <a href="#" class="stretched-link">
+                <h3>Evaluación Dental</h3>
+              </a>
+              <p>Revisión completa para detectar problemas y planificar tu tratamiento.</p>
             </div>
           </div>
 
-          <div class="col-md-6">
-            <div class="info-item d-flex flex-column justify-content-center align-items-center" data-aos="fade-up" data-aos-delay="300">
-              <i class="bi bi-telephone"></i>
-              <h3>Teléfono</h3>
-              <p>+1 5589 55488 55</p>
+          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+            <div class="service-item position-relative">
+              <div class="icon"><i class="fas fa-pills"></i></div>
+              <a href="#" class="stretched-link">
+                <h3>Procedimientos Dentales</h3>
+              </a>
+              <p>Resinas, endodoncias, extracciones y más realizados por especialistas.</p>
             </div>
           </div>
 
-          <div class="col-md-6">
-            <div class="info-item d-flex flex-column justify-content-center align-items-center" data-aos="fade-up" data-aos-delay="400">
-              <i class="bi bi-envelope"></i>
-              <h3>Correo Electrónico</h3>
-              <p>info@example.com</p>
+          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+            <div class="service-item position-relative">
+              <div class="icon"><i class="fas fa-hospital-user"></i></div>
+              <a href="#" class="stretched-link">
+                <h3>Cuidados Preventivos</h3>
+              </a>
+              <p>Evita problemas futuros con limpiezas y mantenimiento profesional.</p>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="400">
+            <div class="service-item position-relative">
+              <div class="icon"><i class="fas fa-dna"></i></div>
+              <a href="#" class="stretched-link">
+                <h3>Ortodoncia</h3>
+              </a>
+              <p>Corrección de alineación dental y mejora estética de la sonrisa.</p>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="500">
+            <div class="service-item position-relative">
+              <div class="icon"><i class="fas fa-wheelchair"></i></div>
+              <a href="#" class="stretched-link">
+                <h3>Rehabilitación Oral</h3>
+              </a>
+              <p>Restauración completa mediante prótesis, coronas y puentes.</p>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="600">
+            <div class="service-item position-relative">
+              <div class="icon"><i class="fas fa-notes-medical"></i></div>
+              <a href="#" class="stretched-link">
+                <h3>Estética Dental</h3>
+              </a>
+              <p>Blanqueamientos, carillas y mejoras estéticas personalizadas.</p>
             </div>
           </div>
 
         </div>
       </div>
 
-      <div class="col-lg-6">
-        <form action="forms/contact.php" method="post" class="php-email-form" data-aos="fade-up" data-aos-delay="500">
-          <div class="row gy-4">
+    </section>
 
-            <div class="col-md-6">
-              <input type="text" name="name" class="form-control" placeholder="Tu Nombre" required="">
+
+    <!-- Appointment Section -->
+    <section id="appointment" class="appointment section light-background">
+
+      <div class="container section-title" data-aos="fade-up">
+        <h2>AGENDAR UNA CITA</h2>
+        <p>Completa el formulario y pronto nos pondremos en contacto contigo.</p>
+      </div>
+
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+        <form action="forms/appointment.php" method="post" role="form" class="php-email-form">
+          <div class="row">
+            <div class="col-md-4 form-group">
+              <input type="text" name="name" class="form-control" placeholder="Tu Nombre" required>
+            </div>
+            <div class="col-md-4 form-group mt-3 mt-md-0">
+              <input type="email" name="email" class="form-control" placeholder="Tu Correo" required>
+            </div>
+            <div class="col-md-4 form-group mt-3 mt-md-0">
+              <input type="tel" name="phone" class="form-control" placeholder="Tu Teléfono" required>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4 form-group mt-3">
+              <input type="datetime-local" name="date" class="form-control" required>
             </div>
 
-            <div class="col-md-6">
-              <input type="email" class="form-control" name="email" placeholder="Tu Correo" required="">
+            <div class="col-md-4 form-group mt-3">
+              <select name="department" class="form-select" required>
+                <option value="">Seleccionar Departamento</option>
+                <option value="Departamento 1">Departamento 1</option>
+                <option value="Departamento 2">Departamento 2</option>
+                <option value="Departamento 3">Departamento 3</option>
+              </select>
             </div>
 
-            <div class="col-md-12">
-              <input type="text" class="form-control" name="subject" placeholder="Asunto" required="">
+            <div class="col-md-4 form-group mt-3">
+              <select name="doctor" class="form-select" required>
+                <option value="">Seleccionar Doctor</option>
+                <option value="Doctor 1">Doctor 1</option>
+                <option value="Doctor 2">Doctor 2</option>
+                <option value="Doctor 3">Doctor 3</option>
+              </select>
             </div>
+          </div>
 
-            <div class="col-md-12">
-              <textarea class="form-control" name="message" rows="4" placeholder="Mensaje" required=""></textarea>
-            </div>
+          <div class="form-group mt-3">
+            <textarea class="form-control" name="message" rows="5" placeholder="Mensaje (Opcional)"></textarea>
+          </div>
 
-            <div class="col-md-12 text-center">
-              <div class="loading">Cargando</div>
-              <div class="error-message"></div>
-              <div class="sent-message">Tu mensaje ha sido enviado. ¡Gracias!</div>
-              <button type="submit">Enviar Mensaje</button>
-            </div>
-
+          <div class="mt-3">
+            <div class="loading">Cargando</div>
+            <div class="error-message"></div>
+            <div class="sent-message">Tu solicitud ha sido enviada exitosamente. ¡Gracias!</div>
+            <div class="text-center"><button type="submit">Agendar Cita</button></div>
           </div>
         </form>
+
       </div>
 
-    </div>
-
-  </div>
-
-</section>
+    </section>
 
 
-<!-- Footer -->
-<footer id="footer" class="footer light-background">
+    <!-- Tabs Section (Departments) -->
+    <section id="tabs" class="tabs section">
 
-  <div class="container footer-top">
-    <div class="row gy-4">
+      <div class="container section-title" data-aos="fade-up">
+        <h2>Departamentos</h2>
+        <p>Descubre las áreas especializadas con las que contamos.</p>
+      </div>
 
-      <div class="col-lg-4 col-md-6 footer-about">
-        <a href="index.html" class="logo d-flex align-items-center">
-          <span class="sitename">Medicio</span>
-        </a>
-        <div class="footer-contact pt-3">
-          <p>A108 Adam Street</p>
-          <p>New York, NY 535022</p>
-          <p class="mt-3"><strong>Teléfono:</strong> <span>+1 5589 55488 55</span></p>
-          <p><strong>Correo:</strong> <span>info@example.com</span></p>
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+        <div class="row">
+          <div class="col-lg-3">
+            <ul class="nav nav-tabs flex-column">
+
+              <li class="nav-item">
+                <a class="nav-link active show" data-bs-toggle="tab" href="#tabs-tab-1">Cardiología</a>
+              </li>
+
+              <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#tabs-tab-2">Neurología</a>
+              </li>
+
+              <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#tabs-tab-3">Hepatología</a>
+              </li>
+
+              <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#tabs-tab-4">Pediatría</a>
+              </li>
+
+              <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#tabs-tab-5">Oftalmología</a>
+              </li>
+
+            </ul>
+          </div>
+
+          <div class="col-lg-9 mt-4 mt-lg-0">
+            <div class="tab-content">
+
+              <!-- Tab 1 -->
+              <div class="tab-pane active show" id="tabs-tab-1">
+                <div class="row">
+                  <div class="col-lg-8 details order-2 order-lg-1">
+                    <h3>Cardiología</h3>
+                    <p class="fst-italic">Atención especializada en el cuidado del corazón y sistema circulatorio.</p>
+                    <p>Realizamos estudios y diagnósticos completos para detectar cualquier anomalía cardiovascular de forma temprana.</p>
+                  </div>
+                  <div class="col-lg-4 text-center order-1 order-lg-2">
+                    <img src="<?php echo APP_URL; ?>app/views/assets/img/departments-1.jpg" alt="" class="img-fluid">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tab 2 -->
+              <div class="tab-pane" id="tabs-tab-2">
+                <div class="row">
+                  <div class="col-lg-8 details order-2 order-lg-1">
+                    <h3>Neurología</h3>
+                    <p class="fst-italic">Diagnóstico y tratamiento de trastornos del sistema nervioso.</p>
+                    <p>Atendemos migrañas, epilepsia, neuropatías y más, con estudios especializados y alta precisión médica.</p>
+                  </div>
+                  <div class="col-lg-4 text-center order-1 order-lg-2">
+                    <img src="<?php echo APP_URL; ?>app/views/assets/img/departments-2.jpg" alt="" class="img-fluid">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tab 3 -->
+              <div class="tab-pane" id="tabs-tab-3">
+                <div class="row">
+                  <div class="col-lg-8 details order-2 order-lg-1">
+                    <h3>Hepatología</h3>
+                    <p class="fst-italic">Cuidado especializado del hígado y sistema digestivo.</p>
+                    <p>Evaluamos enfermedades hepáticas, digestivas y metabólicas con métodos modernos y efectivos.</p>
+                  </div>
+                  <div class="col-lg-4 text-center order-1 order-lg-2">
+                    <img src="<?php echo APP_URL; ?>app/views/assets/img/departments-3.jpg" alt="" class="img-fluid">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tab 4 -->
+              <div class="tab-pane" id="tabs-tab-4">
+                <div class="row">
+                  <div class="col-lg-8 details order-2 order-lg-1">
+                    <h3>Pediatría</h3>
+                    <p class="fst-italic">Atención especializada para niños de todas las edades.</p>
+                    <p>Brindamos cuidados preventivos y tratamientos para garantizar un desarrollo saludable.</p>
+                  </div>
+                  <div class="col-lg-4 text-center order-1 order-lg-2">
+                    <img src="<?php echo APP_URL; ?>app/views/assets/img/departments-4.jpg" alt="" class="img-fluid">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tab 5 -->
+              <div class="tab-pane" id="tabs-tab-5">
+                <div class="row">
+                  <div class="col-lg-8 details order-2 order-lg-1">
+                    <h3>Oftalmología</h3>
+                    <p class="fst-italic">Cuidado de la visión y salud ocular.</p>
+                    <p>Realizamos diagnósticos, evaluaciones visuales y tratamientos completos para diversas condiciones oculares.</p>
+                  </div>
+                  <div class="col-lg-4 text-center order-1 order-lg-2">
+                    <img src="<?php echo APP_URL; ?>app/views/assets/img/departments-5.jpg" alt="" class="img-fluid">
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
         </div>
-        <div class="social-links d-flex mt-4">
-          <a href=""><i class="bi bi-twitter-x"></i></a>
-          <a href=""><i class="bi bi-facebook"></i></a>
-          <a href=""><i class="bi bi-instagram"></i></a>
-          <a href=""><i class="bi bi-linkedin"></i></a>
+
+      </div>
+
+    </section>
+
+
+    <!-- Doctors Section -->
+    <section id="doctors" class="doctors section light-background">
+
+      <div class="container section-title" data-aos="fade-up">
+        <h2>Doctores</h2>
+        <p>Conoce a nuestros profesionales altamente calificados.</p>
+      </div>
+
+      <div class="container">
+
+        <div class="row gy-4">
+
+          <div class="col-lg-3 col-md-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="100">
+            <div class="team-member">
+              <div class="member-img">
+                <img src="<?php echo APP_URL; ?>app/views/assets/img/doctors/doctors-1.jpg" class="img-fluid" alt="">
+                <div class="social">
+                  <a href=""><i class="bi bi-twitter-x"></i></a>
+                  <a href=""><i class="bi bi-facebook"></i></a>
+                  <a href=""><i class="bi bi-instagram"></i></a>
+                  <a href=""><i class="bi bi-linkedin"></i></a>
+                </div>
+              </div>
+              <div class="member-info">
+                <h4>Walter White</h4>
+                <span>Director Médico</span>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="col-lg-3 col-md-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="200">
+            <div class="team-member">
+              <div class="member-img">
+                <img src="<?php echo APP_URL; ?>app/views/assets/img/doctors/doctors-2.jpg" class="img-fluid" alt="">
+                <div class="social">
+                  <a href=""><i class="bi bi-twitter-x"></i></a>
+                  <a href=""><i class="bi bi-facebook"></i></a>
+                  <a href=""><i class="bi bi-instagram"></i></a>
+                  <a href=""><i class="bi bi-linkedin"></i></a>
+                </div>
+              </div>
+              <div class="member-info">
+                <h4>Sarah Jhonson</h4>
+                <span>Anestesióloga</span>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="col-lg-3 col-md-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="300">
+            <div class="team-member">
+              <div class="member-img">
+                <img src="<?php echo APP_URL; ?>app/views/assets/img/doctors/doctors-3.jpg" class="img-fluid" alt="">
+                <div class="social">
+                  <a href=""><i class="bi bi-twitter-x"></i></a>
+                  <a href=""><i class="bi bi-facebook"></i></a>
+                  <a href=""><i class="bi bi-instagram"></i></a>
+                  <a href=""><i class="bi bi-linkedin"></i></a>
+                </div>
+              </div>
+              <div class="member-info">
+                <h4>William Anderson</h4>
+                <span>Cardiólogo</span>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="col-lg-3 col-md-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="400">
+            <div class="team-member">
+              <div class="member-img">
+                <img src="<?php echo APP_URL; ?>app/views/assets/img/doctors/doctors-4.jpg" class="img-fluid" alt="">
+                <div class="social">
+                  <a href=""><i class="bi bi-twitter-x"></i></a>
+                  <a href=""><i class="bi bi-facebook"></i></a>
+                  <a href=""><i class="bi bi-instagram"></i></a>
+                  <a href=""><i class="bi bi-linkedin"></i></a>
+                </div>
+              </div>
+              <div class="member-info">
+                <h4>Amanda Jepson</h4>
+                <span>Neurocirujana</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- Gallery Section -->
+    <section id="gallery" class="gallery section">
+
+      <div class="container section-title" data-aos="fade-up">
+        <h2>Galería</h2>
+        <p>Conoce más de nuestras instalaciones y equipo de trabajo.</p>
+      </div>
+
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+        <div class="swiper init-swiper">
+
+          <script type="application/json" class="swiper-config">
+            {
+              "loop": true,
+              "speed": 600,
+              "autoplay": {
+                "delay": 5000
+              },
+              "slidesPerView": "auto",
+              "centeredSlides": true,
+              "pagination": {
+                "el": ".swiper-pagination",
+                "type": "bullets",
+                "clickable": true
+              },
+              "breakpoints": {
+                "320": {
+                  "slidesPerView": 1,
+                  "spaceBetween": 0
+                },
+                "768": {
+                  "slidesPerView": 3,
+                  "spaceBetween": 20
+                },
+                "1200": {
+                  "slidesPerView": 5,
+                  "spaceBetween": 20
+                }
+              }
+            }
+          </script>
+
+          <div class="swiper-wrapper align-items-center">
+            <div class="swiper-slide">
+              <a class="glightbox" data-gallery="images-gallery" href="<?php echo APP_URL; ?>app/views/assets/img/gallery/gallery-1.jpg">
+                <img src="<?php echo APP_URL; ?>app/views/assets/img/gallery/gallery-1.jpg" class="img-fluid" alt="">
+              </a>
+            </div>
+
+            <div class="swiper-slide">
+              <a class="glightbox" data-gallery="images-gallery" href="<?php echo APP_URL; ?>app/views/assets/img/gallery/gallery-2.jpg">
+                <img src="<?php echo APP_URL; ?>app/views/assets/img/gallery/gallery-2.jpg" class="img-fluid" alt="">
+              </a>
+            </div>
+
+            <div class="swiper-slide">
+              <a class="glightbox" data-gallery="images-gallery" href="<?php echo APP_URL; ?>app/views/assets/img/gallery/gallery-3.jpg">
+                <img src="<?php echo APP_URL; ?>app/views/assets/img/gallery/gallery-3.jpg" class="img-fluid" alt="">
+              </a>
+            </div>
+
+            <div class="swiper-slide">
+              <a class="glightbox" data-gallery="images-gallery" href="<?php echo APP_URL; ?>app/views/assets/img/gallery/gallery-4.jpg">
+                <img src="<?php echo APP_URL; ?>app/views/assets/img/gallery/gallery-4.jpg" class="img-fluid" alt="">
+              </a>
+            </div>
+
+            <div class="swiper-slide">
+              <a class="glightbox" data-gallery="images-gallery" href="<?php echo APP_URL; ?>app/views/assets/img/gallery/gallery-5.jpg">
+                <img src="<?php echo APP_URL; ?>app/views/assets/img/gallery/gallery-5.jpg" class="img-fluid" alt="">
+              </a>
+            </div>
+
+            <div class="swiper-slide">
+              <a class="glightbox" data-gallery="images-gallery" href="<?php echo APP_URL; ?>app/views/assets/img/gallery/gallery-6.jpg">
+                <img src="<?php echo APP_URL; ?>app/views/assets/img/gallery/gallery-6.jpg" class="img-fluid" alt="">
+              </a>
+            </div>
+
+            <div class="swiper-slide">
+              <a class="glightbox" data-gallery="images-gallery" href="<?php echo APP_URL; ?>app/views/assets/img/gallery/gallery-7.jpg">
+                <img src="<?php echo APP_URL; ?>app/views/assets/img/gallery/gallery-7.jpg" class="img-fluid" alt="">
+              </a>
+            </div>
+
+            <div class="swiper-slide">
+              <a class="glightbox" data-gallery="images-gallery" href="<?php echo APP_URL; ?>app/views/assets/img/gallery/gallery-8.jpg">
+                <img src="<?php echo APP_URL; ?>app/views/assets/img/gallery/gallery-8.jpg" class="img-fluid" alt="">
+              </a>
+            </div>
+
+          </div>
+
+          <div class="swiper-pagination"></div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- FAQ Section -->
+    <section id="faq" class="faq section light-background">
+
+      <div class="container section-title" data-aos="fade-up">
+        <h2>Preguntas Frecuentes</h2>
+        <p>Encuentra respuestas a las dudas más comunes.</p>
+      </div>
+
+      <div class="container">
+
+        <div class="row justify-content-center">
+          <div class="col-lg-10" data-aos="fade-up" data-aos-delay="100">
+
+            <div class="faq-container">
+
+              <div class="faq-item">
+                <h3>¿Cómo puedo agendar una cita?</h3>
+                <div class="faq-content">
+                  <p>Puedes hacerlo desde nuestro formulario en línea o llamándonos directamente.</p>
+                </div>
+                <i class="faq-toggle bi bi-chevron-right"></i>
+              </div>
+
+              <div class="faq-item">
+                <h3>¿Aceptan emergencias?</h3>
+                <div class="faq-content">
+                  <p>Sí, contamos con atención inmediata para emergencias dentales.</p>
+                </div>
+                <i class="faq-toggle bi bi-chevron-right"></i>
+              </div>
+
+              <div class="faq-item">
+                <h3>¿Realizan tratamientos para niños?</h3>
+                <div class="faq-content">
+                  <p>Sí, nuestros especialistas en odontopediatría brindan atención segura y amigable para los más pequeños.</p>
+                </div>
+                <i class="faq-toggle bi bi-chevron-right"></i>
+              </div>
+
+              <div class="faq-item">
+                <h3>¿Trabajan con seguros médicos?</h3>
+                <div class="faq-content">
+                  <p>Contáctanos para verificar la disponibilidad con tu proveedor de seguros.</p>
+                </div>
+                <i class="faq-toggle bi bi-chevron-right"></i>
+              </div>
+
+              <div class="faq-item">
+                <h3>¿Puedo financiar mis tratamientos?</h3>
+                <div class="faq-content">
+                  <p>Ofrecemos planes de pago accesibles según el tratamiento requerido.</p>
+                </div>
+                <i class="faq-toggle bi bi-chevron-right"></i>
+              </div>
+
+              <div class="faq-item">
+                <h3>¿Cómo sé qué tratamiento necesito?</h3>
+                <div class="faq-content">
+                  <p>Nuestros especialistas realizan un diagnóstico completo para definir el tratamiento adecuado.</p>
+                </div>
+                <i class="faq-toggle bi bi-chevron-right"></i>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+    <!-- Contact Section -->
+    <section id="contact" class="contact section">
+
+      <div class="container section-title" data-aos="fade-up">
+        <h2>Contacto</h2>
+        <p>Ponte en contacto con nosotros para consultas, citas o información adicional.</p>
+      </div>
+
+      <div class="mb-5" data-aos="fade-up" data-aos-delay="200">
+        <iframe style="border:0; width: 100%; height: 370px;"
+          src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d48389.78314118045!2d-74.006138!3d40.710059!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c25a22a3bda30d%3A0xb89d1fe6bc499443!2sDowntown%20Conference%20Center!5e0!3m2!1sen!2sus!4v1676961268712!5m2!1sen!2sus"
+          frameborder="0" allowfullscreen="" loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+      </div>
+
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+        <div class="row gy-4">
+          <div class="col-lg-6 ">
+            <div class="row gy-4">
+
+              <div class="col-lg-12">
+                <div class="info-item d-flex flex-column justify-content-center align-items-center" data-aos="fade-up" data-aos-delay="200">
+                  <i class="bi bi-geo-alt"></i>
+                  <h3>Dirección</h3>
+                  <p>A108 Adam Street, New York, NY 535022</p>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="info-item d-flex flex-column justify-content-center align-items-center" data-aos="fade-up" data-aos-delay="300">
+                  <i class="bi bi-telephone"></i>
+                  <h3>Teléfono</h3>
+                  <p>+1 5589 55488 55</p>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="info-item d-flex flex-column justify-content-center align-items-center" data-aos="fade-up" data-aos-delay="400">
+                  <i class="bi bi-envelope"></i>
+                  <h3>Correo Electrónico</h3>
+                  <p>info@example.com</p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <form action="forms/contact.php" method="post" class="php-email-form" data-aos="fade-up" data-aos-delay="500">
+              <div class="row gy-4">
+
+                <div class="col-md-6">
+                  <input type="text" name="name" class="form-control" placeholder="Tu Nombre" required="">
+                </div>
+
+                <div class="col-md-6">
+                  <input type="email" class="form-control" name="email" placeholder="Tu Correo" required="">
+                </div>
+
+                <div class="col-md-12">
+                  <input type="text" class="form-control" name="subject" placeholder="Asunto" required="">
+                </div>
+
+                <div class="col-md-12">
+                  <textarea class="form-control" name="message" rows="4" placeholder="Mensaje" required=""></textarea>
+                </div>
+
+                <div class="col-md-12 text-center">
+                  <div class="loading">Cargando</div>
+                  <div class="error-message"></div>
+                  <div class="sent-message">Tu mensaje ha sido enviado. ¡Gracias!</div>
+                  <button type="submit">Enviar Mensaje</button>
+                </div>
+
+              </div>
+            </form>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- Footer -->
+    <footer id="footer" class="footer light-background">
+
+      <div class="container footer-top">
+        <div class="row gy-4">
+
+          <div class="col-lg-4 col-md-6 footer-about">
+            <a href="index.html" class="logo d-flex align-items-center">
+              <span class="sitename">Medicio</span>
+            </a>
+            <div class="footer-contact pt-3">
+              <p>A108 Adam Street</p>
+              <p>New York, NY 535022</p>
+              <p class="mt-3"><strong>Teléfono:</strong> <span>+1 5589 55488 55</span></p>
+              <p><strong>Correo:</strong> <span>info@example.com</span></p>
+            </div>
+            <div class="social-links d-flex mt-4">
+              <a href=""><i class="bi bi-twitter-x"></i></a>
+              <a href=""><i class="bi bi-facebook"></i></a>
+              <a href=""><i class="bi bi-instagram"></i></a>
+              <a href=""><i class="bi bi-linkedin"></i></a>
+            </div>
+          </div>
+
+          <div class="col-lg-2 col-md-3 footer-links">
+            <h4>Enlaces Útiles</h4>
+            <ul>
+              <li><a href="#">Inicio</a></li>
+              <li><a href="#">Sobre Nosotros</a></li>
+              <li><a href="#">Servicios</a></li>
+              <li><a href="#">Términos de Servicio</a></li>
+              <li><a href="#">Política de Privacidad</a></li>
+            </ul>
+          </div>
+
+          <div class="col-lg-2 col-md-3 footer-links">
+            <h4>Nuestros Servicios</h4>
+            <ul>
+              <li><a href="#">Diseño Web</a></li>
+              <li><a href="#">Desarrollo Web</a></li>
+              <li><a href="#">Gestión de Productos</a></li>
+              <li><a href="#">Marketing</a></li>
+              <li><a href="#">Diseño Gráfico</a></li>
+            </ul>
+          </div>
+
+          <div class="col-lg-2 col-md-3 footer-links">
+            <h4>Información</h4>
+            <ul>
+              <li><a href="#">Consultas Generales</a></li>
+              <li><a href="#">Preguntas Frecuentes</a></li>
+              <li><a href="#">Soporte Técnico</a></li>
+              <li><a href="#">Atención al Cliente</a></li>
+              <li><a href="#">Documentación</a></li>
+            </ul>
+          </div>
+
+          <div class="col-lg-2 col-md-3 footer-links">
+            <h4>Recursos</h4>
+            <ul>
+              <li><a href="#">Guías</a></li>
+              <li><a href="#">Tutoriales</a></li>
+              <li><a href="#">Noticias</a></li>
+              <li><a href="#">Blog</a></li>
+              <li><a href="#">Foros</a></li>
+            </ul>
+          </div>
+
         </div>
       </div>
 
-      <div class="col-lg-2 col-md-3 footer-links">
-        <h4>Enlaces Útiles</h4>
-        <ul>
-          <li><a href="#">Inicio</a></li>
-          <li><a href="#">Sobre Nosotros</a></li>
-          <li><a href="#">Servicios</a></li>
-          <li><a href="#">Términos de Servicio</a></li>
-          <li><a href="#">Política de Privacidad</a></li>
-        </ul>
+      <div class="container copyright text-center mt-4">
+        <p>© <strong class="px-1 sitename">Medicio</strong> Todos los Derechos Reservados</p>
+        <div class="credits">
+          Diseñado por <a href="https://bootstrapmade.com/">BootstrapMade</a>
+        </div>
       </div>
 
-      <div class="col-lg-2 col-md-3 footer-links">
-        <h4>Nuestros Servicios</h4>
-        <ul>
-          <li><a href="#">Diseño Web</a></li>
-          <li><a href="#">Desarrollo Web</a></li>
-          <li><a href="#">Gestión de Productos</a></li>
-          <li><a href="#">Marketing</a></li>
-          <li><a href="#">Diseño Gráfico</a></li>
-        </ul>
-      </div>
-
-      <div class="col-lg-2 col-md-3 footer-links">
-        <h4>Información</h4>
-        <ul>
-          <li><a href="#">Consultas Generales</a></li>
-          <li><a href="#">Preguntas Frecuentes</a></li>
-          <li><a href="#">Soporte Técnico</a></li>
-          <li><a href="#">Atención al Cliente</a></li>
-          <li><a href="#">Documentación</a></li>
-        </ul>
-      </div>
-
-      <div class="col-lg-2 col-md-3 footer-links">
-        <h4>Recursos</h4>
-        <ul>
-          <li><a href="#">Guías</a></li>
-          <li><a href="#">Tutoriales</a></li>
-          <li><a href="#">Noticias</a></li>
-          <li><a href="#">Blog</a></li>
-          <li><a href="#">Foros</a></li>
-        </ul>
-      </div>
-
-    </div>
-  </div>
-
-  <div class="container copyright text-center mt-4">
-    <p>© <strong class="px-1 sitename">Medicio</strong> Todos los Derechos Reservados</p>
-    <div class="credits">
-      Diseñado por <a href="https://bootstrapmade.com/">BootstrapMade</a>
-    </div>
-  </div>
-
-</footer>
+    </footer>
 
 
-<!-- Scroll Top -->
-<a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center">
-  <i class="bi bi-arrow-up-short"></i>
-</a>
+    <!-- Scroll Top -->
+    <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center">
+      <i class="bi bi-arrow-up-short"></i>
+    </a>
 
-<!-- Preloader -->
-<div id="preloader"></div>
+    <!-- Preloader -->
+    <div id="preloader"></div>
 
-<!-- Vendor JS Files -->
-<script src="<?php echo APP_URL; ?>app/views/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-<script src="<?php echo APP_URL; ?>app/views/assets/vendor/php-email-form/validate.js"></script>
-<script src="<?php echo APP_URL; ?>app/views/assets/vendor/aos/aos.js"></script>
-<script src="<?php echo APP_URL; ?>app/views/assets/vendor/glightbox/js/glightbox.min.js"></script>
-<script src="<?php echo APP_URL; ?>app/views/assets/vendor/purecounter/purecounter_vanilla.js"></script>
-<script src="<?php echo APP_URL; ?>app/views/assets/vendor/swiper/swiper-bundle.min.js"></script>
+    <!-- Vendor JS Files -->
+    <script src="<?php echo APP_URL; ?>app/views/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="<?php echo APP_URL; ?>app/views/assets/vendor/php-email-form/validate.js"></script>
+    <script src="<?php echo APP_URL; ?>app/views/assets/vendor/aos/aos.js"></script>
+    <script src="<?php echo APP_URL; ?>app/views/assets/vendor/glightbox/js/glightbox.min.js"></script>
+    <script src="<?php echo APP_URL; ?>app/views/assets/vendor/purecounter/purecounter_vanilla.js"></script>
+    <script src="<?php echo APP_URL; ?>app/views/assets/vendor/swiper/swiper-bundle.min.js"></script>
 
-<!-- jQuery -->
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
-<!-- Datatables -->
-<script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
+    <!-- Datatables -->
+    <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
 
-<!-- SweetAlert2 -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<!-- Main Template JS -->
-<script src="<?php echo APP_URL; ?>app/views/assets/js/main.js"></script>
+    <!-- Main Template JS -->
+    <script src="<?php echo APP_URL; ?>app/views/assets/js/main.js"></script>
 
-<!-- Custom JS -->
-<script src="<?php echo APP_URL; ?>app/ajax/paciente.js"></script>
-<script src="<?php echo APP_URL; ?>app/ajax/odontologo.js"></script>
-<script src="<?php echo APP_URL; ?>app/ajax/cita.js"></script>
-<script src="<?php echo APP_URL; ?>app/ajax/odontograma.js"></script>
-<script src="<?php echo APP_URL; ?>app/ajax/servicio.js"></script>
-<script src="<?php echo APP_URL; ?>app/ajax/disponibilidad.js"></script>
-<script src="<?php echo APP_URL; ?>app/ajax/tratamiento.js"></script>
-<!--<script src="<?php echo APP_URL; ?>app/ajax/pago.js"></script>-->
+    <!-- Custom JS -->
+    <script src="<?php echo APP_URL; ?>app/ajax/paciente.js"></script>
+    <script src="<?php echo APP_URL; ?>app/ajax/odontologo.js"></script>
+    <script src="<?php echo APP_URL; ?>app/ajax/cita.js"></script>
+    <script src="<?php echo APP_URL; ?>app/ajax/odontograma.js"></script>
+    <script src="<?php echo APP_URL; ?>app/ajax/servicio.js"></script>
+    <script src="<?php echo APP_URL; ?>app/ajax/disponibilidad.js"></script>
+    <script src="<?php echo APP_URL; ?>app/ajax/tratamiento.js"></script>
+    <script src="<?php echo APP_URL; ?>app/ajax/pago.js"></script>
+    <script src="<?php echo APP_URL; ?>app/ajax/expediente.js"></script>
 
 
 
-<?php include 'app/views/content/paciente.php'; ?>
-<?php include 'app/views/content/ver_paciente.php'; ?>
-<?php include 'app/views/content/odontologo.php'; ?>
-<?php include 'app/views/content/ver_odontologo.php'; ?>
-<?php include 'app/views/content/cita.php'; ?>
-<?php include 'app/views/content/odontograma.php'; ?>
-<?php include 'app/views/content/servicio.php'; ?>
-<?php include 'app/views/content/disponibilidad.php'; ?>
-<?php include 'app/views/content/tratamiento.php'; ?>
-<?php include 'app/views/content/pago.php'; ?>
+    <?php include 'app/views/content/paciente.php'; ?>
+    <?php include 'app/views/content/ver_paciente.php'; ?>
+    <?php include 'app/views/content/odontologo.php'; ?>
+    <?php include 'app/views/content/ver_odontologo.php'; ?>
+    <?php include 'app/views/content/cita.php'; ?>
+    <?php include 'app/views/content/odontograma.php'; ?>
+    <?php include 'app/views/content/servicio.php'; ?>
+    <?php include 'app/views/content/disponibilidad.php'; ?>
+    <?php include 'app/views/content/tratamiento.php'; ?>
+    <?php include 'app/views/content/pago.php'; ?>
+    <?php include 'app/views/content/expediente.php'; ?>
 
 </body>
+
 </html>

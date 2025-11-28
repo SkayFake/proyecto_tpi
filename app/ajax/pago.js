@@ -27,12 +27,7 @@ $(document).ready(function () {
 
     /* ======= VALIDACIONES LOCALES ======= */
 
-    // Correo
-    if (!emailRegex.test(correo)) {
-      $("#correo_paciente").addClass("is-invalid");
-      Swal.fire("Correo inválido", "Debe ingresar un correo válido", "warning");
-      return false;
-    }
+    
 
     // Tratamiento
     if (!idTratamiento) {
