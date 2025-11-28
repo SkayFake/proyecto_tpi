@@ -102,38 +102,39 @@ try {
 
         
         case 'agregar':
-            $id_paciente    = intval($_POST['id_paciente'] ?? 0);
-            $id_tratamiento = intval($_POST['id_tratamiento'] ?? 0);
-            $metodo_pago    = trim($_POST['metodo_pago'] ?? '');
-            $monto          = floatval($_POST['monto'] ?? 0);
-            $estado_pago    = trim($_POST['estado_pago'] ?? '');
-            $referencia     = trim($_POST['referencia'] ?? '');
+    $id_paciente    = intval($_POST['id_paciente'] ?? 0);
+    $id_tratamiento = intval($_POST['id_tratamiento'] ?? 0);
+    $metodo_pago    = trim($_POST['metodo_pago'] ?? '');
+    $monto          = floatval($_POST['monto'] ?? 0);
+    $estado_pago    = trim($_POST['estado_pago'] ?? '');
+    $referencia     = trim($_POST['referencia'] ?? '');
 
-           
-            $valid = validarDatosPagoBase($id_paciente, $id_tratamiento, $metodo_pago, $monto, $estado_pago);
-            if ($valid !== true) errorJson($valid);
+    $valid = validarDatosPagoBase($id_paciente, $id_tratamiento, $metodo_pago, $monto, $estado_pago);
+    if ($valid !== true) errorJson($valid);
 
-            $paciente = $tratamientoModel->buscarPacientePorCorreo($id_paciente);
-            if (!$paciente) {
-                errorJson("No existe un paciente con ese correo.");
-            }
+   
+    $paciente = $pacienteModel->getPacienteById($id_paciente);
+    if (!$paciente) {
+        errorJson("El paciente no existe.");
+    }
 
-            $ok = $pagoModel->agregar(
-                $id_paciente,
-                $id_tratamiento,
-                $metodo_pago,
-                $monto,
-                $estado_pago,
-                $referencia !== '' ? $referencia : null
-            );
+    $ok = $pagoModel->agregar(
+        $id_paciente,
+        $id_tratamiento,
+        $metodo_pago,
+        $monto,
+        $estado_pago,
+        $referencia !== '' ? $referencia : null
+    );
 
-            if (!$ok) errorJson("No se pudo crear el pago.");
+    if (!$ok) errorJson("No se pudo crear el pago.");
 
-            echo json_encode([
-                'status'  => 'success',
-                'message' => 'Pago creado exitosamente'
-            ]);
-            exit;
+    echo json_encode([
+        'status'  => 'success',
+        'message' => 'Pago creado exitosamente'
+    ]);
+    exit;
+
 
         
         case 'actualizar':

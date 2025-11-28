@@ -2,22 +2,15 @@ const CTRL_PAGO = "app/controllers/pagoController.php";
 
 $(document).ready(function () {
 
-  //==========================================================
-  // INICIALIZAR MODAL DE BOOTSTRAP 5
-  //==========================================================
+ 
   const modalPago = new bootstrap.Modal(document.getElementById('modalPago'));
 
-  //==========================================================
-  // LIMPIAR ERRORES
-  //==========================================================
+ 
   function limpiarErrores() {
     $('#correo_pacientepa, #nombre_tratamientota, #metodo_pago, #monto_pago, #estado_pago')
       .removeClass("is-invalid");
   }
 
-  //==========================================================
-  // VALIDAR FORMULARIO
-  //==========================================================
   async function validarFormulario(isEdit) {
 
     console.log("%c[Validación] Iniciando", "color: purple");
@@ -70,9 +63,7 @@ $(document).ready(function () {
       return false;
     }
 
-    //==========================================================
-    // BUSCAR PACIENTE SI NO EXISTE (por correo)
-    //==========================================================
+    
     if (!idPaciente) {
       console.log("[Validación] Buscando paciente por correo:", correo);
 
@@ -95,11 +86,9 @@ $(document).ready(function () {
       $("#nombre_pacientepa").val(r.data.nombre_pacientepa);
     }
 
-    //==========================================================
-    // VERIFICACIÓN FINAL
-    //==========================================================
+    
     console.log("[Validación] FINAL → id_paciente:", $("#id_paciente").val());
-    console.log("[Validación] FINAL → id_tratamiento:", $("#nombre_tratamientota").val()); // ← CAMBIADO
+    console.log("[Validación] FINAL → id_tratamiento:", $("#nombre_tratamientota").val()); 
 
     if (!$("#id_paciente").val()) {
       console.log("[ERROR] id_paciente sigue vacío antes de enviar");
@@ -111,9 +100,7 @@ $(document).ready(function () {
     return true;
   }
 
-  //==========================================================
-  // CARGAR TRATAMIENTOS
-  //==========================================================
+  
   function cargarTratamientosSelect(selectedId = null) {
     const $sel = $("#nombre_tratamientota");
 
@@ -147,17 +134,12 @@ $(document).ready(function () {
 
         if (selectedId) {
           console.log("[Tratamiento] Seleccionando:", selectedId);
-          $sel.val(String(selectedId)); // ← SIMPLIFICADO
+          $sel.val(String(selectedId)); 
         }
       }
     });
   }
 
-  // ← ELIMINADO: Ya no necesitas sincronizar con campo hidden
-
-  //==========================================================
-  // BUSCAR PACIENTE EN BLUR
-  //==========================================================
   $("#correo_pacientepa").on("blur", function () {
     const correo = $(this).val().trim();
     console.log("[Paciente] BLUR →", correo);
@@ -180,9 +162,7 @@ $(document).ready(function () {
     );
   });
 
-  //==========================================================
-  // NUEVO PAGO
-  //==========================================================
+
   $("#btnNuevoPago").on("click", function () {
     console.log("[Nuevo Pago] Abriendo modal");
 
@@ -202,9 +182,7 @@ $(document).ready(function () {
     modalPago.show();
   });
 
-  //==========================================================
-// SUBMIT FORM
-//==========================================================
+
 $("#formPago").on("submit", async function (e) {
   e.preventDefault();
 
@@ -222,13 +200,13 @@ $("#formPago").on("submit", async function (e) {
 
   const fd = new FormData(this);
   
-  // FORZAR el id_paciente si no se incluyó
+  
   const idPaciente = $("#id_paciente").val();
   if (idPaciente) {
     fd.set('id_paciente', idPaciente);
   }
 
-  // DEBUG: Ver qué se está enviando
+  
   console.log("[Submit] FormData content:");
   for (let pair of fd.entries()) {
     console.log(pair[0] + ': ' + pair[1]);
@@ -258,9 +236,7 @@ $("#formPago").on("submit", async function (e) {
   });
 });
 
-  //==========================================================
-  // EDITAR PAGO
-  //==========================================================
+ 
   $("#tablaPagos").on("click", ".btn-editar-pago", function () {
 
     const id = $(this).data("id");
@@ -296,9 +272,6 @@ $("#formPago").on("submit", async function (e) {
 
   });
 
-  //==========================================================
-  // ELIMINAR
-  //==========================================================
   $("#tablaPagos").on("click", ".btn-eliminar-pago", function () {
     const id = $(this).data("id");
 
@@ -327,9 +300,7 @@ $("#formPago").on("submit", async function (e) {
     });
   });
 
-  //==========================================================
-  // INICIALIZAR DATATABLE
-  //==========================================================
+  
   const tablaPagos = $("#tablaPagos").DataTable({
     ajax: {
       url: `${CTRL_PAGO}?opcion=listar`,
@@ -366,7 +337,7 @@ $("#formPago").on("submit", async function (e) {
     order: [[0, 'desc']]
   });
 
-}); // ← Este cierra el $(document).ready
+}); 
 
   
 
