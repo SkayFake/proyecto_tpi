@@ -28,17 +28,7 @@ $(document).ready(function () {
       return false;
     }
 
-    // Correo: formato básico
-    const correoRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (correo === '' || !correoRegex.test(correo)) {
-      $('#correo').addClass('is-invalid');
-      Swal.fire({
-        icon: 'warning',
-        title: 'Correo no válido',
-        text: 'Ingrese un correo electrónico con formato válido (ej: usuario@dominio.com)'
-      });
-      return false;
-    }
+    
 
     
 if (telefono !== '') {

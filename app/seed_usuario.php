@@ -9,8 +9,8 @@ try {
 
     // DATOS DE PRUEBA
     $nombre       = "Administrador";
-    $correoPlano  = "admin@admin.com";
-    $passPlana    = "12345678";
+    $correoPlano  = "admn@admin.com";
+    $passPlana    = "123456788";
     $telefono     = "77777777";
     $especialidad = "General";
     $es_admin     = 1;

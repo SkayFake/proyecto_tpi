@@ -117,9 +117,7 @@
           <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
         </nav>
 
-        <a class="cta-btn" href="#appointment">Agendar Cita</a>
-      </div>
-    </div>
+       
   </header>
 
   <main class="main">
@@ -419,7 +417,7 @@
 
       <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="500">
         <div class="service-item position-relative">
-          <div class="icon"><i class="fas fa-wheelchair"></i></div>
+          <div class="icon"><i class="fas fa-pills"></i></div>
           <a href="#" class="stretched-link">
             <h3>Rehabilitación Oral</h3>
           </a>
@@ -443,68 +441,7 @@
 </section>
 
 
-<!-- Appointment Section -->
-<section id="appointment" class="appointment section light-background">
 
-  <div class="container section-title" data-aos="fade-up">
-    <h2>AGENDAR UNA CITA</h2>
-    <p>Completa el formulario y pronto nos pondremos en contacto contigo.</p>
-  </div>
-
-  <div class="container" data-aos="fade-up" data-aos-delay="100">
-
-    <form action="forms/appointment.php" method="post" role="form" class="php-email-form">
-      <div class="row">
-        <div class="col-md-4 form-group">
-          <input type="text" name="name" class="form-control" placeholder="Tu Nombre" required>
-        </div>
-        <div class="col-md-4 form-group mt-3 mt-md-0">
-          <input type="email" name="email" class="form-control" placeholder="Tu Correo" required>
-        </div>
-        <div class="col-md-4 form-group mt-3 mt-md-0">
-          <input type="tel" name="phone" class="form-control" placeholder="Tu Teléfono" required>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-md-4 form-group mt-3">
-          <input type="datetime-local" name="date" class="form-control" required>
-        </div>
-
-        <div class="col-md-4 form-group mt-3">
-          <select name="department" class="form-select" required>
-            <option value="">Seleccionar Departamento</option>
-            <option value="Departamento 1">Departamento 1</option>
-            <option value="Departamento 2">Departamento 2</option>
-            <option value="Departamento 3">Departamento 3</option>
-          </select>
-        </div>
-
-        <div class="col-md-4 form-group mt-3">
-          <select name="doctor" class="form-select" required>
-            <option value="">Seleccionar Doctor</option>
-            <option value="Doctor 1">Doctor 1</option>
-            <option value="Doctor 2">Doctor 2</option>
-            <option value="Doctor 3">Doctor 3</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="form-group mt-3">
-        <textarea class="form-control" name="message" rows="5" placeholder="Mensaje (Opcional)"></textarea>
-      </div>
-
-      <div class="mt-3">
-        <div class="loading">Cargando</div>
-        <div class="error-message"></div>
-        <div class="sent-message">Tu solicitud ha sido enviada exitosamente. ¡Gracias!</div>
-        <div class="text-center"><button type="submit">Agendar Cita</button></div>
-      </div>
-    </form>
-
-  </div>
-
-</section>
 
 
 <!-- Tabs Section (Departments) -->
@@ -627,98 +564,7 @@
 </section>
 
 
-<!-- Doctors Section -->
-<section id="doctors" class="doctors section light-background">
 
-  <div class="container section-title" data-aos="fade-up">
-    <h2>Doctores</h2>
-    <p>Conoce a nuestros profesionales altamente calificados.</p>
-  </div>
-
-  <div class="container">
-
-    <div class="row gy-4">
-
-      <div class="col-lg-3 col-md-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="100">
-        <div class="team-member">
-          <div class="member-img">
-            <img src="<?php echo APP_URL; ?>app/views/assets/img/doctors/doctors-1.jpg" class="img-fluid" alt="">
-            <div class="social">
-              <a href=""><i class="bi bi-twitter-x"></i></a>
-              <a href=""><i class="bi bi-facebook"></i></a>
-              <a href=""><i class="bi bi-instagram"></i></a>
-              <a href=""><i class="bi bi-linkedin"></i></a>
-            </div>
-          </div>
-          <div class="member-info">
-            <h4>Walter White</h4>
-            <span>Director Médico</span>
-          </div>
-        </div>
-      </div>
-
-
-      <div class="col-lg-3 col-md-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="200">
-        <div class="team-member">
-          <div class="member-img">
-            <img src="<?php echo APP_URL; ?>app/views/assets/img/doctors/doctors-2.jpg" class="img-fluid" alt="">
-            <div class="social">
-              <a href=""><i class="bi bi-twitter-x"></i></a>
-              <a href=""><i class="bi bi-facebook"></i></a>
-              <a href=""><i class="bi bi-instagram"></i></a>
-              <a href=""><i class="bi bi-linkedin"></i></a>
-            </div>
-          </div>
-          <div class="member-info">
-            <h4>Sarah Jhonson</h4>
-            <span>Anestesióloga</span>
-          </div>
-        </div>
-      </div>
-
-
-      <div class="col-lg-3 col-md-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="300">
-        <div class="team-member">
-          <div class="member-img">
-            <img src="<?php echo APP_URL; ?>app/views/assets/img/doctors/doctors-3.jpg" class="img-fluid" alt="">
-            <div class="social">
-              <a href=""><i class="bi bi-twitter-x"></i></a>
-              <a href=""><i class="bi bi-facebook"></i></a>
-              <a href=""><i class="bi bi-instagram"></i></a>
-              <a href=""><i class="bi bi-linkedin"></i></a>
-            </div>
-          </div>
-          <div class="member-info">
-            <h4>William Anderson</h4>
-            <span>Cardiólogo</span>
-          </div>
-        </div>
-      </div>
-
-
-      <div class="col-lg-3 col-md-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="400">
-        <div class="team-member">
-          <div class="member-img">
-            <img src="<?php echo APP_URL; ?>app/views/assets/img/doctors/doctors-4.jpg" class="img-fluid" alt="">
-            <div class="social">
-              <a href=""><i class="bi bi-twitter-x"></i></a>
-              <a href=""><i class="bi bi-facebook"></i></a>
-              <a href=""><i class="bi bi-instagram"></i></a>
-              <a href=""><i class="bi bi-linkedin"></i></a>
-            </div>
-          </div>
-          <div class="member-info">
-            <h4>Amanda Jepson</h4>
-            <span>Neurocirujana</span>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-  </div>
-
-</section>
 
 
 <!-- Gallery Section -->
@@ -809,162 +655,9 @@
 </section>
 
 
-<!-- FAQ Section -->
-<section id="faq" class="faq section light-background">
 
-  <div class="container section-title" data-aos="fade-up">
-    <h2>Preguntas Frecuentes</h2>
-    <p>Encuentra respuestas a las dudas más comunes.</p>
-  </div>
 
-  <div class="container">
 
-    <div class="row justify-content-center">
-      <div class="col-lg-10" data-aos="fade-up" data-aos-delay="100">
-
-        <div class="faq-container">
-
-          <div class="faq-item">
-            <h3>¿Cómo puedo agendar una cita?</h3>
-            <div class="faq-content">
-              <p>Puedes hacerlo desde nuestro formulario en línea o llamándonos directamente.</p>
-            </div>
-            <i class="faq-toggle bi bi-chevron-right"></i>
-          </div>
-
-          <div class="faq-item">
-            <h3>¿Aceptan emergencias?</h3>
-            <div class="faq-content">
-              <p>Sí, contamos con atención inmediata para emergencias dentales.</p>
-            </div>
-            <i class="faq-toggle bi bi-chevron-right"></i>
-          </div>
-
-          <div class="faq-item">
-            <h3>¿Realizan tratamientos para niños?</h3>
-            <div class="faq-content">
-              <p>Sí, nuestros especialistas en odontopediatría brindan atención segura y amigable para los más pequeños.</p>
-            </div>
-            <i class="faq-toggle bi bi-chevron-right"></i>
-          </div>
-
-          <div class="faq-item">
-            <h3>¿Trabajan con seguros médicos?</h3>
-            <div class="faq-content">
-              <p>Contáctanos para verificar la disponibilidad con tu proveedor de seguros.</p>
-            </div>
-            <i class="faq-toggle bi bi-chevron-right"></i>
-          </div>
-
-          <div class="faq-item">
-            <h3>¿Puedo financiar mis tratamientos?</h3>
-            <div class="faq-content">
-              <p>Ofrecemos planes de pago accesibles según el tratamiento requerido.</p>
-            </div>
-            <i class="faq-toggle bi bi-chevron-right"></i>
-          </div>
-
-          <div class="faq-item">
-            <h3>¿Cómo sé qué tratamiento necesito?</h3>
-            <div class="faq-content">
-              <p>Nuestros especialistas realizan un diagnóstico completo para definir el tratamiento adecuado.</p>
-            </div>
-            <i class="faq-toggle bi bi-chevron-right"></i>
-          </div>
-
-        </div>
-
-      </div>
-    </div>
-
-  </div>
-
-</section>
-<!-- Contact Section -->
-<section id="contact" class="contact section">
-
-  <div class="container section-title" data-aos="fade-up">
-    <h2>Contacto</h2>
-    <p>Ponte en contacto con nosotros para consultas, citas o información adicional.</p>
-  </div>
-
-  <div class="mb-5" data-aos="fade-up" data-aos-delay="200">
-    <iframe style="border:0; width: 100%; height: 370px;"
-      src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d48389.78314118045!2d-74.006138!3d40.710059!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c25a22a3bda30d%3A0xb89d1fe6bc499443!2sDowntown%20Conference%20Center!5e0!3m2!1sen!2sus!4v1676961268712!5m2!1sen!2sus"
-      frameborder="0" allowfullscreen="" loading="lazy"
-      referrerpolicy="no-referrer-when-downgrade">
-    </iframe>
-  </div>
-
-  <div class="container" data-aos="fade-up" data-aos-delay="100">
-
-    <div class="row gy-4">
-      <div class="col-lg-6 ">
-        <div class="row gy-4">
-
-          <div class="col-lg-12">
-            <div class="info-item d-flex flex-column justify-content-center align-items-center" data-aos="fade-up" data-aos-delay="200">
-              <i class="bi bi-geo-alt"></i>
-              <h3>Dirección</h3>
-              <p>A108 Adam Street, New York, NY 535022</p>
-            </div>
-          </div>
-
-          <div class="col-md-6">
-            <div class="info-item d-flex flex-column justify-content-center align-items-center" data-aos="fade-up" data-aos-delay="300">
-              <i class="bi bi-telephone"></i>
-              <h3>Teléfono</h3>
-              <p>+1 5589 55488 55</p>
-            </div>
-          </div>
-
-          <div class="col-md-6">
-            <div class="info-item d-flex flex-column justify-content-center align-items-center" data-aos="fade-up" data-aos-delay="400">
-              <i class="bi bi-envelope"></i>
-              <h3>Correo Electrónico</h3>
-              <p>info@example.com</p>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      <div class="col-lg-6">
-        <form action="forms/contact.php" method="post" class="php-email-form" data-aos="fade-up" data-aos-delay="500">
-          <div class="row gy-4">
-
-            <div class="col-md-6">
-              <input type="text" name="name" class="form-control" placeholder="Tu Nombre" required="">
-            </div>
-
-            <div class="col-md-6">
-              <input type="email" class="form-control" name="email" placeholder="Tu Correo" required="">
-            </div>
-
-            <div class="col-md-12">
-              <input type="text" class="form-control" name="subject" placeholder="Asunto" required="">
-            </div>
-
-            <div class="col-md-12">
-              <textarea class="form-control" name="message" rows="4" placeholder="Mensaje" required=""></textarea>
-            </div>
-
-            <div class="col-md-12 text-center">
-              <div class="loading">Cargando</div>
-              <div class="error-message"></div>
-              <div class="sent-message">Tu mensaje ha sido enviado. ¡Gracias!</div>
-              <button type="submit">Enviar Mensaje</button>
-            </div>
-
-          </div>
-        </form>
-      </div>
-
-    </div>
-
-  </div>
-
-</section>
 
 
 <!-- Footer -->
