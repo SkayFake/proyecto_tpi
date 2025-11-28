@@ -34,12 +34,11 @@ try {
                 break;
             }
 
-            // Encriptar exactamente igual que cuando guardaste en la BD
+            
             $correoEncriptado      = Encriptar::openCypher("encrypt", $correo);
             $contraseniaEncriptada = Encriptar::openCypher("encrypt", $contrasenia);
 
-            // Este método debe hacer algo como:
-            // SELECT * FROM usuarios WHERE correo = ? AND contrasenia = ? AND estado = 1
+         
             $usuario = $usuarioModel->getUsuarioLogin($correoEncriptado, $contraseniaEncriptada);
 
             if ($usuario) {

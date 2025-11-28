@@ -7,8 +7,7 @@ header('Cache-Control: no-store, no-cache, must-revalidate');
 require_once __DIR__ . '/../models/tratamientoModel.php';
 require_once __DIR__ . '/../models/odontologoModel.php';
 require_once __DIR__ . '/../models/servicioModel.php';
-// Si prefieres usar el mismo método buscarPacientePorCorreo del modelo Cita,
-// también podrías requerir citaModel.php aquí.
+
 
 $tratamientoModel = new Tratamiento();
 $odontologoModel  = new Odontologo();
@@ -22,9 +21,7 @@ function errorJson(string $msg)
     exit;
 }
 
-/**
- * Validaciones básicas para alta / edición de tratamiento
- */
+
 function validarDatosTratamientoBase(
     $correo_paciente,
     $id_odontologo,
@@ -50,7 +47,7 @@ function validarDatosTratamientoBase(
 
     // La fecha_fin puede ser opcional, pero si viene, validar formato de fecha
     if ($fecha_fin !== '' && $fecha_fin !== null) {
-        $soloFecha = substr($fecha_fin, 0, 10); // soporta "YYYY-MM-DD" o "YYYY-MM-DD HH:MM:SS"
+        $soloFecha = substr($fecha_fin, 0, 10); 
         $fechaObj  = DateTime::createFromFormat('Y-m-d', $soloFecha);
 
         if (!$fechaObj) {
@@ -64,14 +61,14 @@ function validarDatosTratamientoBase(
 try {
     switch ($opcion) {
 
-        /* ================== LISTAR TRATAMIENTOS ================== */
+        
         case 'listar':
             $rows = $tratamientoModel->getTratamientos();
             error_log("Tratamientos recuperados: " . json_encode($rows));
             echo json_encode(['status' => 'success', 'data' => $rows]);
             exit;
 
-        /* ================== LISTAR ODONTÓLOGOS (SELECT) ================== */
+      
         case 'listar_odontologos':
             echo json_encode([
                 'status' => 'success',
@@ -79,7 +76,6 @@ try {
             ]);
             exit;
 
-        /* ================== LISTAR SERVICIOS (SELECT) ================== */
         case 'listar_servicios':
             echo json_encode([
                 'status' => 'success',
@@ -87,15 +83,14 @@ try {
             ]);
             exit;
 
-        /* ================== BUSCAR PACIENTE POR CORREO ================== */
+       
         case 'buscar_paciente_correo':
             $correo = trim($_GET['correo'] ?? '');
             if ($correo === '') errorJson("Debe ingresar un correo.");
 
-            // Opción 1: usar un método en el modelo Tratamiento (igual que en CitaModel)
             $paciente = $tratamientoModel->buscarPacientePorCorreo($correo);
 
-            // Opción 2 (alternativa): si prefieres, buscar directamente desde un modelo Paciente
+            
 
             if (!$paciente) {
                 errorJson("No se encontró un paciente con ese correo.");
@@ -104,7 +99,7 @@ try {
             echo json_encode(['status' => 'success', 'data' => $paciente]);
             exit;
 
-        /* ================== OBTENER UN TRATAMIENTO ================== */
+        
         case 'obtener':
             $id = intval($_GET['id'] ?? 0);
             if (!$id) errorJson("ID inválido.");
@@ -115,7 +110,6 @@ try {
             echo json_encode(['status' => 'success', 'data' => $row]);
             exit;
 
-        /* ================== LISTAR TRATAMIENTOS POR PACIENTE ================== */
         case 'tratamientos_paciente':
             $id_paciente = intval($_GET['id_paciente'] ?? 0);
             if (!$id_paciente) errorJson("ID de paciente inválido.");
@@ -125,7 +119,7 @@ try {
             echo json_encode(['status' => 'success', 'data' => $rows]);
             exit;
 
-        /* ================== AGREGAR TRATAMIENTO ================== */
+    
         case 'agregar':
             $correo_paciente = trim($_POST['correo_paciente'] ?? '');
             $id_odontologo   = intval($_POST['id_odontologo'] ?? 0);
@@ -168,7 +162,7 @@ try {
             ]);
             exit;
 
-        /* ================== ACTUALIZAR TRATAMIENTO ================== */
+  
         case 'actualizar':
             $id_tratamiento  = intval($_POST['id_tratamiento'] ?? 0);
             $correo_paciente = trim($_POST['correo_paciente'] ?? '');
@@ -192,7 +186,7 @@ try {
             );
             if ($valid !== true) errorJson($valid);
 
-            // Normalmente no se cambia el paciente; usamos el que ya está en BD
+            
             $id_paciente = (int)$tratamiento['id_paciente'];
 
             $ok = $tratamientoModel->actualizar(
@@ -213,7 +207,6 @@ try {
             ]);
             exit;
 
-        /* ================== ELIMINAR TRATAMIENTO ================== */
         case 'eliminar':
             $id = intval($_POST['id'] ?? 0);
             if (!$id) errorJson("ID inválido.");

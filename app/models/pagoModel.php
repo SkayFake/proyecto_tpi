@@ -12,9 +12,7 @@ class Pago
         $this->conexion = Conexion::conectar();
     }
 
-    /**
-     * Listar TODOS los pagos con datos relacionados
-     */
+    
     public function getPagos(): array
     {
         try {
@@ -47,9 +45,7 @@ class Pago
         }
     }
 
-    /**
-     * Obtener un pago por su ID
-     */
+    
     public function getPagoById(int $id_pago): ?array
     {
         try {
@@ -85,9 +81,7 @@ class Pago
         }
     }
 
-    /**
-     * Listar pagos por paciente
-     */
+    
     public function getPagosPorPaciente(int $id_paciente): array
     {
         try {

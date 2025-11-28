@@ -2,17 +2,12 @@ const CTRL_TRATAMIENTO = "app/controllers/tratamientoController.php";
 
 $(document).ready(function () {
 
-  /* ==========================================================
-        LIMPIAR ERRORES
-  ========================================================== */
+ 
   function limpiarErroresFormularioTratamiento() {
     $('#trat_correo_paciente, #trat_id_odontologo, #trat_id_servicio, #fecha_fin, #trat_estado, #trat_notas')
       .removeClass("is-invalid");
   }
 
-  /* ==========================================================
-        VALIDAR FORMULARIO COMPLETO
-  ========================================================== */
   async function validarFormularioTratamiento(isEdit) {
 
     limpiarErroresFormularioTratamiento();
@@ -28,7 +23,7 @@ $(document).ready(function () {
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    /* ======= VALIDACIONES LOCALES ======= */
+    
 
     // Correo
     if (!emailRegex.test(correo)) {
@@ -89,7 +84,6 @@ $(document).ready(function () {
       return false;
     }
 
-    /* ======= ASEGURAR QUE EL PACIENTE EXISTA (BACKEND) ======= */
     if (!idPaciente) {
       const respPaciente = await $.ajax({
         url: `${CTRL_TRATAMIENTO}?opcion=buscar_paciente_correo&correo=${encodeURIComponent(correo)}`,
@@ -107,7 +101,7 @@ $(document).ready(function () {
       $("#trat_nombre_paciente").val(respPaciente.data.nombre);
     }
 
-    /* ======= VALIDAR TRATAMIENTO DUPLICADO EN BD ======= */
+   
     const esDuplicado = await $.ajax({
       url: `${CTRL_TRATAMIENTO}?opcion=listar`,
       dataType: "json"
@@ -135,9 +129,7 @@ $(document).ready(function () {
     return true;
   }
 
-  /* ==========================================================
-        CARGAR SELECTS
-  ========================================================== */
+
   function cargarOdontologosSelectTrat(selectedId = null) {
     const $sel = $("#trat_id_odontologo");
 
@@ -192,9 +184,7 @@ $(document).ready(function () {
     });
   }
 
-  /* ==========================================================
-        BUSCAR PACIENTE POR CORREO (BLUR)
-  ========================================================== */
+
   $("#trat_correo_paciente").on("blur", function () {
     const correo = $(this).val().trim();
     if (correo === "") return;
@@ -214,9 +204,7 @@ $(document).ready(function () {
     );
   });
 
-  /* ==========================================================
-        MODALES
-  ========================================================== */
+
   const modalTratamiento    = new bootstrap.Modal(document.getElementById("modalTratamiento"));
   const modalTratamientoVer = new bootstrap.Modal(document.getElementById("modalTratamientoVer"));
 
@@ -225,9 +213,7 @@ $(document).ready(function () {
     cargarServiciosSelect();
   });
 
-  /* ==========================================================
-        DATATABLE TRATAMIENTOS
-  ========================================================== */
+
   let tablaTratamientos = $("#tablaTratamientos").DataTable({
   ajax: {
     url: `${CTRL_TRATAMIENTO}?opcion=listar`,
@@ -293,9 +279,6 @@ $(document).ready(function () {
   ]
 });
 
-  /* ==========================================================
-        NUEVO TRATAMIENTO
-  ========================================================== */
   $("#btnNuevoTratamiento").on("click", function () {
     $("#tituloTratamiento").text("Nuevo Tratamiento");
     $("#formTratamiento")[0].reset();
@@ -317,9 +300,7 @@ $(document).ready(function () {
     modalTratamiento.show();
   });
 
-  /* ==========================================================
-        SUBMIT FORM TRATAMIENTO
-  ========================================================== */
+
   $("#formTratamiento").on("submit", async function (e) {
     e.preventDefault();
 
@@ -349,9 +330,7 @@ $(document).ready(function () {
     });
   });
 
-  /* ==========================================================
-        EDITAR TRATAMIENTO
-  ========================================================== */
+
   $("#tablaTratamientos").on("click", ".btn-editar-trat", function () {
     const id = $(this).data("id");
 
@@ -382,9 +361,7 @@ $(document).ready(function () {
     });
   });
 
-  /* ==========================================================
-        ELIMINAR TRATAMIENTO
-  ========================================================== */
+
   $("#tablaTratamientos").on("click", ".btn-eliminar-trat", function () {
     const id = $(this).data("id");
 
