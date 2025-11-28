@@ -2,17 +2,13 @@ const CTRL_CITA = "app/controllers/citaController.php";
 
 $(document).ready(function () {
 
-  /* ==========================================================
-        LIMPIAR ERRORES
-  ========================================================== */
+
   function limpiarErroresFormularioCita() {
     $('#correo_paciente, #cita_id_odontologo, #fecha_cita, #hora_cita, #cita_estado, #motivo')
       .removeClass("is-invalid");
   }
 
-  /* ==========================================================
-        VALIDAR FORMULARIO COMPLETO
-  ========================================================== */
+  
   async function validarFormularioCita(isEdit) {
 
     limpiarErroresFormularioCita();
@@ -28,7 +24,6 @@ $(document).ready(function () {
     const hoy = new Date();
     hoy.setHours(0, 0, 0, 0);
 
-    /* ======= VALIDACIONES LOCALES ======= */
 
     if (!emailRegex.test(correo)) {
       $("#correo_paciente").addClass("is-invalid");
@@ -98,7 +93,7 @@ if (mm !== 0) {
       return false;
     }
 
-    /* ======= VALIDAR DUPLICADO EN BD ======= */
+   
     const esDuplicada = await $.ajax({
       url: `${CTRL_CITA}?opcion=listar`,
       dataType: "json"
@@ -118,7 +113,7 @@ if (mm !== 0) {
       return false;
     }
 
-    /* ======= VALIDAR DISPONIBILIDAD BACKEND ======= */
+  
     const disponible = await $.ajax({
       url: `${CTRL_CITA}?opcion=validar_disponibilidad`,
       type: "get",

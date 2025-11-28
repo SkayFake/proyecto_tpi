@@ -12,9 +12,6 @@ class Tratamiento
         $this->conexion = Conexion::conectar();
     }
 
-    /**
-     * Listar TODOS los tratamientos con datos relacionados
-     */
     public function getTratamientos(): array
     {
         try {
@@ -46,9 +43,6 @@ class Tratamiento
         }
     }
 
-    /**
-     * Obtener un tratamiento por su ID
-     */
     public function getTratamientoById(int $id_tratamiento): ?array
     {
         try {
@@ -85,9 +79,7 @@ class Tratamiento
         }
     }
 
-    /**
-     * Listar tratamientos por paciente (historial)
-     */
+    
     public function getTratamientosPorPaciente(int $id_paciente): array
     {
         try {
@@ -119,10 +111,7 @@ class Tratamiento
         }
     }
 
-    /**
-     * Agregar tratamiento
-     * $fecha_fin puede venir null (tratamiento en curso)
-     */
+    
     public function agregar(
         int $id_paciente,
         int $id_odontologo,

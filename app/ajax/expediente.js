@@ -2,22 +2,16 @@ const CTRL_EXPEDIENTE = "app/controllers/expedienteController.php";;
 
 $(document).ready(function () {
 
-  /* ==========================================================
-        VARIABLES GLOBALES
-  ========================================================== */
+ 
   let pacienteActual = null;
   const modalBuscar = new bootstrap.Modal(document.getElementById("modalBuscarPaciente"));
 
-  /* ==========================================================
-        LIMPIAR ERRORES
-  ========================================================== */
+ 
   function limpiarErroresFormulario() {
     $('#nombre_paciente1').removeClass("is-invalid");
   }
 
-  /* ==========================================================
-        VALIDAR FORMULARIO
-  ========================================================== */
+
   function validarFormulario() {
     limpiarErroresFormulario();
 
@@ -32,9 +26,7 @@ $(document).ready(function () {
     return true;
   }
 
-  /* ==========================================================
-        BUSCAR EXPEDIENTE
-  ========================================================== */
+
   $("#formBuscarPaciente").on("submit", async function (e) {
     e.preventDefault();
 
@@ -88,9 +80,7 @@ $(document).ready(function () {
     });
   });
 
-  /* ==========================================================
-        MOSTRAR RESULTADOS
-  ========================================================== */
+
   function mostrarResultados(data) {
     if (!data || !data.paciente) {
       console.error('Datos del paciente no disponibles');
@@ -118,9 +108,6 @@ $(document).ready(function () {
     }, 500);
   }
 
-  /* ==========================================================
-        MOSTRAR DATOS DEL PACIENTE
-  ========================================================== */
   function mostrarDatosPaciente(paciente) {
     const campos = [
       { label: 'DUI', value: paciente.dui },
@@ -157,9 +144,7 @@ $(document).ready(function () {
     $("#datosPaciente").html(html);
   }
 
-  /* ==========================================================
-        MOSTRAR ODONTOGRAMAS
-  ========================================================== */
+
   function mostrarOdontogramas(odontogramas) {
     const $tbody = $("#tablaOdontogramas tbody");
 
@@ -188,9 +173,7 @@ $(document).ready(function () {
     $tbody.html(html);
   }
 
-  /* ==========================================================
-        MOSTRAR TRATAMIENTOS
-  ========================================================== */
+ 
   function mostrarTratamientos(tratamientos) {
     const $tbody = $("#tablaTratamientos tbody");
 
@@ -225,9 +208,7 @@ $(document).ready(function () {
     $tbody.html(html);
   }
 
-  /* ==========================================================
-        EXPORTAR PDF
-  ========================================================== */
+
   $("#btnExportarPDF").on("click", function () {
     if (!pacienteActual) {
       Swal.fire({
@@ -242,18 +223,14 @@ $(document).ready(function () {
     window.location.href = `${CTRL_EXPEDIENTE}?action=exportar&nombre=${encodeURIComponent(pacienteActual.nombre)}`;
   });
 
-  /* ==========================================================
-        NUEVA BÚSQUEDA
-  ========================================================== */
+
   $("#btnNuevaBusqueda").on("click", function () {
     $("#resultadosSection").hide();
     pacienteActual = null;
     $('html, body').animate({ scrollTop: 0 }, 500);
   });
 
-  /* ==========================================================
-        OCULTAR SECCIÓN DE RESULTADOS AL INICIO
-  ========================================================== */
+
   $("#resultadosSection").hide();
 
 });

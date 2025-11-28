@@ -28,12 +28,12 @@
             <div class="col-lg-6 col-md-12">
               <div class="form-floating mb-3">
                 <input class="form-control"
-                       id="correo_paciente"
-                       name="correo_paciente"
+                       id="correo_pacientep"
+                       name="correo_pacientep"
                        type="email"
                        placeholder="correo@ejemplo.com"
                        required>
-                <label for="correo_paciente">Correo del paciente</label>
+                <label for="correo_pacientep">Correo del paciente</label>
               </div>
             </div>
 
@@ -41,12 +41,12 @@
             <div class="col-lg-6 col-md-12">
               <div class="form-floating mb-3">
                 <input class="form-control"
-                       id="nombre_paciente"
-                       name="nombre_paciente"
+                       id="nombre_pacientep"
+                       name="nombre_pacientep"
                        type="text"
                        placeholder=""
                        readonly>
-                <label for="nombre_paciente">Nombre del paciente</label>
+                <label for="nombre_pacientep">Nombre del paciente</label>
               </div>
             </div>
 

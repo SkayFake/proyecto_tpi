@@ -2,17 +2,12 @@ const CTRL_PAGO = "app/controllers/pagoController.php";
 
 $(document).ready(function () {
 
-  /* ==========================================================
-        LIMPIAR ERRORES
-  ========================================================== */
   function limpiarErroresFormularioPago() {
     $('#correo_paciente, #nombre_tratamiento, #metodo_pago, #monto_pago, #estado_pago')
       .removeClass("is-invalid");
   }
 
-  /* ==========================================================
-        VALIDAR FORMULARIO COMPLETO
-  ========================================================== */
+  
   async function validarFormularioPago(isEdit) {
     limpiarErroresFormularioPago();
 
@@ -25,7 +20,6 @@ $(document).ready(function () {
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    /* ======= VALIDACIONES LOCALES ======= */
 
     
 
@@ -78,9 +72,7 @@ $(document).ready(function () {
     return true;
   }
 
-  /* ==========================================================
-        CARGAR SELECT DE TRATAMIENTOS
-  ========================================================== */
+  
   function cargarTratamientosSelect(selectedId = null) {
     const $sel = $("#nombre_tratamiento");
     
@@ -130,10 +122,8 @@ $(document).ready(function () {
     });
   }
 
-  /* ==========================================================
-        BUSCAR PACIENTE POR CORREO (BLUR)
-  ========================================================== */
-  $("#correo_paciente").on("blur", function () {
+ 
+  $("#pago_correo_paciente").on("blur", function () {
     const correo = $(this).val().trim();
     if (correo === "") return;
 
@@ -144,26 +134,24 @@ $(document).ready(function () {
       function (r) {
         console.log("✅ Respuesta buscar paciente:", r);
         if (r.status === "success") {
-          $("#nombre_paciente").val(r.data.nombre);
+          $("#nombre_pacientep").val(r.data.nombre);
           $("#id_paciente").val(r.data.id_paciente);
           console.log("✅ Paciente encontrado:", r.data.nombre);
         } else {
-          $("#nombre_paciente").val("");
+          $("#nombre_pacientep").val("");
           $("#id_paciente").val("");
           Swal.fire("Paciente no encontrado", r.message || "Verifique el correo ingresado", "error");
         }
       }
     ).fail(function(xhr, status, error) {
       console.error("❌ Error al buscar paciente:", status, error);
-      $("#nombre_paciente").val("");
+      $("#nombre_pacientep").val("");
       $("#id_paciente").val("");
       Swal.fire("Error", "No se pudo buscar el paciente", "error");
     });
   });
 
-  /* ==========================================================
-        MODALES
-  ========================================================== */
+
   const modalPago = new bootstrap.Modal(document.getElementById("modalPago"));
   const modalPagoVer = new bootstrap.Modal(document.getElementById("modalPagoVer"));
 
@@ -172,9 +160,7 @@ $(document).ready(function () {
     cargarTratamientosSelect();
   });
 
-  /* ==========================================================
-        DATATABLE PAGOS
-  ========================================================== */
+  
   let tablaPagos = $("#tablaPagos").DataTable({
     ajax: {
       url: `${CTRL_PAGO}?opcion=listar`,
@@ -251,9 +237,7 @@ $(document).ready(function () {
     ]
   });
 
-  /* ==========================================================
-        NUEVO PAGO
-  ========================================================== */
+
   $("#btnNuevoPago").on("click", function () {
     console.log("➕ Abriendo modal para nuevo pago");
     $("#tituloPago").text("Nuevo Pago");
@@ -273,9 +257,6 @@ $(document).ready(function () {
     modalPago.show();
   });
 
-  /* ==========================================================
-        SUBMIT FORM PAGO
-  ========================================================== */
   $("#formPago").on("submit", async function (e) {
     e.preventDefault();
 
@@ -312,9 +293,7 @@ $(document).ready(function () {
     });
   });
 
-  /* ==========================================================
-        EDITAR PAGO
-  ========================================================== */
+  
   $("#tablaPagos").on("click", ".btn-editar-pago", function () {
     const id = $(this).data("id");
     console.log("✏️ Editando pago ID:", id);
@@ -350,9 +329,6 @@ $(document).ready(function () {
     });
   });
 
-  /* ==========================================================
-        ELIMINAR PAGO
-  ========================================================== */
   $("#tablaPagos").on("click", ".btn-eliminar-pago", function () {
     const id = $(this).data("id");
 

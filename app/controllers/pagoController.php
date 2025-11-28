@@ -20,9 +20,7 @@ function errorJson(string $msg)
     exit;
 }
 
-/**
- * Validaciones básicas para alta / edición de pago
- */
+
 function validarDatosPagoBase(
     $id_paciente,
     $id_tratamiento,
@@ -56,13 +54,13 @@ function validarDatosPagoBase(
 try {
     switch ($opcion) {
 
-        /* ================== LISTAR PAGOS ================== */
+        
         case 'listar':
             $rows = $pagoModel->getPagos();
             echo json_encode(['status' => 'success', 'data' => $rows]);
             exit;
 
-        /* ================== LISTAR PACIENTES (SELECT) ================== */
+     
         case 'listar_pacientes':
             echo json_encode([
                 'status' => 'success',
@@ -70,7 +68,6 @@ try {
             ]);
             exit;
 
-        /* ================== LISTAR TRATAMIENTOS (SELECT) ================== */
         case 'listar_tratamientos':
             echo json_encode([
                 'status' => 'success',
@@ -78,7 +75,7 @@ try {
             ]);
             exit;
 
-        /* ================== BUSCAR PACIENTE POR CORREO ================== */
+ 
         case 'buscar_paciente_correo':
             $correo = trim($_GET['correo'] ?? '');
             if (!$correo) errorJson("Correo vacío.");
@@ -92,7 +89,7 @@ try {
             ]);
             exit;
 
-        /* ================== OBTENER UN PAGO ================== */
+        
         case 'obtener':
             $id = intval($_GET['id'] ?? 0);
             if (!$id) errorJson("ID inválido.");
@@ -103,7 +100,7 @@ try {
             echo json_encode(['status' => 'success', 'data' => $row]);
             exit;
 
-        /* ================== AGREGAR PAGO ================== */
+        
         case 'agregar':
             $id_paciente    = intval($_POST['id_paciente'] ?? 0);
             $id_tratamiento = intval($_POST['id_tratamiento'] ?? 0);
@@ -112,9 +109,14 @@ try {
             $estado_pago    = trim($_POST['estado_pago'] ?? '');
             $referencia     = trim($_POST['referencia'] ?? '');
 
-            // Validar los datos recibidos
+           
             $valid = validarDatosPagoBase($id_paciente, $id_tratamiento, $metodo_pago, $monto, $estado_pago);
             if ($valid !== true) errorJson($valid);
+
+            $paciente = $tratamientoModel->buscarPacientePorCorreo($id_paciente);
+            if (!$paciente) {
+                errorJson("No existe un paciente con ese correo.");
+            }
 
             $ok = $pagoModel->agregar(
                 $id_paciente,
@@ -133,7 +135,7 @@ try {
             ]);
             exit;
 
-        /* ================== ACTUALIZAR PAGO ================== */
+        
         case 'actualizar':
             $id_pago        = intval($_POST['id_pago'] ?? 0);
             $id_paciente    = intval($_POST['id_paciente'] ?? 0);
@@ -170,7 +172,7 @@ try {
             ]);
             exit;
 
-        /* ================== ELIMINAR PAGO ================== */
+        
         case 'eliminar':
             $id = intval($_POST['id'] ?? 0);
             if (!$id) errorJson("ID inválido.");
