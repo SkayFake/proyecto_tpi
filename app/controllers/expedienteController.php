@@ -1,11 +1,4 @@
 <?php
-
-header('Content-Type: application/json; charset=utf-8');
-header('Pragma: no-cache');
-header('Cache-Control: no-store, no-cache, must-revalidate');
-
-require_once __DIR__ . '/../models/expedienteModel.php';
-
 class ExpedienteController {
     private $model;
     
@@ -13,42 +6,73 @@ class ExpedienteController {
         $this->model = new ExpedienteModel($db);
     }
     
-    public function mostrarFormulario() {
-        include 'views/formulario_busqueda.php';
+    public function index() {
+        include 'views/expediente_view.php';
+    }
+    
+    public function obtenerPacientes() {
+        header('Content-Type: application/json');
+        $pacientes = $this->model->listarPacientes();
+        echo json_encode($pacientes);
+        exit;
     }
     
     public function buscarExpediente() {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['nombre_paciente'])) {
-            $nombrePaciente = trim($_POST['nombre_paciente']);
-            
-            if (empty($nombrePaciente)) {
-                $error = "Por favor ingrese un nombre de paciente";
-                include 'views/formulario_busqueda.php';
-                return;
+        header('Content-Type: application/json');
+        
+        try {
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $json = file_get_contents('php://input');
+                $data = json_decode($json, true);
+                $nombrePaciente = $data['nombre_paciente'] ?? '';
+                
+                if (empty($nombrePaciente)) {
+                    echo json_encode(['success' => false, 'message' => 'Nombre de paciente requerido']);
+                    exit;
+                }
+                
+                $resultados = $this->model->obtenerExpedientePorNombre($nombrePaciente);
+                
+                if (empty($resultados)) {
+                    echo json_encode(['success' => false, 'message' => 'No se encontraron resultados para el paciente: ' . $nombrePaciente]);
+                    exit;
+                }
+                
+                // Organizar datos
+                $paciente = [
+                    'nombre' => $resultados[0]['paciente_nombre'],
+                    'fecha_nacimiento' => $resultados[0]['fecha_nacimiento'],
+                    'sexo' => $resultados[0]['sexo'],
+                    'telefono' => $resultados[0]['telefono'],
+                    'correo' => $resultados[0]['correo'],
+                    'direccion' => $resultados[0]['direccion'],
+                    'dui' => $resultados[0]['dui'],
+                    'notas' => $resultados[0]['paciente_notas']
+                ];
+                
+                $odontogramas = array_values(array_filter($resultados, function($r) {
+                    return !empty($r['odontograma_fecha']);
+                }));
+                
+                $tratamientos = array_values(array_filter($resultados, function($r) {
+                    return !empty($r['tratamiento_nombre']);
+                }));
+                
+                echo json_encode([
+                    'success' => true,
+                    'paciente' => $paciente,
+                    'odontogramas' => $odontogramas,
+                    'tratamientos' => $tratamientos
+                ]);
             }
-            
-            $resultados = $this->model->obtenerExpedientePorNombre($nombrePaciente);
-            
-            if (empty($resultados)) {
-                $error = "No se encontraron resultados para el paciente: " . htmlspecialchars($nombrePaciente);
-                include 'views/formulario_busqueda.php';
-                return;
-            }
-            
-            // Organizar datos del paciente
-            $paciente = [
-                'nombre' => $resultados[0]['paciente_nombre'],
-                'fecha_nacimiento' => $resultados[0]['fecha_nacimiento'],
-                'sexo' => $resultados[0]['sexo'],
-                'telefono' => $resultados[0]['telefono'],
-                'correo' => $resultados[0]['correo'],
-                'direccion' => $resultados[0]['direccion'],
-                'dui' => $resultados[0]['dui'],
-                'notas' => $resultados[0]['paciente_notas']
-            ];
-            
-            include 'views/expediente_view.php';
+        } catch (Exception $e) {
+            error_log("Error en buscarExpediente: " . $e->getMessage());
+            echo json_encode([
+                'success' => false, 
+                'message' => 'Ocurrió un error al buscar el expediente: ' . $e->getMessage()
+            ]);
         }
+        exit;
     }
     
     public function exportarPDF() {
@@ -138,4 +162,5 @@ class ExpedienteController {
         exit;
     }
 }
+
 ?>
