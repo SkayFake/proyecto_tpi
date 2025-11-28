@@ -30,7 +30,7 @@ class Tratamiento
                         p.nombre     AS nombre_paciente,
                         p.correo     AS correo_paciente,
                         o.nombre     AS nombre_odontologo,
-                        s.nombre_servicio AS nombre_servicio
+                        s.nombre     AS nombre_servicio
                     FROM tratamiento t
                     LEFT JOIN paciente   p ON t.id_paciente   = p.id_paciente
                     LEFT JOIN odontologo o ON t.id_odontologo = o.id_odontologo
@@ -282,4 +282,20 @@ class Tratamiento
             return null;
         }
     }
+
+    public function getTratamientosSelect(): array
+{
+    try {
+        $sql = "SELECT id_servicio,nombre  AS nombre_tratamiento
+                FROM servicio
+                ORDER BY nombre ASC";
+        
+        return $this->conexion
+                    ->query($sql)
+                    ->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Throwable $e) {
+        error_log("Error getTratamientos: " . $e->getMessage());
+        return [];
+    }
+}
 }

@@ -1,4 +1,3 @@
-<!-- ================== MODAL TRATAMIENTO (AGREGAR / EDITAR) ================== -->
 <div id="modalTratamiento"
      class="modal fade"
      data-bs-keyboard="false"
@@ -21,6 +20,7 @@
           <!-- Hidden IDs -->
           <input type="hidden" id="id_tratamiento" name="id_tratamiento">
           <input type="hidden" id="id_paciente_trat" name="id_paciente">
+          <input type="hidden" id="id_odontologo_trat" name="id_odontologo">
 
           <div class="row g-3">
 
@@ -44,7 +44,7 @@
                        id="trat_nombre_paciente"
                        type="text"
                        placeholder=""
-                       readonly>
+                       required>
                 <label for="trat_nombre_paciente">Nombre del paciente</label>
               </div>
             </div>
@@ -128,7 +128,7 @@
           </div><!-- /.row -->
         </div><!-- /.modal-body -->
 
-        <div class="modal-footer">
+        <div class="modal-footer justify-content-between">
           <button class="btn btn-danger" type="button" data-bs-dismiss="modal">Cancelar</button>
           <button type="submit" class="btn btn-success">Guardar</button>
         </div>
@@ -138,7 +138,8 @@
   </div>
 </div>
 
-<!-- ================== MODAL LISTADO TRATAMIENTOS ================== -->
+
+
 <div id="modalTratamientoVer"
      class="modal fade"
      data-bs-keyboard="false"
