@@ -1,6 +1,6 @@
 <?php
 // josue
-	const APP_URL="http://localhost:8080/proyecto_final_tpi/";
+	const APP_URL="https://proyecto-tpi-d7ed.onrender.com/";
 	const APP_NAME="proyecto_final_tpi";
 	const APP_SESSION_NAME="proyecto_final_tpi";
 

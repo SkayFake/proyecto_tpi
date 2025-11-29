@@ -1,9 +1,9 @@
 <?php
 
-    const DB_SERVER="localhost";
-	const DB_NAME="clinica";
-	const DB_USER="Josue";
-	const DB_PASS='gj23001';
+    const DB_SERVER="shortline.proxy.rlwy.net";
+	const DB_NAME="railway";
+	const DB_USER="root";
+	const DB_PASS='WEJvCKHJWiLPqxwxJOFXyzMpvdiQzeIX';
 
 // steven
 //    const DB_NAME="bd";
