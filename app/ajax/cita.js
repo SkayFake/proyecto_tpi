@@ -8,17 +8,17 @@ $(document).ready(function () {
       .removeClass("is-invalid");
   }
 
-  
+
   async function validarFormularioCita(isEdit) {
 
     limpiarErroresFormularioCita();
 
-    const correo       = $("#correo_paciente").val().trim();
+    const correo = $("#correo_paciente").val().trim();
     const idOdontologo = $("#cita_id_odontologo").val();
-    const fechaCita    = $("#fecha_cita").val();
-    const horaCita     = $("#hora_cita").val();
-    const motivo       = $("#motivo").val().trim();
-    const estado       = $("#cita_estado").val();
+    const fechaCita = $("#fecha_cita").val();
+    const horaCita = $("#hora_cita").val();
+    const motivo = $("#motivo").val().trim();
+    const estado = $("#cita_estado").val();
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const hoy = new Date();
@@ -68,17 +68,17 @@ $(document).ready(function () {
       return false;
     }
 
-const [hh, mm] = horaCita.split(":").map(Number);
+    const [hh, mm] = horaCita.split(":").map(Number);
 
-if (mm !== 0) {
-  $("#hora_cita").addClass("is-invalid");
-  Swal.fire(
-    "Hora inválida",
-    "Las citas solo se permiten en horas exactas (ejemplo: 09:00, 10:00).",
-    "warning"
-  );
-  return false;
-}
+    if (mm !== 0) {
+      $("#hora_cita").addClass("is-invalid");
+      Swal.fire(
+        "Hora inválida",
+        "Las citas solo se permiten en horas exactas (ejemplo: 09:00, 10:00).",
+        "warning"
+      );
+      return false;
+    }
 
 
     if (hh < 7 || hh > 17) {
@@ -93,7 +93,7 @@ if (mm !== 0) {
       return false;
     }
 
-   
+
     const esDuplicada = await $.ajax({
       url: `${CTRL_CITA}?opcion=listar`,
       dataType: "json"
@@ -113,7 +113,7 @@ if (mm !== 0) {
       return false;
     }
 
-  
+
     const disponible = await $.ajax({
       url: `${CTRL_CITA}?opcion=validar_disponibilidad`,
       type: "get",
@@ -170,62 +170,62 @@ if (mm !== 0) {
     if (!id || !fecha) return;
 
     $.getJSON(
-        `${CTRL_CITA}?opcion=horas_disponibles&id_odontologo=${id}&fecha=${fecha}`,
-        function (r) {
+      `${CTRL_CITA}?opcion=horas_disponibles&id_odontologo=${id}&fecha=${fecha}`,
+      function (r) {
 
-            const $hora = $("#hora_cita");
-            $hora.empty();
+        const $hora = $("#hora_cita");
+        $hora.empty();
 
-            if (r.status !== "success" || r.data.length === 0) {
-                $hora.append(`<option value="">No hay horas disponibles</option>`);
-                return;
-            }
-
-            $hora.append(`<option value="">-- Selecciona una hora --</option>`);
-
-            r.data.forEach(h => {
-                $hora.append(`<option value="${h}">${h}</option>`);
-            });
+        if (r.status !== "success" || r.data.length === 0) {
+          $hora.append(`<option value="">No hay horas disponibles</option>`);
+          return;
         }
+
+        $hora.append(`<option value="">-- Selecciona una hora --</option>`);
+
+        r.data.forEach(h => {
+          $hora.append(`<option value="${h}">${h}</option>`);
+        });
+      }
     );
-});
+  });
 
 
-const modalHorarios = new bootstrap.Modal(document.getElementById("modalHorarios"));
+  const modalHorarios = new bootstrap.Modal(document.getElementById("modalHorarios"));
 
-$("#btnVerHorarios").on("click", function () {
+  $("#btnVerHorarios").on("click", function () {
 
     const idOdont = $("#cita_id_odontologo").val();
-    const fecha   = $("#fecha_cita").val();
+    const fecha = $("#fecha_cita").val();
 
     if (!idOdont || !fecha) {
-        Swal.fire("Faltan datos", "Selecciona odontólogo y fecha", "warning");
-        return;
+      Swal.fire("Faltan datos", "Selecciona odontólogo y fecha", "warning");
+      return;
     }
 
     $.ajax({
-        url: `${CTRL_CITA}?opcion=horarios_disponibles`,
-        type: "get",
-        data: { id_odontologo: idOdont, fecha },
-        dataType: "json",
-        success: function (r) {
+      url: `${CTRL_CITA}?opcion=horarios_disponibles`,
+      type: "get",
+      data: { id_odontologo: idOdont, fecha },
+      dataType: "json",
+      success: function (r) {
 
-            const $lista = $("#listaHorarios");
-            $lista.empty();
+        const $lista = $("#listaHorarios");
+        $lista.empty();
 
-            if (r.status !== "success" || r.data.length === 0) {
-                $lista.append(`<li class="list-group-item text-center">No hay horarios disponibles</li>`);
-            } else {
-                r.data.forEach(hora => {
-                    $lista.append(`<li class="list-group-item">${hora}</li>`);
-                });
-            }
-
-            modalHorarios.show();
+        if (r.status !== "success" || r.data.length === 0) {
+          $lista.append(`<li class="list-group-item text-center">No hay horarios disponibles</li>`);
+        } else {
+          r.data.forEach(hora => {
+            $lista.append(`<li class="list-group-item">${hora}</li>`);
+          });
         }
+
+        modalHorarios.show();
+      }
     });
 
-});
+  });
 
 
   $("#correo_paciente").on("blur", function () {
@@ -247,9 +247,27 @@ $("#btnVerHorarios").on("click", function () {
     );
   });
 
+  function formatearSoloFecha(fecha) {
+
+    if (!fecha) return "N/A";
+
+    const partes = fecha.split("-"); // yyyy-mm-dd
+    if (partes.length !== 3) return fecha;
+
+    const año = partes[0];
+    const mes = parseInt(partes[1]) - 1;
+    const dia = partes[2];
+
+    const meses = [
+      "enero", "febrero", "marzo", "abril", "mayo", "junio",
+      "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"
+    ];
+
+    return `${dia} de ${meses[mes]} de ${año}`;
+  }
 
   const modalEditar = new bootstrap.Modal(document.getElementById("modalCita"));
-  const modalVer    = new bootstrap.Modal(document.getElementById("modalCitaVer"));
+  const modalVer = new bootstrap.Modal(document.getElementById("modalCitaVer"));
 
   $("#modalCita").on("shown.bs.modal", function () {
     cargarOdontologosSelect();
@@ -259,7 +277,10 @@ $("#btnVerHorarios").on("click", function () {
   let tabla = $("#tablaCitas").DataTable({
     ajax: {
       url: `${CTRL_CITA}?opcion=listar`,
-      dataSrc: json => json.status === "success" ? json.data : []
+      dataSrc: function (json) {
+        console.log("### JSON COMPLETO DE CITAS ###", json);
+        return json.status === "success" ? json.data : [];
+      }
     },
     language: { url: "app/ajax/idioma.json" },
     responsive: true,
@@ -267,11 +288,17 @@ $("#btnVerHorarios").on("click", function () {
       { data: "nombre_paciente" },
       { data: "correo_paciente" },
       { data: "nombre_odontologo" },
-      { data: "fecha_cita" },
+      {
+  data: "fecha_cita",
+  render: function (v) {
+    return formatearSoloFecha(v);
+  }
+},
+
       { data: "hora_cita" },
       { data: "motivo" },
 
-      {  
+      {
         data: "estado",
         render: function (estado) {
 

@@ -108,7 +108,7 @@
               </ul>
             </li>
 
-            <li><a href="#contact">Contacto</a></li>
+            <li><a href="#contact">Expedientes</a></li>
           </ul>
           <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
         </nav>
@@ -422,11 +422,6 @@
       </div>
 
     </section>
-
-
-    
-
-
     <!-- Tabs Section (Departments) -->
     <section id="tabs" class="tabs section">
 
@@ -444,7 +439,7 @@
               
 
               <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" href="#tabs-tab-3">Periodonci</a>
+                <a class="nav-link" data-bs-toggle="tab" href="#tabs-tab-3">Periodoncia</a>
               </li>
 
               <li class="nav-item">
@@ -514,6 +509,20 @@
     </section>
 
 
+    <section id="contact" class="services section">
+
+      <div class="container section-title" data-aos="fade-up">
+        <h2>Expediente</h2>
+       </div>
+
+      <div class="container">
+        <div class="row gy-4">
+          <?php include 'app/views/content/expediente.php'; ?>
+
+        </div>
+      </div>
+
+    </section>
    
 
 
@@ -737,7 +746,6 @@
     <?php include 'app/views/content/disponibilidad.php'; ?>
     <?php include 'app/views/content/tratamiento.php'; ?>
     <?php include 'app/views/content/pago.php'; ?>
-    <?php include 'app/views/content/expediente.php'; ?>
 
 </body>
 

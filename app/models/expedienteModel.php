@@ -12,10 +12,6 @@ class ExpedienteModel
         $this->conexion = Conexion::conectar();
     }
 
-    /**
-     * Obtener expediente completo de un paciente por nombre
-     * (USANDO LIKE)
-     */
     public function obtenerExpedientePorNombre(string $nombrePaciente): array
     {
         try {
@@ -29,37 +25,48 @@ class ExpedienteModel
                         p.direccion,
                         p.dui,
                         p.notas AS paciente_notas,
-                        o.imagen AS odontograma_imagen,
+                        o.imagen AS odontograma_imagen_blob,
                         o.observaciones AS odontograma_observaciones,
                         o.created_at AS odontograma_fecha,
                         s.nombre AS tratamiento_nombre,
                         t.estado AS tratamiento_estado,
                         t.notas AS tratamiento_notas
-                    FROM 
-                        paciente p
-                    LEFT JOIN 
-                        odontograma o ON o.id_paciente = p.id_paciente
-                    LEFT JOIN 
-                        tratamiento t ON t.id_paciente = p.id_paciente
-                    LEFT JOIN 
-                        servicio s ON s.id_servicio = t.id_servicio
-                    WHERE 
-                        p.nombre LIKE :nombre";
+                    FROM paciente p
+                    LEFT JOIN odontograma o ON o.id_paciente = p.id_paciente
+                    LEFT JOIN tratamiento t ON t.id_paciente = p.id_paciente
+                    LEFT JOIN servicio s ON s.id_servicio = t.id_servicio
+                    WHERE p.nombre LIKE :nombre
+                    ORDER BY o.created_at DESC";
 
             $stmt = $this->conexion->prepare($sql);
-
-            // IMPORTANTE: agregar % para búsqueda parcial
-            $busqueda = '%' . $nombrePaciente . '%';
-
-            $stmt->bindValue(':nombre', $busqueda, PDO::PARAM_STR);
+            $stmt->bindValue(':nombre', '%' . $nombrePaciente . '%', PDO::PARAM_STR);
             $stmt->execute();
 
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            foreach ($data as &$row) {
+                if (!empty($row['odontograma_imagen_blob'])) {
+                    $blob = $row['odontograma_imagen_blob'];
+
+                    if (strpos($blob, "\x89PNG") === 0) {
+                        $mime = "image/png";
+                    } elseif (strpos($blob, "\xFF\xD8\xFF") === 0) {
+                        $mime = "image/jpeg";
+                    } else {
+                        $mime = "image/jpeg"; 
+                    }
+
+                    $row['odontograma_imagen'] = "data:$mime;base64," . base64_encode($blob);
+                } else {
+                    $row['odontograma_imagen'] = null;
+                }
+            }
+
+            return $data;
 
         } catch (Throwable $e) {
             error_log("Error obtenerExpedientePorNombre: " . $e->getMessage());
             return [];
         }
     }
-
 }

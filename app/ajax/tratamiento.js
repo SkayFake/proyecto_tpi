@@ -2,7 +2,7 @@ const CTRL_TRATAMIENTO = "app/controllers/tratamientoController.php";
 
 $(document).ready(function () {
 
- 
+
   function limpiarErroresFormularioTratamiento() {
     $('#trat_correo_paciente, #trat_id_odontologo, #trat_id_servicio, #fecha_fin, #trat_estado, #trat_notas')
       .removeClass("is-invalid");
@@ -12,48 +12,46 @@ $(document).ready(function () {
 
     limpiarErroresFormularioTratamiento();
 
-    const correo        = $("#trat_correo_paciente").val().trim();
-    const idOdontologo  = $("#trat_id_odontologo").val();
-    const idServicio    = $("#trat_id_servicio").val();
-    const fechaInicio   = $("#trat_fecha_inicio").val().trim(); // solo lectura (created_at)
-    const fechaFin      = $("#fecha_fin").val().trim();
-    const estado        = $("#trat_estado").val();
-    const notas         = $("#trat_notas").val().trim();
-    let   idPaciente    = $("#id_paciente_trat").val();
+    const correo = $("#trat_correo_paciente").val().trim();
+    const idOdontologo = $("#trat_id_odontologo").val();
+    const idServicio = $("#trat_id_servicio").val();
+    const fechaInicio = $("#trat_fecha_inicio").val().trim();
+    const fechaFin = $("#fecha_fin").val().trim();
+    const estado = $("#trat_estado").val();
+    const notas = $("#trat_notas").val().trim();
+    let idPaciente = $("#id_paciente_trat").val();
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    
 
-    // Correo
+
     if (!emailRegex.test(correo)) {
       $("#trat_correo_paciente").addClass("is-invalid");
       Swal.fire("Correo inválido", "Debe ingresar un correo válido", "warning");
       return false;
     }
 
-    // Odontólogo
+
     if (!idOdontologo) {
       $("#trat_id_odontologo").addClass("is-invalid");
       Swal.fire("Dato requerido", "Debe seleccionar un odontólogo", "warning");
       return false;
     }
 
-    // Servicio
+
     if (!idServicio) {
       $("#trat_id_servicio").addClass("is-invalid");
       Swal.fire("Dato requerido", "Debe seleccionar un servicio / tratamiento", "warning");
       return false;
     }
 
-    // Estado
     if (!estado) {
       $("#trat_estado").addClass("is-invalid");
       Swal.fire("Dato requerido", "Debe seleccionar un estado", "warning");
       return false;
     }
 
-    // Validar fecha fin (opcional)
+
     if (fechaFin !== "") {
       const fFin = new Date(fechaFin);
       if (isNaN(fFin.getTime())) {
@@ -62,7 +60,7 @@ $(document).ready(function () {
         return false;
       }
 
-      // Si hay fecha de inicio (created_at) la usamos como mínimo
+
       if (fechaInicio !== "") {
         const fIni = new Date(fechaInicio.substring(0, 10));
         if (!isNaN(fIni.getTime()) && fFin < fIni) {
@@ -73,7 +71,7 @@ $(document).ready(function () {
       }
     }
 
-    // Notas opcionales, pero si está finalizado o cancelado, pedimos algo
+
     if ((estado === "finalizado" || estado === "cancelado") && notas.length < 5) {
       $("#trat_notas").addClass("is-invalid");
       Swal.fire(
@@ -101,7 +99,7 @@ $(document).ready(function () {
       $("#trat_nombre_paciente").val(respPaciente.data.nombre);
     }
 
-   
+
     const esDuplicado = await $.ajax({
       url: `${CTRL_TRATAMIENTO}?opcion=listar`,
       dataType: "json"
@@ -127,6 +125,28 @@ $(document).ready(function () {
     }
 
     return true;
+  }
+
+  function formatearFecha(fecha) {
+    if (!fecha || fecha === "null" || fecha === null) return "N/A";
+
+    // MySQL format: "YYYY-MM-DD HH:MM:SS"
+    // Convertir "2025-11-27 19:30:39" → "2025-11-27T19:30:39"
+    const normalizada = fecha.replace(" ", "T");
+
+    const d = new Date(normalizada);
+
+    if (isNaN(d.getTime())) {
+      console.warn("Fecha inválida:", fecha);
+      return "N/A";
+    }
+
+    const meses = [
+      "enero", "febrero", "marzo", "abril", "mayo", "junio",
+      "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"
+    ];
+
+    return `${d.getDate()} de ${meses[d.getMonth()]} de ${d.getFullYear()}`;
   }
 
 
@@ -205,7 +225,7 @@ $(document).ready(function () {
   });
 
 
-  const modalTratamiento    = new bootstrap.Modal(document.getElementById("modalTratamiento"));
+  const modalTratamiento = new bootstrap.Modal(document.getElementById("modalTratamiento"));
   const modalTratamientoVer = new bootstrap.Modal(document.getElementById("modalTratamientoVer"));
 
   $("#modalTratamiento").on("shown.bs.modal", function () {
@@ -215,69 +235,73 @@ $(document).ready(function () {
 
 
   let tablaTratamientos = $("#tablaTratamientos").DataTable({
-  ajax: {
-    url: `${CTRL_TRATAMIENTO}?opcion=listar`,
-    type: "get",
-    dataType: "json",
-    dataSrc: function (json) {
-      console.log("Respuesta listar tratamientos:", json);
-      if (!json || json.status !== "success") {
-        console.warn("Error en listar tratamientos:", json);
-        return [];
-      }
-      return json.data;
-    },
-    error: function (xhr, status, error) {
-      console.error("AJAX error listar tratamientos:", status, error);
-      console.error("Respuesta del servidor:", xhr.responseText);
-    }
-  },
-  language: { url: "app/ajax/idioma.json" },
-  responsive: true,
-  columns: [
-    { data: "nombre_paciente", defaultContent: "" },
-    { data: "correo_paciente", defaultContent: "" },
-    { data: "nombre_odontologo", defaultContent: "" },
-    { data: "nombre_servicio", defaultContent: "" },
-
-    {
-      data: "created_at",
-      defaultContent: "",
-      render: v => v ? v.substring(0, 10) : ""
-    },
-    {
-      data: "fecha_fin",
-      defaultContent: "",
-      render: v => v ? v.substring(0, 10) : ""
-    },
-    {
-      data: "estado",
-      defaultContent: "",
-      render: function (estado) {
-        if (!estado) return `<span class="badge bg-secondary">Sin estado</span>`;
-        estado = estado.toLowerCase();
-
-        if (estado === "en curso")   return `<span class="badge bg-primary">En curso</span>`;
-        if (estado === "finalizado") return `<span class="badge bg-success">Finalizado</span>`;
-        if (estado === "cancelado")  return `<span class="badge bg-danger">Cancelado</span>`;
-
-        return `<span class="badge bg-secondary">${estado}</span>`;
+    ajax: {
+      url: `${CTRL_TRATAMIENTO}?opcion=listar`,
+      type: "get",
+      dataType: "json",
+      dataSrc: function (json) {
+        console.log("Respuesta listar tratamientos:", json);
+        if (!json || json.status !== "success") {
+          console.warn("Error en listar tratamientos:", json);
+          return [];
+        }
+        return json.data;
+      },
+      error: function (xhr, status, error) {
+        console.error("AJAX error listar tratamientos:", status, error);
+        console.error("Respuesta del servidor:", xhr.responseText);
       }
     },
-    {
-      data: "notas",
-      defaultContent: "",
-      render: v => v && v.length > 60 ? v.substring(0, 57) + "..." : (v || "")
-    },
-    {
-      data: null,
-      className: "text-center",
-      render: row => `
+    language: { url: "app/ajax/idioma.json" },
+    responsive: true,
+    columns: [
+      { data: "nombre_paciente", defaultContent: "" },
+      { data: "correo_paciente", defaultContent: "" },
+      { data: "nombre_odontologo", defaultContent: "" },
+      { data: "nombre_servicio", defaultContent: "" },
+
+      {
+        data: null,
+        render: function (_, __, row) {
+          return formatearFecha(row.created_at);
+        }
+      },
+      {
+        data: null,
+        render: function (_, __, row) {
+          return formatearFecha(row.fecha_fin);
+        }
+      },
+
+
+      {
+        data: "estado",
+        defaultContent: "",
+        render: function (estado) {
+          if (!estado) return `<span class="badge bg-secondary">Sin estado</span>`;
+          estado = estado.toLowerCase();
+
+          if (estado === "en curso") return `<span class="badge bg-primary">En curso</span>`;
+          if (estado === "finalizado") return `<span class="badge bg-success">Finalizado</span>`;
+          if (estado === "cancelado") return `<span class="badge bg-danger">Cancelado</span>`;
+
+          return `<span class="badge bg-secondary">${estado}</span>`;
+        }
+      },
+      {
+        data: "notas",
+        defaultContent: "",
+        render: v => v && v.length > 60 ? v.substring(0, 57) + "..." : (v || "")
+      },
+      {
+        data: null,
+        className: "text-center",
+        render: row => `
         <button class="btn mb-2 btn-warning btn-editar-trat" data-id="${row.id_tratamiento}">Editar</button>
         <button class="btn btn-danger btn-eliminar-trat" data-id="${row.id_tratamiento}">Eliminar</button>`
-    }
-  ]
-});
+      }
+    ]
+  });
 
   $("#btnNuevoTratamiento").on("click", function () {
     $("#tituloTratamiento").text("Nuevo Tratamiento");

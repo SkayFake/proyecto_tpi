@@ -1,43 +1,51 @@
 const CTRL_EXPEDIENTE = "app/controllers/expedienteController.php";
 
-
 $(document).ready(function () {
+
+    console.log("➡️ JS Expediente cargado correctamente");
 
     let pacienteActual = null;
     const modalBuscar = new bootstrap.Modal(document.getElementById("modalBuscarPaciente"));
 
-    /* ==========================================================
-        LIMPIAR ERRORES
-    ========================================================== */
     function limpiarErrores() {
         $("#nombre_paciente1").removeClass("is-invalid");
     }
 
-    /* ==========================================================
-        VALIDAR FORMULARIO
-    ========================================================== */
     function validarFormulario() {
         limpiarErrores();
 
         const nombre = $("#nombre_paciente1").val().trim();
+
         if (nombre === "") {
             $("#nombre_paciente1").addClass("is-invalid");
             Swal.fire("Campo requerido", "Debe ingresar un nombre de paciente", "warning");
             return false;
         }
+
         return true;
     }
 
-    /* ==========================================================
-        BUSCAR EXPEDIENTE (AJAX)
-    ========================================================== */
+    function formatearFecha(fecha) {
+
+        if (!fecha) return "N/A";
+
+        // convierte a objeto fecha válido
+        const d = new Date(fecha.replace(" ", "T"));
+
+        const meses = [
+            "enero", "febrero", "marzo", "abril", "mayo", "junio",
+            "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"
+        ];
+
+        return `${d.getDate()} de ${meses[d.getMonth()]} de ${d.getFullYear()}`;
+    }
+
     $("#formBuscarPaciente").on("submit", function (e) {
         e.preventDefault();
 
         if (!validarFormulario()) return;
 
         const nombre = $("#nombre_paciente1").val().trim();
-        console.log("Buscando expediente para:", nombre);
 
         Swal.fire({
             title: "Buscando...",
@@ -54,12 +62,14 @@ $(document).ready(function () {
             dataType: "json",
 
             success: function (r) {
+
                 if (!r.success) {
                     Swal.fire("No encontrado", r.message, "error");
                     return;
                 }
 
                 pacienteActual = r.paciente;
+
                 mostrarResultados(r);
 
                 modalBuscar.hide();
@@ -70,18 +80,16 @@ $(document).ready(function () {
             },
 
             error: function (xhr) {
-    console.log("ERROR AJAX => ", xhr.responseText);
-    Swal.fire("Error", xhr.responseText, "error");
-}
-
+                Swal.fire({
+                    icon: "error",
+                    title: "Error en la búsqueda",
+                    text: "Hubo un problema al consultar el expediente"
+                });
+            }
         });
     });
 
-    /* ==========================================================
-        MOSTRAR RESULTADOS
-    ========================================================== */
     function mostrarResultados({ paciente, odontogramas, tratamientos }) {
-
         $("#resultadosSection").slideDown();
 
         $("#nombrePacienteHeader").text(paciente.nombre);
@@ -95,14 +103,14 @@ $(document).ready(function () {
         }, 400);
     }
 
-    /* ==========================================================
-        MOSTRAR DATOS PERSONALES
-    ========================================================== */
     function mostrarDatosPaciente(p) {
 
         const campos = [
             { label: "DUI", value: p.dui },
-            { label: "Fecha de Nacimiento", value: p.fecha_nacimiento },
+            {
+                label: "Fecha de Nacimiento",
+                value: formatearFecha(p.fecha_nacimiento)
+            },
             { label: "Sexo", value: p.sexo },
             { label: "Teléfono", value: p.telefono },
             { label: "Correo", value: p.correo },
@@ -133,42 +141,69 @@ $(document).ready(function () {
         $("#datosPaciente").html(html);
     }
 
-    /* ==========================================================
-        MOSTRAR ODONTOGRAMAS
-    ========================================================== */
-    function mostrarOdontogramas(lista) {
-        const $tbody = $("#tablaOdontogramas tbody");
 
-        if (lista.length === 0) {
+
+    function mostrarOdontogramas(lista) {
+        const $tbody = $("#tablaOdontogramasex tbody");
+
+        if (!lista || lista.length === 0) {
             $tbody.html(`
-                <tr>
-                    <td colspan="2" class="text-center text-muted py-3">
-                        <i class="fas fa-inbox fa-2x"></i><br>
-                        No hay odontogramas registrados
-                    </td>
-                </tr>`);
+            <tr>
+                <td colspan="3" class="text-center text-muted py-3">
+                    <i class="fas fa-inbox fa-2x"></i><br>
+                    No hay odontogramas registrados
+                </td>
+            </tr>`);
             return;
         }
 
         let html = "";
         lista.forEach(o => {
+
             html += `
-                <tr>
-                    <td>${o.odontograma_fecha}</td>
-                    <td>${o.odontograma_observaciones || "Sin observaciones"}</td>
-                </tr>`;
+            <tr>
+                <td>${formatearFecha(o.odontograma_fecha)}</td>
+
+                <td>${o.odontograma_observaciones || "Sin observaciones"}</td>
+               
+                <td class="text-center">
+                    ${o.odontograma_imagen
+                    ? `
+                            <img src="${o.odontograma_imagen}"
+                                style="width:70px; cursor:pointer; border-radius:4px;"
+                                onclick="verOdontograma('${o.odontograma_imagen}')">
+                          `
+                    : `<span class="text-muted">Sin imagen</span>`
+                }
+                </td>
+            </tr>`;
         });
 
         $tbody.html(html);
     }
 
-    /* ==========================================================
-        MOSTRAR TRATAMIENTOS
-    ========================================================== */
-    function mostrarTratamientos(lista) {
-        const $tbody = $("#tablaTratamientos tbody");
+    window.verOdontograma = function (src) {
+        Swal.fire({
+            title: "Imagen del Odontograma",
+            imageUrl: src,
+            imageWidth: 500,
+            imageAlt: "Imagen del odontograma"
+        });
+    };
 
-        if (lista.length === 0) {
+    window.verOdontograma = function (src) {
+        Swal.fire({
+            title: "Odontograma",
+            imageUrl: src,
+            imageWidth: 450,
+            imageAlt: "Imagen del odontograma"
+        });
+    };
+
+    function mostrarTratamientos(lista) {
+        const $tbody = $("#tablaTratamientosex tbody");
+
+        if (!lista || lista.length === 0) {
             $tbody.html(`
                 <tr>
                     <td colspan="3" class="text-center text-muted py-3">
@@ -196,9 +231,6 @@ $(document).ready(function () {
         $tbody.html(html);
     }
 
-    /* ==========================================================
-        EXPORTAR PDF
-    ========================================================== */
     $("#btnExportarPDF").on("click", function () {
 
         if (!pacienteActual) {
@@ -209,14 +241,14 @@ $(document).ready(function () {
         location.href = `${CTRL_EXPEDIENTE}?action=exportar&nombre=${encodeURIComponent(pacienteActual.nombre)}`;
     });
 
-    /* ==========================================================
-        NUEVA BÚSQUEDA
-    ========================================================== */
     $("#btnNuevaBusqueda").on("click", function () {
+
         $("#resultadosSection").slideUp();
         pacienteActual = null;
+
         $('html, body').animate({ scrollTop: 0 }, 300);
     });
 
 });
+
 

@@ -60,9 +60,12 @@ $(document).ready(function () {
       type: 'get',
       dataType: 'json',
       dataSrc: function (json) {
+        console.log("Datos tabla Servicios:", json);
         if (json.status === 'success') return json.data;
+        console.log("DATA (array de filas):", json.data);
         console.warn(json.message || 'Sin datos');
         return [];
+       
       }
     },
     language: { url: 'app/ajax/idioma.json' },
@@ -129,30 +132,44 @@ $(document).ready(function () {
         }
       },
       
-      { data: 'created_at' },
-    
-      { 
-        data: 'fecha_vencimiento',
-        render: function (d) {
-          if (!d)
-            return '<span class="badge bg-secondary">Sin vencimiento</span>';
+     {
+  data: 'created_at',
+  render: function (d) {
+    return formatearFechaHora(d);
+  }
+}, 
+      {
+  data: 'fecha_vencimiento',
+  render: function (d) {
 
-          const ahora = new Date();
-          const fecha = new Date(d);
-          const diffHoras = (fecha - ahora) / (1000 * 60 * 60);
+    if (!d)
+      return '<span class="badge bg-secondary">Sin vencimiento</span>';
 
-          if (fecha < ahora) {
-            return `<span class="badge bg-danger">VENCIDO</span><br><small>${fecha.toLocaleString()}</small>`;
-          }
+    const ahora = new Date();
+    const fechaJs = new Date(d.replace(/\s+/g, " ").trim());
+    const diffHoras = (fechaJs - ahora) / (1000 * 60 * 60);
 
-          if (diffHoras <= 48) {
-            return `<span class="badge bg-warning text-dark">Por vencer</span><br><small>${fecha.toLocaleString()}</small>`;
-          }
+    if (fechaJs < ahora) {
+      return `
+        <span class="badge bg-danger">VENCIDO</span><br>
+        <small>${formatearFechaHora(d)}</small>
+      `;
+    }
 
-          return `<span class="badge bg-info text-dark">Vigente</span><br><small>${fecha.toLocaleString()}</small>`;
-        }
-      },
-     
+    if (diffHoras <= 48) {
+      return `
+        <span class="badge bg-warning text-dark">Por vencer</span><br>
+        <small>${formatearFechaHora(d)}</small>
+      `;
+    }
+
+    return `
+      <span class="badge bg-info text-dark">Vigente</span><br>
+      <small>${formatearFechaHora(d)}</small>
+    `;
+  }
+},
+
       {
         data: null,
         orderable: false,
@@ -171,6 +188,39 @@ $(document).ready(function () {
       }
     ]
   });
+
+  function formatearFechaHora(valor) {
+
+    if (!valor || valor === "null") return "N/A";
+
+    // Quitar espacios múltiples o saltos de línea "por si acaso"
+    valor = valor.replace(/\s+/g, " ").trim();
+
+    // Separar fecha y hora
+    const [fecha, hora] = valor.split(" ");
+
+    if (!fecha) return "N/A";
+
+    const partes = fecha.split("-"); // yyyy-mm-dd
+
+    if (partes.length !== 3) return valor;
+
+    const año = partes[0];
+    const mes = parseInt(partes[1]) - 1;
+    const dia = partes[2];
+
+    const meses = [
+        "enero","febrero","marzo","abril","mayo","junio",
+        "julio","agosto","septiembre","octubre","noviembre","diciembre"
+    ];
+
+    const fechaBonita = `${dia} de ${meses[mes]} de ${año}`;
+
+    // Si no tiene hora, solo muestra fecha
+    if (!hora) return fechaBonita;
+
+    return `${fechaBonita}<br><small class="text-muted">${hora}</small>`;
+}
 
 
   $('#btnVerServicios').on('click', function () {

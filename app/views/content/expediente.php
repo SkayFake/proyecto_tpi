@@ -1,3 +1,10 @@
+<?php
+if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) 
+    && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
+    return;
+}
+?>
+
 <div class="container main-container">
 
     <div class="card">
@@ -16,8 +23,6 @@
             </button>
         </div>
     </div>
-
-    <!-- RESULTADOS -->
     <div id="resultadosSection" class="mt-4" style="display:none;">
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
@@ -44,9 +49,13 @@
 
                 <div class="info-card">
                     <h5><i class="fas fa-tooth me-2"></i>Odontogramas</h5>
-                    <table class="table table-hover" id="tablaOdontogramas">
+                    <table class="table table-hover not-datatable" id="tablaOdontogramasex">
                         <thead>
-                            <tr><th>Fecha</th><th>Observaciones</th></tr>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Observaciones</th>
+                                <th>Imagen</th>
+                            </tr>
                         </thead>
                         <tbody></tbody>
                     </table>
@@ -54,9 +63,13 @@
 
                 <div class="info-card">
                     <h5><i class="fas fa-procedures me-2"></i>Tratamientos</h5>
-                    <table class="table table-hover" id="tablaTratamientos">
+                    <table class="table table-hover not-datatable" id="tablaTratamientosex">
                         <thead>
-                            <tr><th>Tratamiento</th><th>Estado</th><th>Notas</th></tr>
+                            <tr>
+                                <th>Tratamiento</th>
+                                <th>Estado</th>
+                                <th>Notas</th>
+                            </tr>
                         </thead>
                         <tbody></tbody>
                     </table>
@@ -67,7 +80,6 @@
     </div>
 </div>
 
-<!-- Modal Buscar Paciente -->
 <div id="modalBuscarPaciente"
      class="modal fade"
      data-bs-keyboard="false"
@@ -129,4 +141,3 @@
     </div>
 
 </div>
-

@@ -20,7 +20,7 @@ function errorJson(string $msg)
 
 function validarDatosCitaBase($correo, $id_odontologo, $fecha, $hora, $motivo, $estado)
 {
-     error_log("Correo: " . $correo);
+    error_log("Correo: " . $correo);
     error_log("Odontólogo: " . $id_odontologo);
     error_log("Fecha Cita: " . $fecha);
     error_log("Hora Cita: " . $hora);
@@ -259,11 +259,11 @@ try {
         errorJson("Debe seleccionar odontólogo y fecha.");
     }
 
-    // 1. Traer disponibilidad del odontólogo
+    //Traer disponibilidad del odontólogo
     require_once __DIR__ . '/../models/disponibilidadModel.php';
     $dis = new Disponibilidad();
 
-    $rangos = $dis->listar(); // tú ya puedes hacer un método específico si gustas
+    $rangos = $dis->listar(); 
 
     $horas = [];
 
@@ -281,7 +281,7 @@ try {
         }
     }
 
-    // 2. Excluir horas ya reservadas
+    //Excluir horas ya reservadas
     $citas = $citaModel->getCitas();
 
     foreach ($citas as $c) {

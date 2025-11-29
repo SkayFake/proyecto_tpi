@@ -100,6 +100,43 @@ $(document).ready(function () {
     return true;
   }
 
+
+  function formatearFechaHora(valor) {
+
+    if (!valor || valor === "null") return "N/A";
+
+    // 1. Limpiar saltos de línea, tabs y espacios dobles
+    let limpio = valor.replace(/\s+/g, " ").trim();
+    // ejemplo: "2025-11-28 01:58:23"
+
+    const partes = limpio.split(" ");
+
+    const fecha = partes[0];       // "2025-11-28"
+    const hora  = partes[1] || ""; // "01:58:23"
+
+    // Formateo de fecha
+    const f = fecha.split("-");
+    if (f.length !== 3) return valor;
+
+    const año = f[0];
+    const mes = parseInt(f[1]) - 1;
+    const dia = f[2];
+
+    const meses = [
+        "enero","febrero","marzo","abril","mayo","junio",
+        "julio","agosto","septiembre","octubre","noviembre","diciembre"
+    ];
+
+    const fechaBonita = `${dia} de ${meses[mes]} de ${año}`;
+
+    // Si no hay hora
+    if (!hora) return fechaBonita;
+
+    return `${fechaBonita}<br><small class="text-muted">${hora}</small>`;
+}
+
+
+
   
   function cargarTratamientosSelect(selectedId = null) {
     const $sel = $("#nombre_tratamientota");
@@ -327,8 +364,14 @@ $("#formPago").on("submit", async function (e) {
       },
       { data: "estado_pago" },
       { data: "referencia", defaultContent: "Sin Datos" },
-      { data: 'created_at' },
-      
+      {
+  data: null,
+  render: function(_, __, row) {
+    return formatearFechaHora(row.created_at);
+  }
+},
+
+  
     ],
     language: {
       url: "//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json"

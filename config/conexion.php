@@ -1,5 +1,4 @@
 <?php
-
     require_once 'server.php';
     class Conexion{
         private static ?PDO $conexion = null;
