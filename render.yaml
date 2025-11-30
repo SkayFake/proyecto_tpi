@@ -1,8 +1,0 @@
-services:
-  - type: web
-    name: proyecto_tpi
-    runtime: php
-    region: oregon
-    buildCommand: "composer install --no-dev"
-    startCommand: ""
-    branch: main
