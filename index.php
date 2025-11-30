@@ -1,20 +1,21 @@
 <?php
-    require_once "./config/app.php";
-    require_once "./autoload.php";
 
-    use app\controllers\viewsController;
+// Rutas absolutas basadas en el directorio actual
+require_once __DIR__ . "/config/app.php";
+require_once __DIR__ . "/autoload.php";
 
-    // Obtener la vista desde la URL: index.php?views=algo
-    if (isset($_GET['views'])) {
-        $url = explode("/", $_GET['views']);
-    } else {
-        // Vista por defecto: "menu"
-        $url = ["login"];
-    }
+use app\controllers\viewsController;
 
-    $viewsController = new viewsController();
-    $vista = $viewsController->obtenerVistasControlador($url[0]);
+// Obtener la vista desde la URL: index.php?views=algo
+if (isset($_GET['views'])) {
+    $url = explode("/", $_GET['views']);
+} else {
+    // Vista por defecto
+    $url = ["login"];
+}
 
-    // Cargar la vista resultante
-    require_once $vista;
+$viewsController = new viewsController();
+$vista = $viewsController->obtenerVistasControlador($url[0]);
 
+// Cargar la vista resultante
+require_once $vista;
