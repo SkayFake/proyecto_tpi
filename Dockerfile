@@ -4,11 +4,17 @@ FROM php:8.2-apache
 # Habilitar mod_rewrite para que funcione .htaccess
 RUN a2enmod rewrite
 
-# Copiar todo el proyecto al document root de Apache
+# Copiar proyecto al document root
 WORKDIR /var/www/html
 COPY . /var/www/html
 
-# Permitir .htaccess en el vhost principal
+# Permitir .htaccess en apache
 RUN sed -i 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf
 
-# (Render detecta que Apache escucha en el puerto 80, no hace falta EXPOSE)
+# Instalar extensiones necesarias para MySQL
+RUN docker-php-ext-install pdo pdo_mysql mysqli
+
+# Render usa la variable PORT automáticamente, solo redirige Apache al puerto
+ENV PORT=8080
+EXPOSE 8080
+
